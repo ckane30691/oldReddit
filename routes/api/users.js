@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
 	} else {
 		try {
 			const salt = await bcrypt.genSalt(10);
-			const hash = await bcrypt.hash(clientBody.password, salt);
+			const hash = await bcrypt.hash(req.body.password, salt);
 			const payload = new User({
 				username: req.body.name,
 				email: req.body.email,
@@ -48,8 +48,8 @@ router.post('/login', async (req, res) => {
 		return res.status(400).json(errors);
 	}
 
-	const name = clientBody.username;
-	const password = clientBody.password;
+	const name = req.body.username;
+	const password = req.body.password;
 	const user = await Client.FindByUsername(name);
 	if (!user) {
 		errors.username = 'User not found';
@@ -79,6 +79,27 @@ router.post('/login', async (req, res) => {
 	} else {
 		errors.password = 'Incorrect password';
 		return res.status(400).json(errors);
+	}
+});
+
+router.get('/currentClient', async (req, res) => {
+	let user = req.user;
+	if (!req.body.client.loggedIn)
+		return res.status(401).json({ message: 'you must be logged in' });
+	let user = await Client.FindByUsername(req.body.client.username);
+	if (user) {
+		res.json({
+			loggedIn: true,
+			username: user.username,
+			bio: user.bio,
+			tagLine: user.tagLine,
+			email: user.email,
+			imageURL: user.imageURL,
+			coverImageURL: user.coverImageURL,
+			confirmedEmail: user.emailConfirmed,
+		});
+	} else {
+		res.status(401).json({ message: 'unauthorized' });
 	}
 });
 module.exports = router;
