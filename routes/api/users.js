@@ -41,4 +41,44 @@ router.post('/signup', async (req, res) => {
 	}
 });
 
+router.post('/login', async (req, res) => {
+	// const { errors, isValid } = validateLoginInput(req.body);
+
+	if (!isValid) {
+		return res.status(400).json(errors);
+	}
+
+	const name = clientBody.username;
+	const password = clientBody.password;
+	const user = await Client.FindByUsername(name);
+	if (!user) {
+		errors.username = 'User not found';
+		return res.status(404).json(errors);
+	}
+
+	let isMatch = await bcrypt.compare(password, user.PWD);
+	if (isMatch) {
+		const payload = JSON.parse(JSON.stringify(req.user));
+		payload = {
+			loggedIn: true,
+			username: user.username,
+			email: user.email,
+		};
+		jsonwebtoken.sign(
+			payload,
+			keys.secretOrKey,
+			// Tell the key to expire in one hour
+			{ expiresIn: 3600 },
+			(err, token) => {
+				res.json({
+					success: true,
+					token: 'Bearer ' + token,
+				});
+			}
+		);
+	} else {
+		errors.password = 'Incorrect password';
+		return res.status(400).json(errors);
+	}
+});
 module.exports = router;
