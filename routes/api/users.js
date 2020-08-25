@@ -3,6 +3,7 @@ const router = express.router();
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const User = require('../../models/User');
+const passport = require('passport');
 const validateRegisterInput = require('../../validation/signup');
 const validateLoginInput = require('../../validation/login');
 
@@ -62,7 +63,6 @@ router.post('/login', async (req, res) => {
 	if (isMatch) {
 		const payload = JSON.parse(JSON.stringify(req.user));
 		payload = {
-			loggedIn: true,
 			username: user.username,
 			email: user.email,
 		};
@@ -84,24 +84,22 @@ router.post('/login', async (req, res) => {
 	}
 });
 
-router.get('/currentClient', async (req, res) => {
-	let user = req.user;
-	if (!req.body.client.loggedIn)
-		return res.status(401).json({ message: 'you must be logged in' });
-	let user = await Client.FindByUsername(req.body.client.username);
-	if (user) {
-		res.json({
-			loggedIn: true,
-			username: user.username,
-			bio: user.bio,
-			tagLine: user.tagLine,
-			email: user.email,
-			imageURL: user.imageURL,
-			coverImageURL: user.coverImageURL,
-			confirmedEmail: user.emailConfirmed,
-		});
-	} else {
-		res.status(401).json({ message: 'unauthorized' });
+router.get(
+	'/current',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		let user = req.user;
+		if (!req.body.client.loggedIn)
+			return res.status(401).json({ message: 'you must be logged in' });
+		let user = await Client.FindByUsername(req.body.client.username);
+		if (user) {
+			res.json({
+				username: user.username,
+				email: user.email,
+			});
+		} else {
+			res.status(401).json({ message: 'unauthorized' });
+		}
 	}
-});
+);
 module.exports = router;
