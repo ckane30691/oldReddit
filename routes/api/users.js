@@ -3,9 +3,11 @@ const router = express.router();
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const User = require('../../models/User');
+const validateRegisterInput = require('../../validation/signup');
+const validateLoginInput = require('../../validation/login');
 
 router.post('/signup', async (req, res) => {
-	// const { errors, isValid } = validateRegisterInput(req.body);
+	const { errors, isValid } = validateRegisterInput(req.body);
 	if (!isValid) {
 		return res.status(400).json(errors);
 	}
@@ -42,7 +44,7 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-	// const { errors, isValid } = validateLoginInput(req.body);
+	const { errors, isValid } = validateLoginInput(req.body);
 
 	if (!isValid) {
 		return res.status(400).json(errors);
