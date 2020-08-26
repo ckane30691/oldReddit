@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from '../reducers/root_reducer';
+import rootReducer from '../slices/root';
 
 const configureStoreWrapper = (preloadedState = {}) =>
 	configureStore({
