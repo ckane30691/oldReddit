@@ -1,5 +1,4 @@
 const express = require('express');
-const router = express.router();
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const User = require('../../models/User');
@@ -7,6 +6,7 @@ const passport = require('passport');
 const validateRegisterInput = require('../../validation/signup');
 const validateLoginInput = require('../../validation/login');
 
+const router = express.Router();
 router.post('/signup', async (req, res) => {
 	const { errors, isValid } = validateRegisterInput(req.body);
 	if (!isValid) {
@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
 
 	const name = req.body.username;
 	const password = req.body.password;
-	const user = await Client.FindByUsername(name);
+	// const user = await Client.FindByUsername(name);
 	if (!user) {
 		errors.username = 'User not found';
 		return res.status(404).json(errors);
@@ -85,21 +85,21 @@ router.post('/login', async (req, res) => {
 });
 
 router.get(
-	'/current',
-	passport.authenticate('jwt', { session: false }),
-	async (req, res) => {
-		let user = req.user;
-		if (!req.body.client.loggedIn)
-			return res.status(401).json({ message: 'you must be logged in' });
-		let user = await Client.FindByUsername(req.body.client.username);
-		if (user) {
-			res.json({
-				username: user.username,
-				email: user.email,
-			});
-		} else {
-			res.status(401).json({ message: 'unauthorized' });
-		}
-	}
+	'/current'
+	// passport.authenticate('jwt', { session: false }),
+	// async (req, res) => {
+	// 	let user = req.user;
+	// 	// if (!req.body.client.loggedIn)
+	// 	// 	return res.status(401).json({ message: 'you must be logged in' });
+	// 	// let user = await Client.FindByUsername(req.body.client.username);
+	// 	// if (user) {
+	// 	// 	res.json({
+	// 	// 		username: user.username,
+	// 	// 		email: user.email,
+	// 	// 	});
+	// 	// } else {
+	// 	// 	res.status(401).json({ message: 'unauthorized' });
+	// 	}
+	// }
 );
 module.exports = router;
