@@ -5,6 +5,7 @@ const User = require('../../models/User');
 const passport = require('passport');
 const validateRegisterInput = require('../../validation/signup');
 const validateLoginInput = require('../../validation/login');
+const keys = require('../../config/keys');
 
 const router = express.Router();
 router.post('/signup', async (req, res) => {
@@ -22,11 +23,14 @@ router.post('/signup', async (req, res) => {
 		try {
 			const salt = await bcrypt.genSalt(10);
 			const hash = await bcrypt.hash(req.body.password, salt);
-			const payload = new User({
-				username: req.body.name,
+			const payload = {
+				username: req.body.username,
 				email: req.body.email,
 				passwordDigest: hash,
-			});
+			};
+			let userInstance = new User(payload);
+			userInstance.save();
+
 			jsonwebtoken.sign(
 				payload,
 				keys.secretOrKey,

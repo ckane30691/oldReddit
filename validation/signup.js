@@ -2,6 +2,7 @@ const Validator = require('validator');
 const isEmpty = require('./isEmpty');
 
 module.exports = function validateRegisterInput(data) {
+	// TODO: check if passwords match
 	let errors = {};
 
 	data.username = !isEmpty(data.username) ? data.username : '';
@@ -14,7 +15,6 @@ module.exports = function validateRegisterInput(data) {
 	}
 
 	if (Validator.isEmpty(data.username)) {
-		debugger;
 		errors.username = 'Username field is required';
 	}
 
