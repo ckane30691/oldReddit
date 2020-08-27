@@ -8,6 +8,7 @@ import setCurrentUser from './slices/sessionSlice';
 import configureStore from './store/store.js';
 import App from './App.js';
 import * as serviceWorker from './serviceWorker';
+import { Provider } from 'react-redux';
 
 document.addEventListener('DOMContentLoaded', () => {
 	let store = configureStore();
@@ -30,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 	const root = document.getElementById('root');
-	ReactDOM.render(<App store={store} />, root);
+	ReactDOM.render(
+		<Provider store={store}>
+			<App store={store} />
+		</Provider>,
+		root
+	);
 	serviceWorker.register();
 });
