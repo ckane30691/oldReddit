@@ -18,7 +18,7 @@ export const setAuthToken = (token) => {
 // Register User
 export const signUpUser = (userData, history) => async (dispatch) => {
 	try {
-		let res = await axios.post('/api/users/register', userData);
+		let res = await axios.post('/api/users/signup', userData);
 
 		const { token } = res.data;
 		// Set token to ls

@@ -8,9 +8,11 @@ const sessionErrorsSlice = createSlice({
 			return [];
 		},
 		getErrors(state, action) {
-			return action.payload;
+			return [action.payload.message];
 		},
 	},
 });
+
+export const { getErrors } = sessionErrorsSlice.actions;
 
 export default sessionErrorsSlice.reducer;
