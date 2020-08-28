@@ -3,9 +3,30 @@ import { setAuthToken } from '../util/sessionApiUtil';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 
-const _nullUser = Object.freeze({
-	id: null,
-});
+const _initialState = () => {
+	const _nullUser = Object.freeze({
+		id: null,
+	});
+	if (localStorage.jwtToken) {
+		// Set auth token header auth
+		setAuthToken(localStorage.jwtToken);
+		// Decode token and get user info and exp
+		const decoded = jwt_decode(localStorage.jwtToken);
+		// Check for expired token
+		const currentTime = Date.now() / 1000;
+		if (decoded.exp < currentTime) {
+			// Redirect to login
+			window.location.href = '/login';
+			// remove expired jwt
+			localStorage.removeItem('jwtToken');
+			// Remove auth header for future requests
+			setAuthToken(false);
+			return _nullUser;
+		}
+		return decoded;
+	}
+	return _nullUser;
+};
 
 export const signUpUser = createAsyncThunk(
 	'setCurrentUser',
@@ -47,7 +68,7 @@ export const logoutUser = createAsyncThunk('setCurrentUser', async () => {
 
 const sessionSlice = createSlice({
 	name: 'session',
-	initialState: _nullUser,
+	initialState: _initialState(),
 	reducers: {
 		// setCurrentUser(state, action) {
 		// 	const { id, username, email } = action.payload;

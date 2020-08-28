@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import jwt_decode from 'jwt-decode';
 import * as APIUtil from './util/sessionApiUtil';
-import setCurrentUser, { logoutUser } from './slices/sessionSlice';
+import { loginUser, logoutUser } from './slices/sessionSlice';
 //Components
 import configureStore from './store/store.js';
 import App from './App.js';
@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		// Decode token and get user info and exp
 		const decoded = jwt_decode(localStorage.jwtToken);
 		// Set user and isAuthenticated
-		store.dispatch(setCurrentUser(decoded));
+		// debugger;
+		store.dispatch(loginUser(decoded));
 
 		// Check for expired token
 		const currentTime = Date.now() / 1000;

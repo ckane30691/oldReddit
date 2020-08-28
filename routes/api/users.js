@@ -90,21 +90,14 @@ router.post('/login', async (req, res) => {
 });
 
 router.get(
-	'/current'
-	// passport.authenticate('jwt', { session: false }),
-	// async (req, res) => {
-	// 	let user = req.user;
-	// 	// if (!req.body.client.loggedIn)
-	// 	// 	return res.status(401).json({ message: 'you must be logged in' });
-	// 	// let user = await Client.FindByUsername(req.body.client.username);
-	// 	// if (user) {
-	// 	// 	res.json({
-	// 	// 		username: user.username,
-	// 	// 		email: user.email,
-	// 	// 	});
-	// 	// } else {
-	// 	// 	res.status(401).json({ message: 'unauthorized' });
-	// 	}
-	// }
+	'/current',
+	passport.authenticate('jwt', { session: false }),
+	(req, res) => {
+		res.json({
+			id: req.user.id,
+			email: req.user.email,
+			username: req.user.username,
+		});
+	}
 );
 module.exports = router;
