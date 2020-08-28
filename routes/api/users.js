@@ -31,6 +31,8 @@ router.post('/signup', async (req, res) => {
 			let userInstance = new User(payload);
 			userInstance.save();
 
+			delete payload.passwordDigest;
+
 			jsonwebtoken.sign(
 				payload,
 				keys.secretOrKey,
@@ -50,23 +52,22 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
 	const { errors, isValid } = validateLoginInput(req.body);
-
 	if (!isValid) {
 		return res.status(400).json(errors);
 	}
 
-	const name = req.body.username;
+	const email = req.body.email;
 	const password = req.body.password;
-	// const user = await Client.FindByUsername(name);
+	const user = await User.findOne({ email });
+
 	if (!user) {
 		errors.username = 'User not found';
 		return res.status(404).json(errors);
 	}
 
-	let isMatch = await bcrypt.compare(password, user.PWD);
+	let isMatch = await bcrypt.compare(password, user.passwordDigest);
 	if (isMatch) {
-		const payload = JSON.parse(JSON.stringify(req.user));
-		payload = {
+		const payload = {
 			username: user.username,
 			email: user.email,
 		};

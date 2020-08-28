@@ -8,7 +8,7 @@ const sessionErrorsSlice = createSlice({
 			return [];
 		},
 		getErrors(state, action) {
-			return [action.payload.message];
+			return Promise.resolve(action.payload);
 		},
 	},
 });

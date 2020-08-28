@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import jwt_decode from 'jwt-decode';
 import * as APIUtil from './util/sessionApiUtil';
-import setCurrentUser from './slices/sessionSlice';
+import setCurrentUser, { logoutUser } from './slices/sessionSlice';
 //Components
 import configureStore from './store/store.js';
 import App from './App.js';
@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		const currentTime = Date.now() / 1000;
 		if (decoded.exp < currentTime) {
 			// Logout user
-			store.dispatch(APIUtil.logoutUser());
+			// store.dispatch(APIUtil.logoutUser());
+			store.dispatch(logoutUser());
 			// Redirect to login
 			window.location.href = '/login';
 		}

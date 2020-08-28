@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { loginUser, signUpUser } from '../util/sessionApiUtil';
+// import { loginUser /*, signUpUser*/ } from '../util/sessionApiUtil';
+import { signUpUser, loginUser } from '../slices/sessionSlice';
 
 export const SessionForm = (props) => {
 	let history = useHistory();
@@ -19,7 +20,7 @@ export const SessionForm = (props) => {
 	let text = formType === 'login' ? 'Log In' : 'Sign Up';
 	let passage =
 		formType === 'login' ? (
-			<p>Just enter your username & password & we'll get you right in</p>
+			<p>Just enter your email & password & we'll get you right in</p>
 		) : (
 			<p>Fill out the fields below to sign up</p>
 		);
@@ -59,7 +60,7 @@ export const SessionForm = (props) => {
 		e.preventDefault();
 		if (formType === 'login') {
 			let user = {
-				username,
+				email,
 				password,
 			};
 			// debugger;
@@ -79,16 +80,16 @@ export const SessionForm = (props) => {
 		}
 	};
 
-	const emailInput =
+	const usernameInput =
 		formType === 'login' ? (
 			''
 		) : (
 			<input
 				required
 				type="text"
-				value={email}
-				onChange={update('email')}
-				placeholder="Enter Email"
+				value={username}
+				onChange={update('username')}
+				placeholder="Enter Username"
 			/>
 		);
 
@@ -114,14 +115,14 @@ export const SessionForm = (props) => {
 				<input
 					required
 					type="text"
-					value={username}
-					onChange={update('username')}
+					value={email}
+					onChange={update('email')}
 					className={`session-${formType}-input`}
-					placeholder="Enter Username"
+					placeholder="Enter Email"
 				/>
 				<br />
 
-				{emailInput}
+				{usernameInput}
 				<input
 					required
 					type="password"
