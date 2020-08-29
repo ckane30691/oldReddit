@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import sessionErrors from './sessionErrorsSlice';
-import subRedditErrors from './subRedditErrors';
+import subRedditErrors from './subRedditErrorsSlice';
 
 const errorsReducer = combineReducers({
 	sessionErrors,

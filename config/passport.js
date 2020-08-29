@@ -9,9 +9,9 @@ options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 options.secretOrKey = keys.secretOrKey;
 
 module.exports = (passport) => {
+	// TODO: Convert to async await syntax
 	passport.use(
 		new JwtStrategy(options, (payload, done) => {
-			console.log(payload);
 			User.findById(payload.id)
 				.then((user) => {
 					if (user) {
