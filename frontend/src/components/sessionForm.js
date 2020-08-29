@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { signUpUser, loginUser } from '../slices/sessionSlice';
 
 export const SessionForm = (props) => {
+	// TODO: SETUP USE EFFECT (componentDidMount) TO CLEAR ERRORS WHEN USER SWITCHES BETWEEN SIGNUP AND LOGIN
 	let history = useHistory();
 
 	const sessionErrors = useSelector((state) => state.errors);

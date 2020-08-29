@@ -78,7 +78,6 @@ const sessionSlice = createSlice({
 	initialState: _initialState(),
 	reducers: {},
 	extraReducers: {
-		// Add reducers for additional action types here, and handle loading state as needed
 		[signUpUser.fulfilled]: (state, action) => {
 			state = action.payload;
 			return state;
