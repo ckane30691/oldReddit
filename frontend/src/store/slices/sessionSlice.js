@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { setAuthToken } from '../util/sessionApiUtil';
+import { setAuthToken } from '../../util/sessionApiUtil';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+
 const _nullUser = Object.freeze({
 	id: null,
 });

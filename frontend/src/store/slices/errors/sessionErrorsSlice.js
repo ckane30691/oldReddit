@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUser, signUpUser } from './sessionSlice';
+import { loginUser, signUpUser } from '../sessionSlice';
+
 const sessionErrorsSlice = createSlice({
 	name: 'sessionErrors',
 	initialState: [],

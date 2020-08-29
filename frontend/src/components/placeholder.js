@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { logoutUser } from '../slices/sessionSlice';
+import { logoutUser } from '../store/slices/sessionSlice';
 
 export const PlaceHolder = (props) => {
 	const dispatch = useDispatch();
