@@ -30,31 +30,39 @@ const _initialState = () => {
 
 export const signUpUser = createAsyncThunk(
 	'setCurrentUser',
-	async (userData, thunkAPI) => {
-		let res = await axios.post('/api/users/signup', userData);
-		const { token } = res.data;
-		// Set token to ls
-		localStorage.setItem('jwtToken', token);
-		// Set token to Auth header
-		setAuthToken(token);
-		// Decode token to get user data
-		const decoded = jwt_decode(token);
-		return decoded;
+	async (userData, { rejectWithValue }) => {
+		try {
+			let res = await axios.post('/api/users/signup', userData);
+			const { token } = res.data;
+			// Set token to ls
+			localStorage.setItem('jwtToken', token);
+			// Set token to Auth header
+			setAuthToken(token);
+			// Decode token to get user data
+			const decoded = jwt_decode(token);
+			return decoded;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
 	}
 );
 
 export const loginUser = createAsyncThunk(
 	'setCurrentUser',
-	async (userData, thunkAPI) => {
-		let res = await axios.post('/api/users/login', userData);
-		const { token } = res.data;
-		// Set token to ls
-		localStorage.setItem('jwtToken', token);
-		// Set token to Auth header
-		setAuthToken(token);
-		// Decode token to get user data
-		const decoded = jwt_decode(token);
-		return decoded;
+	async (userData, { rejectWithValue }) => {
+		try {
+			let res = await axios.post('/api/users/login', userData);
+			const { token } = res.data;
+			// Set token to ls
+			localStorage.setItem('jwtToken', token);
+			// Set token to Auth header
+			setAuthToken(token);
+			// Decode token to get user data
+			const decoded = jwt_decode(token);
+			return decoded;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
 	}
 );
 

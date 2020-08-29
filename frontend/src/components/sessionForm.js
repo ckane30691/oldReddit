@@ -75,7 +75,8 @@ export const SessionForm = (props) => {
 			// debugger;
 			res = await dispatch(signUpUser(user));
 		}
-		if (Boolean(res) !== false) {
+
+		if (res.type === 'setCurrentUser/fulfilled') {
 			history.push('/home');
 		}
 	};

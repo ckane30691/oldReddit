@@ -1,14 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import { loginUser, signUpUser } from './sessionSlice';
 const sessionErrorsSlice = createSlice({
 	name: 'sessionErrors',
 	initialState: [],
-	reducers: {
-		setCurrentUser() {
-			return [];
+	reducers: {},
+	extraReducers: {
+		[loginUser.fulfilled]: (state, action) => {
+			state = [];
+			return state;
 		},
-		getErrors(state, action) {
-			return Promise.resolve(action.payload);
+		[loginUser.rejected]: (state, action) => {
+			state = Object.values(action.payload);
+			return state;
+		},
+		[signUpUser.fulfilled]: (state, action) => {
+			state = [];
+			return state;
+		},
+		[signUpUser.rejected]: (state, action) => {
+			state = Object.values(action.payload);
+			return state;
 		},
 	},
 });
