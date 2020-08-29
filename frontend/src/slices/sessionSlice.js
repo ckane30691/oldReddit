@@ -2,11 +2,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { setAuthToken } from '../util/sessionApiUtil';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+const _nullUser = Object.freeze({
+	id: null,
+});
 
 const _initialState = () => {
-	const _nullUser = Object.freeze({
-		id: null,
-	});
 	if (localStorage.jwtToken) {
 		// Set auth token header auth
 		setAuthToken(localStorage.jwtToken);
@@ -62,19 +62,14 @@ export const logoutUser = createAsyncThunk('setCurrentUser', async () => {
 	localStorage.removeItem('jwtToken');
 	// Remove auth header for future requests
 	setAuthToken(false);
-	return {};
+	return _nullUser;
 });
 // Remove token from localStorage
 
 const sessionSlice = createSlice({
 	name: 'session',
 	initialState: _initialState(),
-	reducers: {
-		// setCurrentUser(state, action) {
-		// 	const { id, username, email } = action.payload;
-		// 	state.session = { id, username, email };
-		// },
-	},
+	reducers: {},
 	extraReducers: {
 		// Add reducers for additional action types here, and handle loading state as needed
 		[signUpUser.fulfilled]: (state, action) => {

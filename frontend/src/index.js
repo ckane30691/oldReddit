@@ -12,26 +12,6 @@ import { Provider } from 'react-redux';
 
 document.addEventListener('DOMContentLoaded', () => {
 	let store = configureStore();
-	// Check for token
-	if (localStorage.jwtToken) {
-		// Set auth token header auth
-		APIUtil.setAuthToken(localStorage.jwtToken);
-		// Decode token and get user info and exp
-		const decoded = jwt_decode(localStorage.jwtToken);
-		// Set user and isAuthenticated
-		// debugger;
-		store.dispatch(loginUser(decoded));
-
-		// Check for expired token
-		const currentTime = Date.now() / 1000;
-		if (decoded.exp < currentTime) {
-			// Logout user
-			// store.dispatch(APIUtil.logoutUser());
-			store.dispatch(logoutUser());
-			// Redirect to login
-			window.location.href = '/login';
-		}
-	}
 	const root = document.getElementById('root');
 	ReactDOM.render(
 		<Provider store={store}>
