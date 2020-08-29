@@ -36,14 +36,17 @@ router.post(
 		if (!isValid) {
 			return res.status(400).json(errors);
 		}
+		try {
+			const newSubReddit = new SubReddit({
+				moderatorId: req.user.id,
+				title: req.body.title,
+				desc: req.body.desc,
+			});
 
-		const newSubReddit = new SubReddit({
-			moderatorId: req.user.id,
-			title: req.body.title,
-			desc: req.body.desc,
-		});
-
-		await newSubReddit.save();
-		res.json(newSubReddit);
+			await newSubReddit.save();
+			res.json(newSubReddit);
+		} catch (errors) {
+			res.status(400).json(errors);
+		}
 	}
 );

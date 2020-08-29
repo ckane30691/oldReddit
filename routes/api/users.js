@@ -44,8 +44,8 @@ router.post('/signup', async (req, res) => {
 					});
 				}
 			);
-		} catch (err) {
-			res.status(400).json({ error: err });
+		} catch (errors) {
+			res.status(400).json({ errors });
 		}
 	}
 });

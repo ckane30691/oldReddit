@@ -47,11 +47,11 @@ const subRedditSlice = createSlice({
 			return state;
 		},
 		[fetchSubReddit.fulfilled]: (state, action) => {
-			state[action.payload.id] = action.payload;
+			state[action.payload._id] = action.payload;
 			return state;
 		},
 		[createSubReddit.fulfilled]: (state, action) => {
-			state[action.payload.id] = action.payload;
+			state[action.payload._id] = action.payload;
 			return state;
 		},
 	},
