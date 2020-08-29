@@ -64,16 +64,11 @@ export const logoutUser = createAsyncThunk('setCurrentUser', async () => {
 	setAuthToken(false);
 	return _nullUser;
 });
-// Remove token from localStorage
 
 const sessionSlice = createSlice({
 	name: 'session',
 	initialState: _initialState(),
-	reducers: {
-		// setCurrentUser(state, action) {
-		// 	state = action.payload;
-		// },
-	},
+	reducers: {},
 	extraReducers: {
 		// Add reducers for additional action types here, and handle loading state as needed
 		[signUpUser.fulfilled]: (state, action) => {
@@ -88,10 +83,6 @@ const sessionSlice = createSlice({
 			state = action.payload;
 			return state;
 		},
-		// [signUpUser.rejected]: (state, action) => {
-		// 	// Add user to the state array
-		// 	state.error.push(action.payload);
-		// },
 	},
 });
 

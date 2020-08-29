@@ -1,9 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { SessionForm } from './components/sessionForm';
 import { AuthRoute, ProtectedRoute } from './util/routeUtil';
+import { PlaceHolder } from './components/placeholder';
 
 function App() {
 	return (
@@ -22,6 +22,7 @@ function App() {
 				<Switch>
 					<AuthRoute exact path="/login" component={SessionForm} />
 					<AuthRoute exact path="/signup" component={SessionForm} />
+					<ProtectedRoute exact path="/home" component={PlaceHolder} />
 				</Switch>
 			</BrowserRouter>
 		</div>
