@@ -30,7 +30,7 @@ router.post('/signup', async (req, res) => {
 			};
 			let userInstance = new User(payload);
 			userInstance.save();
-
+			payload.id = userInstance.id;
 			delete payload.passwordDigest;
 
 			jsonwebtoken.sign(
@@ -68,6 +68,7 @@ router.post('/login', async (req, res) => {
 	let isMatch = await bcrypt.compare(password, user.passwordDigest);
 	if (isMatch) {
 		const payload = {
+			id: user.id,
 			username: user.username,
 			email: user.email,
 		};

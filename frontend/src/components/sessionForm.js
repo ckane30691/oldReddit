@@ -76,7 +76,7 @@ export const SessionForm = (props) => {
 			res = await dispatch(signUpUser(user));
 		}
 		if (Boolean(res) !== false) {
-			history.push('/client/dashboard');
+			history.push('/home');
 		}
 	};
 

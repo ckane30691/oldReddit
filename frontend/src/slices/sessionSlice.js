@@ -69,18 +69,24 @@ export const logoutUser = createAsyncThunk('setCurrentUser', async () => {
 const sessionSlice = createSlice({
 	name: 'session',
 	initialState: _initialState(),
-	reducers: {},
+	reducers: {
+		// setCurrentUser(state, action) {
+		// 	state = action.payload;
+		// },
+	},
 	extraReducers: {
 		// Add reducers for additional action types here, and handle loading state as needed
 		[signUpUser.fulfilled]: (state, action) => {
-			// Add user to the state array
-			state.session = action.payload;
+			state = action.payload;
+			return state;
 		},
 		[loginUser.fulfilled]: (state, action) => {
-			state.session = action.payload;
+			state = action.payload;
+			return state;
 		},
 		[logoutUser.fulfilled]: (state, action) => {
-			state.session = action.payload;
+			state = action.payload;
+			return state;
 		},
 		// [signUpUser.rejected]: (state, action) => {
 		// 	// Add user to the state array
