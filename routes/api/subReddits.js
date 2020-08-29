@@ -1,6 +1,7 @@
 const express = require('express');
 const SubReddit = require('../../models/SubReddit');
 const passport = require('passport');
+const validateSubRedditInput = require('../../validation/subReddit');
 
 const router = express.Router();
 
@@ -30,11 +31,11 @@ router.post(
 	'/',
 	passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
-		// const { errors, isValid } = validateSubRedditInput(req.body);
+		const { errors, isValid } = validateSubRedditInput(req.body);
 
-		// if (!isValid) {
-		// 	return res.status(400).json(errors);
-		// }
+		if (!isValid) {
+			return res.status(400).json(errors);
+		}
 
 		const newSubReddit = new SubReddit({
 			moderatorId: req.user.id,
