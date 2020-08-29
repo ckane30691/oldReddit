@@ -1,5 +1,4 @@
 const express = require('express');
-const User = require('../../models/User');
 const SubReddit = require('../../models/SubReddit');
 const passport = require('passport');
 
@@ -26,3 +25,24 @@ router.get('/:id', async (req, res) => {
 			.json({ noSubRedditFound: 'No subReddit found with that ID' });
 	}
 });
+
+router.post(
+	'/',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		// const { errors, isValid } = validateSubRedditInput(req.body);
+
+		// if (!isValid) {
+		// 	return res.status(400).json(errors);
+		// }
+
+		const newSubReddit = new SubReddit({
+			moderatorId: req.user.id,
+			title: req.body.title,
+			desc: req.body.desc,
+		});
+
+		await newSubReddit.save();
+		res.json(newSubReddit);
+	}
+);

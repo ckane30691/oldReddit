@@ -29,7 +29,7 @@ router.post('/signup', async (req, res) => {
 				passwordDigest: hash,
 			};
 			let userInstance = new User(payload);
-			userInstance.save();
+			await userInstance.save();
 			payload.id = userInstance.id;
 			delete payload.passwordDigest;
 
