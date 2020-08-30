@@ -41,7 +41,7 @@ export const deleteSubReddit = createAsyncThunk(
 	'receiveSubReddit',
 	async (subRedditId, { rejectWithValue }) => {
 		try {
-			let res = await axios.delete('/api/subReddits', subRedditId);
+			let res = await axios.delete(`/api/subReddits/${subRedditId}`);
 			return res.data;
 		} catch (err) {
 			return rejectWithValue(err.response.data);

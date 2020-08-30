@@ -57,14 +57,14 @@ router.delete(
 	async (req, res) => {
 		try {
 			let subReddit = await SubReddit.findById(req.params.id);
-			if (req.user.id !== subReddit.moderatorId) {
-				res.status(403).json({
-					notAuthorized:
-						'You must be the moderator of this subreddit to delete it!',
-				});
+			if (req.user.id == subReddit.moderatorId) {
+				await subReddit.deleteOne();
+				return res.json(subReddit);
 			}
-			await subReddit.deleteOne();
-			res.json(subReddit);
+			res.status(403).json({
+				notAuthorized:
+					'You must be the moderator of this subreddit to delete it!',
+			});
 		} catch (errors) {
 			res.status(400).json(errors);
 		}

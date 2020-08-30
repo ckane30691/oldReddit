@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchSubReddit } from '../../store/slices/entities/subRedditSlice';
-import { withRouter } from 'react-router-dom';
 
 export const SubRedditShow = (props) => {
 	let subRedditId = props.match.params.id;
