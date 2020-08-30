@@ -5,6 +5,7 @@ const SubRedditSchema = new Schema({
 	moderatorId: {
 		type: Schema.Types.ObjectId,
 		ref: 'users',
+		required: true,
 	},
 	title: {
 		type: String,

@@ -5,10 +5,12 @@ const PostSubSchema = new Schema({
 	postId: {
 		type: Schema.Types.ObjectId,
 		ref: 'posts',
+		required: true,
 	},
 	subId: {
 		type: Schema.Types.ObjectId,
 		ref: 'subReddits',
+		required: true,
 	},
 });
 
