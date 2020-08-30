@@ -1,16 +1,28 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { fetchSubReddit } from '../../store/slices/entities/subRedditSlice';
+import { withRouter } from 'react-router-dom';
 
-export const SubRedditShow = (props) => {
+const SubRedditShow = (props) => {
 	let subRedditId = props.match.params.id;
-	const subReddit = useSelector(
-		(state) => state.entities.subReddits[subRedditId]
-	);
+	const [hooksReady, setHooksReady] = useState(false);
+	const [subReddit, setSubReddit] = useState({});
+
 	const dispatch = useDispatch();
+
 	useEffect(() => {
-		dispatch(fetchSubReddit(subRedditId));
-	}, []);
+		const fetchSub = async () => {
+			let res = await dispatch(fetchSubReddit(subRedditId));
+			if (res.type === 'receiveSubReddit/fulfilled') {
+				setSubReddit(res.payload);
+				setHooksReady(true);
+			}
+		};
+		fetchSub();
+	}, [subReddit, dispatch, subRedditId]);
+
+	if (!hooksReady) return <div></div>;
+
 	return (
 		<div>
 			<h1>{subReddit.title}</h1>
@@ -18,3 +30,5 @@ export const SubRedditShow = (props) => {
 		</div>
 	);
 };
+
+export default withRouter(SubRedditShow);
