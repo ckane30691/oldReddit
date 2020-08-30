@@ -2,7 +2,7 @@ const express = require('express');
 const Post = require('../../models/Post');
 const PostSub = require('../../models/PostSub');
 const passport = require('passport');
-// const validatePostInput = require('../../validation/posts');
+const validatePostInput = require('../../validation/post');
 
 const router = express.Router(/*{ mergeParams: true }*/);
 
@@ -21,11 +21,12 @@ router.post(
 	'/',
 	passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
-		// const { errors, isValid } = validatePostInput(req.body);
-		// if (!isValid) {
-		//         return res.status(400).json(errors);
-		//     }
+		const { errors, isValid } = validatePostInput(req.body);
+		if (!isValid) {
+			return res.status(400).json(errors);
+		}
 		try {
+			// How can I make these entries ATOMIC?
 			const newPost = new Post({
 				userId: req.user.id,
 				title: req.body.title,
