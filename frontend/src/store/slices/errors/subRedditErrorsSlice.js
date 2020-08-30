@@ -3,6 +3,8 @@ import {
 	fetchSubReddit,
 	fetchSubReddits,
 	createSubReddit,
+	deleteSubReddit,
+	updateSubReddit,
 } from '../entities/subRedditSlice';
 
 const subRedditErrorsSlice = createSlice({
@@ -32,6 +34,22 @@ const subRedditErrorsSlice = createSlice({
 		},
 		[createSubReddit.rejected]: (state, action) => {
 			state = Object.values(action.payload);
+			return state;
+		},
+		[deleteSubReddit.rejected]: (state, action) => {
+			state = Object.values(action.payload);
+			return state;
+		},
+		[deleteSubReddit.fulfilled]: (state, action) => {
+			state = [];
+			return state;
+		},
+		[updateSubReddit.rejected]: (state, action) => {
+			state = Object.values(action.payload);
+			return state;
+		},
+		[updateSubReddit.fulfilled]: (state, action) => {
+			state = [];
 			return state;
 		},
 	},
