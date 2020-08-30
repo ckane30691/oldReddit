@@ -11,14 +11,16 @@ const SubRedditShow = (props) => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
+		let mounted = true;
 		const fetchSub = async () => {
 			let res = await dispatch(fetchSubReddit(subRedditId));
-			if (res.type === 'receiveSubReddit/fulfilled') {
+			if (mounted && res.type === 'receiveSubReddit/fulfilled') {
 				setSubReddit(res.payload);
 				setHooksReady(true);
 			}
 		};
 		fetchSub();
+		return () => (mounted = false);
 	}, [subReddit, dispatch, subRedditId]);
 
 	if (!hooksReady) return <div></div>;
