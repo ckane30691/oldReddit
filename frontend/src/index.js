@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 
 document.addEventListener('DOMContentLoaded', () => {
 	let store = configureStore();
+	window.store = store;
 	const root = document.getElementById('root');
 	ReactDOM.render(
 		<Provider store={store}>

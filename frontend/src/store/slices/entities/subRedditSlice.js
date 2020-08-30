@@ -38,7 +38,7 @@ export const createSubReddit = createAsyncThunk(
 );
 
 export const deleteSubReddit = createAsyncThunk(
-	'receiveSubReddit',
+	'removeSubReddit',
 	async (subRedditId, { rejectWithValue }) => {
 		try {
 			let res = await axios.delete(`/api/subReddits/${subRedditId}`);
@@ -67,7 +67,9 @@ const subRedditSlice = createSlice({
 	reducers: {},
 	extraReducers: {
 		[fetchSubReddits.fulfilled]: (state, action) => {
-			state = action.payload;
+			action.payload.forEach((subReddit) => {
+				state[subReddit._id] = subReddit;
+			});
 			return state;
 		},
 		[fetchSubReddit.fulfilled]: (state, action) => {

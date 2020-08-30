@@ -57,6 +57,10 @@ router.delete(
 	async (req, res) => {
 		try {
 			let subReddit = await SubReddit.findById(req.params.id);
+			if (!subReddit)
+				return res
+					.status(404)
+					.json({ noSubRedditFound: "That subreddit doesn't exist" });
 			if (req.user.id == subReddit.moderatorId) {
 				await subReddit.deleteOne();
 				return res.json(subReddit);
