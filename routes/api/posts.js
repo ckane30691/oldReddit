@@ -1,5 +1,6 @@
 const express = require('express');
 const Post = require('../../models/Post');
+const PostSub = require('../../models/PostSub');
 const passport = require('passport');
 // const validatePostInput = require('../../validation/posts');
 
@@ -15,3 +16,31 @@ router.get('/:id', async (req, res) => {
 		res.status(404).json({ noPostFound: "That post doesn't exist" });
 	}
 });
+
+router.post(
+	'/',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		// const { errors, isValid } = validatePostInput(req.body);
+		// if (!isValid) {
+		//         return res.status(400).json(errors);
+		//     }
+		try {
+			const newPost = new Post({
+				userId: req.user.id,
+				title: req.body.title,
+				url: req.body.url,
+				body: req.body.body,
+			});
+			const newPostSub = new PostSub({
+				postId: newPost._id,
+				subId: req.body.subId,
+			});
+			await newPost.save();
+			await newPostSub.save();
+			res.json(newPost);
+		} catch (errors) {
+			res.status(400).json(errors);
+		}
+	}
+);
