@@ -4,6 +4,7 @@ import { createSubReddit } from '../../store/slices/entities/subRedditSlice';
 import { useHistory } from 'react-router-dom';
 
 export const SubRedditForm = (props) => {
+	// TODO: ADD EDIT FUNCTIONALITY TO FORM
 	const dispatch = useDispatch();
 	let history = useHistory();
 
@@ -21,6 +22,8 @@ export const SubRedditForm = (props) => {
 				case 'desc':
 					setDesc(val);
 					break;
+				default:
+					return;
 			}
 		};
 	};

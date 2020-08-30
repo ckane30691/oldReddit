@@ -6,9 +6,9 @@ import { deleteSubReddit } from '../../store/slices/entities/subRedditSlice';
 export const SubRedditIndexItem = ({ subReddit }) => {
 	const dispatch = useDispatch();
 	const handleDelete = async (e) => {
-		let res;
+		// let res;
 		e.preventDefault();
-		res = await dispatch(deleteSubReddit(subReddit._id));
+		/*res =*/ await dispatch(deleteSubReddit(subReddit._id));
 	};
 	return (
 		<li>
