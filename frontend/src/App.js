@@ -4,7 +4,7 @@ import { BrowserRouter, Switch, Link } from 'react-router-dom';
 import { SessionForm } from './components/sessionForm';
 import { AuthRoute, ProtectedRoute } from './util/routeUtil';
 import { PlaceHolder } from './components/placeholder';
-import SubRedditShow from './components/subReddits/subRedditShow';
+import { SubRedditShow } from './components/subReddits/subRedditShow';
 
 function App() {
 	return (

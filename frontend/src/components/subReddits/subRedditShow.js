@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { fetchSubReddit } from '../../store/slices/entities/subRedditSlice';
 import { withRouter } from 'react-router-dom';
 
-const SubRedditShow = (props) => {
+export const SubRedditShow = (props) => {
 	let subRedditId = props.match.params.id;
 	const [hooksReady, setHooksReady] = useState(false);
 	const [subReddit, setSubReddit] = useState({});
@@ -20,6 +20,7 @@ const SubRedditShow = (props) => {
 			}
 		};
 		fetchSub();
+		// cleanup function
 		return () => (mounted = false);
 	}, [subReddit, dispatch, subRedditId]);
 
@@ -32,5 +33,3 @@ const SubRedditShow = (props) => {
 		</div>
 	);
 };
-
-export default withRouter(SubRedditShow);
