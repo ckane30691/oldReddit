@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { updateSubReddit } from './subRedditSlice';
 
 export const fetchPosts = createAsyncThunk(
 	'receivePosts',
