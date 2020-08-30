@@ -42,6 +42,8 @@ export const SessionForm = (props) => {
 				case 'email':
 					setEmail(val);
 					break;
+				default:
+					return;
 			}
 		};
 	};

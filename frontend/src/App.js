@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Link } from 'react-router-dom';
 import { SessionForm } from './components/sessionForm';
 import { AuthRoute, ProtectedRoute } from './util/routeUtil';
 import { PlaceHolder } from './components/placeholder';
