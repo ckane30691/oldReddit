@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
 	try {
 		let subReddit = await SubReddit.findById(req.params.id);
 		res.json(subReddit);
-	} catch (err) {
+	} catch (errors) {
 		res
 			.status(404)
 			.json({ noSubRedditFound: 'No subReddit found with that ID' });
