@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const db = require('./config/keys').mongoURI;
 const users = require('./routes/api/users');
 const subReddits = require('./routes/api/subReddits.js');
+const posts = require('./routes/api/posts.js');
 const passport = require('passport');
 
 const port = process.env.PORT || 5000;
@@ -19,6 +20,8 @@ mongoose
 	.then(() => console.log('Connected to MongoDB succesfully'))
 	.catch((err) => console.log(err));
 
+// subReddits.use('/:subRedditId/posts', posts);
+app.use('api/posts', posts);
 app.use('/api/users', users);
 app.use('/api/subReddits', subReddits);
 
