@@ -50,3 +50,23 @@ router.post(
 		}
 	}
 );
+
+router.delete(
+	'/:id',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		try {
+			let subReddit = await SubReddit.findById(req.params.id);
+			if (req.user.id !== subReddit.moderatorId) {
+				res.status(403).json({
+					notAuthorized:
+						'You must be the moderator of this subreddit to delete it!',
+				});
+			}
+			await subReddit.deleteOne();
+			res.json(subReddit);
+		} catch (errors) {
+			res.status(400).json(errors);
+		}
+	}
+);
