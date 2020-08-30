@@ -37,6 +37,18 @@ export const createSubReddit = createAsyncThunk(
 	}
 );
 
+export const deleteSubReddit = createAsyncThunk(
+	'receiveSubReddit',
+	async (subRedditId, { rejectWithValue }) => {
+		try {
+			let res = await axios.delete('/api/subReddits', subRedditId);
+			return res.data;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
+	}
+);
+
 const subRedditSlice = createSlice({
 	name: 'subReddits',
 	initialState: {},
@@ -52,6 +64,10 @@ const subRedditSlice = createSlice({
 		},
 		[createSubReddit.fulfilled]: (state, action) => {
 			state[action.payload._id] = action.payload;
+			return state;
+		},
+		[deleteSubReddit]: (state, action) => {
+			delete state[action.payload._id];
 			return state;
 		},
 	},
