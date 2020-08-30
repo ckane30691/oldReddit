@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { logoutUser } from '../store/slices/sessionSlice';
 import { SubRedditIndex } from './subReddits/subRedditIndex';
 import { SubRedditForm } from './subReddits/subRedditForm';
+
 export const PlaceHolder = (props) => {
 	const dispatch = useDispatch();
 
