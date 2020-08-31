@@ -56,7 +56,7 @@ export const CommentForm = (props) => {
 				type="text"
 				value={body}
 				onChange={update('body')}
-				placeholder="Enter Body"
+				placeholder="Enter Comment"
 			/>
 			<input type="submit" value="Create Comment" />
 		</form>
