@@ -1,5 +1,6 @@
 const express = require('express');
 const SubReddit = require('../../models/SubReddit');
+const UserSub = require('../../models/UserSub');
 const passport = require('passport');
 const validateSubRedditInput = require('../../validation/subReddit');
 
@@ -45,6 +46,25 @@ router.post(
 
 			await newSubReddit.save();
 			res.json(newSubReddit);
+		} catch (errors) {
+			res.status(400).json(errors);
+		}
+	}
+);
+
+// Subscribe to SubReddit
+router.post(
+	'/:id',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		try {
+			const newUserSub = new UserSub({
+				userId: req.user.id,
+				subId: req.params.id,
+			});
+
+			await newUserSub.save();
+			res.json(newUserSub);
 		} catch (errors) {
 			res.status(400).json(errors);
 		}
