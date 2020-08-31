@@ -8,10 +8,10 @@ export const Header = () => {
 			<header>
 				<div className="home-container">
 					<Link to="/" className="header-link">
-						<h1>OldReddit</h1>
+						OldReddit
 					</Link>
+					<Greeting />
 				</div>
-				<Greeting />
 			</header>
 		</div>
 	);

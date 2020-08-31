@@ -1,9 +1,9 @@
-.header-link {
-	text-decoration: none;
-	color: black;
-}
-
 .home-container {
 	display: flex;
-	flex-direction: row;
+	padding: 10px;
+	position: relative;
+}
+
+.header-link {
+	width: fit-content;
 }

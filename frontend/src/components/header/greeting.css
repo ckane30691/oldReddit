@@ -1,5 +1,5 @@
 .login-signup {
-	align-self: flex-end;
-	background-color: blue;
+	position: absolute;
+	right: 25px;
 	width: fit-content;
 }

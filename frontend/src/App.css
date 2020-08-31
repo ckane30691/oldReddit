@@ -82,3 +82,7 @@ input[type='submit'] {
 	background-color: rgb(210, 227, 246);
 	font-size: 1.5vmin;
 }
+
+body {
+	font-family: 'Lato', sans-serif;
+}
