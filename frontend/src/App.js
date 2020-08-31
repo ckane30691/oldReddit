@@ -1,11 +1,22 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Switch, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { SessionForm } from './components/sessionForm';
 import { AuthRoute, ProtectedRoute } from './util/routeUtil';
 import { PlaceHolder } from './components/placeholder';
 import { SubRedditShow } from './components/subReddits/subRedditShow';
 import { Header } from './components/header/header';
+import { SubRedditIndex } from './components/subReddits/subRedditIndex';
+
+const composeComponents = (...components) => {
+	return () => (
+		<div>
+			{components.map((Component, index) => (
+				<Component key={`comp-${index}`} />
+			))}
+		</div>
+	);
+};
 
 function App() {
 	return (
@@ -15,8 +26,13 @@ function App() {
 					<Header />
 				</header>
 				<Switch>
-					<AuthRoute exact path="/login" component={SessionForm} />
+					<Route
+						exact
+						path="/"
+						component={composeComponents(SessionForm, SubRedditIndex)}
+					/>
 					<AuthRoute exact path="/signup" component={SessionForm} />
+					<AuthRoute exact path="/login" component={SessionForm} />
 					<ProtectedRoute exact path="/home" component={PlaceHolder} />
 					<ProtectedRoute
 						exact

@@ -5,9 +5,10 @@ import { logoutUser } from '../../store/slices/sessionSlice';
 require('./greeting.css');
 
 const sessionLinks = (dummyLogin, dispatch) => (
-	<nav className="login-signup">
-		<Link to="/login">Sign In</Link>
-		<Link to="/signup">Sign up!</Link>
+	<nav className="header-group">
+		Want to Join? <Link to="/login">Sign In</Link>
+		{/*space*/} or {/*space*/}
+		<Link to="/signup">sign up</Link> in seconds!
 		<button className="demo-button" /* onClick={dummyLogin}*/>Demo</button>
 	</nav>
 );

@@ -9,14 +9,19 @@ export const SessionForm = (props) => {
 	let history = useHistory();
 
 	const sessionErrors = useSelector((state) => state.errors.sessionErrors);
-
-	const formType = props.location.pathname === '/login' ? 'login' : 'signup';
+	const session = useSelector((state) => state.session);
+	const formType =
+		props.location && props.location.pathname === '/signup'
+			? 'signup'
+			: 'login';
 
 	const dispatch = useDispatch();
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [password2, setPassword2] = useState('');
 	const [email, setEmail] = useState('');
+
+	if (session.id) return <div></div>;
 
 	let text = formType === 'login' ? 'Log In' : 'Sign Up';
 	let passage =
@@ -66,7 +71,7 @@ export const SessionForm = (props) => {
 				email,
 				password,
 			};
-			// debugger;
+
 			res = await dispatch(loginUser(user));
 		} else {
 			let user = {
@@ -75,12 +80,8 @@ export const SessionForm = (props) => {
 				password,
 				password2,
 			};
-			// debugger;
-			res = await dispatch(signUpUser(user));
-		}
 
-		if (res.type === 'setCurrentUser/fulfilled') {
-			history.push('/home');
+			res = await dispatch(signUpUser(user));
 		}
 	};
 
