@@ -53,6 +53,18 @@ export const updateSubReddit = createAsyncThunk(
 	'receiveSubReddit',
 	async (subReddit, { rejectWithValue }) => {
 		try {
+			let res = await axios.patch(`/api/subReddits${subReddit._id}`, subReddit);
+			return res.data;
+		} catch (err) {
+			return rejectWithValue(err.response.data);
+		}
+	}
+);
+
+export const subscribeToSubReddit = createAsyncThunk(
+	'receiveSubReddit',
+	async (subReddit, { rejectWithValue }) => {
+		try {
 			let res = await axios.post(`/api/subReddits${subReddit._id}`, subReddit);
 			return res.data;
 		} catch (err) {
