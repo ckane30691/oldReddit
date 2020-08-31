@@ -1,38 +1,84 @@
-.App {
-	text-align: center;
+/*css reset*/
+html,
+body,
+header,
+nav,
+h1,
+a,
+ul,
+li,
+strong,
+main,
+button,
+i,
+section,
+img,
+div,
+h2,
+p,
+form,
+fieldset,
+label,
+input,
+textarea,
+span,
+article,
+footer,
+time,
+small {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font: inherit;
+	color: inherit;
+	text-align: inherit;
+	text-decoration: inherit;
+	vertical-align: inherit;
+	box-sizing: inherit;
+	background: transparent;
 }
 
-.App-logo {
-	height: 40vmin;
-	pointer-events: none;
+ul {
+	list-style: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-	.App-logo {
-		animation: App-logo-spin infinite 20s linear;
-	}
+img {
+	display: block;
+	width: 100%;
+	height: auto;
 }
+
+input[type='email'],
+input[type='text'],
+input[type='submit'],
+textarea,
+button {
+	/*
+   Get rid of native styling. Read more here:
+   http://css-tricks.com/almanac/properties/a/appearance/
+   */
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+button,
+input[type='submit'] {
+	cursor: pointer;
+}
+
+/* Clearfix */
+
+.group:after {
+	content: '';
+	display: block;
+	clear: both;
+}
+
+/*////*/
 
 .App-header {
-	background-color: #282c34;
-	min-height: 5vh;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: center;
+	background-color: rgb(210, 227, 246);
 	font-size: 1.5vmin;
-	color: white;
-}
-
-.App-link {
-	color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
 }
