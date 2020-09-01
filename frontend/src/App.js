@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { SessionForm } from './components/sessionForm';
+import { SessionForm } from './components/session/sessionForm';
 import { AuthRoute, ProtectedRoute } from './util/routeUtil';
 import { PlaceHolder } from './components/placeholder';
 import { SubRedditShow } from './components/subReddits/subRedditShow';

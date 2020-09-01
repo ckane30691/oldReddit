@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 // import { loginUser /*, signUpUser*/ } from '../util/sessionApiUtil';
-import { signUpUser, loginUser } from '../store/slices/sessionSlice';
+import { signUpUser, loginUser } from '../../store/slices/sessionSlice';
+require('./sessionForm.css');
 
 export const SessionForm = (props) => {
 	// TODO: SETUP USE EFFECT (componentDidMount) TO CLEAR ERRORS WHEN USER SWITCHES BETWEEN SIGNUP AND LOGIN
-	let history = useHistory();
 
 	const sessionErrors = useSelector((state) => state.errors.sessionErrors);
 	const session = useSelector((state) => state.session);
