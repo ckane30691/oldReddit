@@ -37,7 +37,7 @@ export const PostForm = (props) => {
 		return (
 			<ul>
 				{postErrors.map((error, idx) => (
-					<li key={`error-${idx}`}>{error}</li>
+					<li key={`error-${idx}`}>{Object.values(error)}</li>
 				))}
 			</ul>
 		);
@@ -52,7 +52,7 @@ export const PostForm = (props) => {
 			url,
 		};
 		res = await dispatch(createPost(post));
-		if ((res.type = 'receivePost/fulfilled')) {
+		if (res.type === 'receivePost/fulfilled') {
 			history.push(`/post/${res.payload._id}`);
 		}
 	};

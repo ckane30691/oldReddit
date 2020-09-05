@@ -31,6 +31,7 @@ router.post(
 	'/',
 	passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
+		// TODO: REWORK CONTROLLER TO ALLOW USERS TO POST TO THEIR OWN PROFILES AS WELL AS SUBS
 		const { errors, isValid } = validatePostInput(req.body);
 		if (!isValid) {
 			return res.status(400).json(errors);
