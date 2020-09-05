@@ -7,6 +7,7 @@ import { PlaceHolder } from './components/placeholder';
 import { SubRedditShow } from './components/subReddits/subRedditShow';
 import { Header } from './components/header/header';
 import { SubRedditIndex } from './components/subReddits/subRedditIndex';
+import { SubRedditForm } from './components/subReddits/subRedditForm';
 import { PostIndex } from './components/posts/postIndex';
 import { SideBar } from './components/sideBar';
 import { PostForm } from './components/posts/postForm';
@@ -41,6 +42,11 @@ function App() {
 					<AuthRoute exact path="/signup" component={SessionForm} />
 					<AuthRoute exact path="/login" component={SessionForm} />
 					<ProtectedRoute exact path="/posts/new" component={PostForm} />
+					<ProtectedRoute
+						exact
+						path="/subReddits/new"
+						component={SubRedditForm}
+					/>
 					<ProtectedRoute exact path="/home" component={PlaceHolder} />
 					<ProtectedRoute
 						exact
