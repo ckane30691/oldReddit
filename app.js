@@ -20,9 +20,8 @@ mongoose
 	.then(() => console.log('Connected to MongoDB succesfully'))
 	.catch((err) => console.log(err));
 
-// subReddits.use('/:subRedditId/posts', posts);
-app.use('api/posts', posts);
 app.use('/api/users', users);
 app.use('/api/subReddits', subReddits);
+app.use('/api/posts', posts);
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));

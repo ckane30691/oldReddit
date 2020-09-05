@@ -4,9 +4,19 @@ const PostSub = require('../../models/PostSub');
 const passport = require('passport');
 const validatePostInput = require('../../validation/post');
 
-const router = express.Router(/*{ mergeParams: true }*/);
+const router = express.Router();
 
 module.exports = router;
+
+router.get('/', async (req, res) => {
+	try {
+		let posts = await Post.find();
+		// if (!posts) return res.status(404).json({ noPostsFound: 'No posts found' });
+		return res.json(posts);
+	} catch (errors) {
+		res.status(400).json(errors);
+	}
+});
 
 router.get('/:id', async (req, res) => {
 	try {

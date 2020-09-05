@@ -23,12 +23,12 @@ export const SessionForm = (props) => {
 	if (session.id) return <div></div>;
 
 	let text = formType === 'login' ? 'Log In' : 'Sign Up';
-	let passage =
-		formType === 'login' ? (
-			<p>Just enter your email & password & we'll get you right in</p>
-		) : (
-			<p>Fill out the fields below to sign up</p>
-		);
+	// let passage =
+	// 	formType === 'login' ? (
+	// 		<p>Just enter your email & password & we'll get you right in</p>
+	// 	) : (
+	// 		<p>Fill out the fields below to sign up</p>
+	// 	);
 
 	const update = (field) => {
 		return (e) => {
@@ -112,7 +112,6 @@ export const SessionForm = (props) => {
 
 	return (
 		<form onSubmit={handleSubmit} className={`session-form-box`}>
-			{passage}
 			<div className="errors">{renderErrors()}</div>
 			<div className="session-form">
 				<br />

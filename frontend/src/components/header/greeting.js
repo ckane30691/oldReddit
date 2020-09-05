@@ -26,7 +26,6 @@ const personalGreeting = (currentUser, dispatch) => {
 
 const Greeting = () => {
 	let currentUser = useSelector((state) => state.session);
-	debugger;
 	let dispatch = useDispatch();
 	return currentUser.id
 		? personalGreeting(currentUser, dispatch)
