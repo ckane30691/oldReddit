@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchSubReddits } from '../../store/slices/entities/subRedditSlice';
 import { SubRedditIndexItem } from './subRedditIndexItem';
+require('./subRedditIndex.css');
 
 export const SubRedditIndex = (props) => {
 	const [hooksReady, setHooksReady] = useState(false);
@@ -21,12 +22,17 @@ export const SubRedditIndex = (props) => {
 
 	const renderSubReddits = () => {
 		return (
-			<ul>
+			<ul className="sub-reddit-container">
 				{subReddits.map((subReddit, idx) => (
 					<SubRedditIndexItem key={`sub${idx}`} subReddit={subReddit} />
 				))}
 			</ul>
 		);
 	};
-	return renderSubReddits();
+	return (
+		<div>
+			{/* TODO: ADD MY SUBREDDITS DROPDOWN */}
+			{renderSubReddits()}
+		</div>
+	);
 };

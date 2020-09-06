@@ -13,10 +13,11 @@ export const SubRedditIndexItem = ({ subReddit }) => {
 	return (
 		<li>
 			<h1>
-				<Link to={`/subReddits/${subReddit._id}`}>{subReddit.title}</Link>
-				<button onClick={handleDelete}>Delete</button>
+				<Link to={`/subReddits/${subReddit._id}`}>
+					{subReddit.title.toUpperCase()}
+				</Link>{' '}
+				-
 			</h1>
-			<h2>{subReddit.desc}</h2>
 		</li>
 	);
 };

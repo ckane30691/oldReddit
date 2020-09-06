@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchPosts } from '../../store/slices/entities/postSlice';
 import { PostIndexItem } from './postIndexItem';
+require('./postIndex.css');
 
 export const PostIndex = (props) => {
 	const [hooksReady, setHooksReady] = useState(false);
@@ -23,7 +24,7 @@ export const PostIndex = (props) => {
 
 	const renderPosts = () => {
 		return (
-			<ul>
+			<ul className="post-index">
 				{posts.map((post, idx) => (
 					<PostIndexItem key={`post${idx}`} post={post} />
 				))}
