@@ -47,7 +47,7 @@ export const SubRedditForm = (props) => {
 		};
 		res = await dispatch(createSubReddit(subReddit));
 		if ((res.type = 'receiveSubReddit/fulfilled')) {
-			history.push('/home');
+			history.push('/');
 		}
 	};
 
