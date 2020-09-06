@@ -4,4 +4,7 @@
 	font-size: 0.7rem;
 	font-weight: 400;
 	justify-content: space-around;
+	border-bottom-color: rgb(128, 128, 128);
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
 }
