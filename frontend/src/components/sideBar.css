@@ -4,7 +4,7 @@
 	width: 20%;
 	position: absolute;
 	right: 20px;
-	top: 160px;
+	top: 170px;
 	text-align: center;
 	color: rgb(60, 100, 145);
 	font-weight: bold;
@@ -28,6 +28,17 @@
 	height: 150px;
 	background-color: rgb(31, 42, 55);
 	font-size: 0.8rem;
+	position: relative;
+}
+
+.premium-container:before {
+	content: '';
+	position: absolute;
+	top: 3px;
+	bottom: 3px;
+	right: 3px;
+	left: 3px;
+	border: 1px solid white;
 }
 
 .prem-header {
