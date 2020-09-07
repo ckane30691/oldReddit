@@ -1,10 +1,29 @@
 .session-form-box {
-	background-color: blue;
 	width: fit-content;
 	float: right;
+	border: 1px solid rgb(128, 128, 128);
+	height: 80px;
+	padding-top: 10px;
+	position: relative;
+}
+
+.session-form {
+	display: flex;
 }
 
 .session-input {
+	margin-left: 10px;
 	background-color: rgb(233, 240, 253);
 	border: 1px solid rgb(153, 153, 153);
+	padding: 8px;
+}
+
+.session-submit {
+	border: 1px solid black;
+	padding: 8px;
+	background-color: rgb(239, 239, 239);
+	border-radius: 5px;
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
 }

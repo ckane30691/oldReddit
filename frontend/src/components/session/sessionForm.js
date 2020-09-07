@@ -22,7 +22,7 @@ export const SessionForm = (props) => {
 
 	if (session.id) return <div></div>;
 
-	let text = formType === 'login' ? 'Log In' : 'Sign Up';
+	let text = formType === 'login' ? 'Login' : 'Sign Up';
 	// let passage =
 	// 	formType === 'login' ? (
 	// 		<p>Just enter your email & password & we'll get you right in</p>
@@ -92,8 +92,9 @@ export const SessionForm = (props) => {
 				required
 				type="text"
 				value={username}
+				className={`session-input`}
 				onChange={update('username')}
-				placeholder="Enter Username"
+				placeholder="Username"
 			/>
 		);
 
@@ -105,6 +106,7 @@ export const SessionForm = (props) => {
 				required
 				type="password"
 				value={password2}
+				className={`session-input`}
 				onChange={update('password2')}
 				placeholder="Confirm Password"
 			/>
@@ -121,7 +123,7 @@ export const SessionForm = (props) => {
 					value={email}
 					onChange={update('email')}
 					className={`session-input`}
-					placeholder="Enter Email"
+					placeholder="Email"
 				/>
 				<br />
 
@@ -132,11 +134,11 @@ export const SessionForm = (props) => {
 					value={password}
 					onChange={update('password')}
 					className="session-input"
-					placeholder="Enter Password"
+					placeholder="Password"
 				/>
 				<br />
 				{password2Input}
-				<input className="signup-submit" type="submit" value={text} />
+				<input className="session-submit" type="submit" value={text} />
 			</div>
 		</form>
 	);
