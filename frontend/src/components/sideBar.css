@@ -4,15 +4,37 @@
 	width: 20%;
 	position: absolute;
 	right: 20px;
-	top: 200px;
+	top: 160px;
 	text-align: center;
+	color: rgb(60, 100, 145);
+	font-weight: bold;
 }
 
 .side-bar-link {
 	margin-top: 10px;
 	background-color: rgb(231, 235, 243);
-	border-top-right-radius: 50px;
-	border-bottom-right-radius: 50px;
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
 	border: 1px solid rgb(200, 219, 239);
 	padding: 8px;
+}
+
+.premium-container {
+	padding-top: 20px;
+	padding-right: 10px;
+	padding-left: 10px;
+	color: white;
+	margin-top: 10px;
+	height: 150px;
+	background-color: rgb(31, 42, 55);
+	font-size: 0.8rem;
+}
+
+.prem-header {
+	font-size: 1.5rem;
+	margin-bottom: 10px;
+}
+
+.prem-header > span {
+	color: rgb(237, 84, 40);
 }
