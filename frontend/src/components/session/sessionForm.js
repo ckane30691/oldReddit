@@ -120,7 +120,7 @@ export const SessionForm = (props) => {
 					type="text"
 					value={email}
 					onChange={update('email')}
-					className={`session-${formType}-input`}
+					className={`session-input`}
 					placeholder="Enter Email"
 				/>
 				<br />
@@ -131,7 +131,7 @@ export const SessionForm = (props) => {
 					type="password"
 					value={password}
 					onChange={update('password')}
-					className="password-input"
+					className="session-input"
 					placeholder="Enter Password"
 				/>
 				<br />
