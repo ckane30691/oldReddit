@@ -31,8 +31,6 @@ function App() {
 					<Header />
 				</header>
 
-				<SideBar />
-
 				<Switch>
 					<Route
 						exact
@@ -54,6 +52,7 @@ function App() {
 						component={SubRedditShow}
 					/>
 				</Switch>
+				<SideBar />
 			</BrowserRouter>
 		</div>
 	);

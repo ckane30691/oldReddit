@@ -1,0 +1,18 @@
+.side-bar-container {
+	display: flex;
+	flex-direction: column;
+	width: 20%;
+	position: absolute;
+	right: 20px;
+	top: 200px;
+	text-align: center;
+}
+
+.side-bar-link {
+	margin-top: 10px;
+	background-color: rgb(231, 235, 243);
+	border-top-right-radius: 50px;
+	border-bottom-right-radius: 50px;
+	border: 1px solid rgb(200, 219, 239);
+	padding: 8px;
+}
