@@ -2,6 +2,8 @@
 	display: flex;
 	padding: 10px;
 	position: relative;
+	border-bottom: 1px solid rgb(106, 153, 203);
+	height: 30px;
 }
 
 .header-link {
