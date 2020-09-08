@@ -1,5 +1,28 @@
 .header-group {
 	position: absolute;
-	right: 25px;
+	right: 0px;
 	width: fit-content;
+	background-color: rgb(240, 247, 254);
+	padding: 8px;
+	padding-right: 25px;
+	border-top-left-radius: 10px;
+	display: flex;
+	font-size: 0.8rem;
+	color: rgb(132, 132, 132);
+}
+
+.header-button {
+	margin-left: 5px;
+	color: rgb(60, 100, 145);
+}
+
+.header-group > a {
+	color: rgb(60, 100, 145);
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+.demo-button {
+	color: rgb(60, 100, 145);
+	margin-left: 3px;
 }

@@ -1,11 +1,13 @@
 .session-form-box {
-	width: fit-content;
+	width: 20%;
 	float: right;
 	border: 1px solid rgb(128, 128, 128);
-	height: 100px;
+	height: 80px;
 	padding-top: 10px;
 	position: relative;
 	margin-top: 5px;
+	margin-right: 20px;
+	font-size: 0.8rem;
 }
 
 .session-form {
@@ -13,10 +15,11 @@
 }
 
 .session-input {
-	margin-left: 10px;
+	margin-left: 15px;
 	background-color: rgb(233, 240, 253);
 	border: 1px solid rgb(153, 153, 153);
-	padding: 8px;
+	padding: 6px;
+	width: 38%;
 }
 
 .session-submit {
