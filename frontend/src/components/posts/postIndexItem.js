@@ -14,9 +14,8 @@ export const PostIndexItem = ({ post }) => {
 		<li>
 			<h1>
 				<Link to={`/posts/${post._id}`}>{post.title}</Link>
-				<button onClick={handleDelete}>Delete</button>
+				{/* <button onClick={handleDelete}>Delete</button> */}
 			</h1>
-			<h2>{post.body}</h2>
 		</li>
 	);
 };

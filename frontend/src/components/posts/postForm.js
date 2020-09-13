@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createPost } from '../../store/slices/entities/postSlice';
 import { useHistory } from 'react-router-dom';
+import { SubRedditDropDown } from '../subReddits/subRedditDropdown';
 
 export const PostForm = (props) => {
 	// TODO: ADD EDIT FUNCTIONALITY TO FORM
@@ -13,6 +14,8 @@ export const PostForm = (props) => {
 	const [title, setTitle] = useState('');
 	const [url, setUrl] = useState('');
 	const [body, setBody] = useState('');
+	const [subRedditId, setSubRedditId] = useState('');
+	// TODO: Write <SubredditDropdown />
 
 	const update = (field) => {
 		return (e) => {
@@ -50,7 +53,9 @@ export const PostForm = (props) => {
 			title,
 			body,
 			url,
+			subId: subRedditId,
 		};
+		debugger;
 		res = await dispatch(createPost(post));
 		if (res.type === 'receivePost/fulfilled') {
 			history.push(`/post/${res.payload._id}`);
@@ -60,6 +65,7 @@ export const PostForm = (props) => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className="errors">{renderErrors()}</div>
+			<SubRedditDropDown setSubRedditId={setSubRedditId} />
 			<input
 				required
 				type="text"
