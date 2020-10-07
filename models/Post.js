@@ -18,6 +18,10 @@ const PostSchema = new Schema(
 		body: {
 			type: String,
 		},
+		currentVote: {
+			type: Number,
+			default: 0,
+		},
 	},
 	{ timestamps: true }
 );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchPosts } from '../../store/slices/entities/postSlice';
 import { PostIndexItem } from './postIndexItem';
+import { VoteButton } from '../votes/voteButton';
 require('./postIndex.css');
 
 export const PostIndex = (props) => {
@@ -26,7 +27,10 @@ export const PostIndex = (props) => {
 		return (
 			<ul className="post-index">
 				{posts.map((post, idx) => (
-					<PostIndexItem key={`post${idx}`} post={post} />
+					<div className="post-container" key={`post${idx}`}>
+						<VoteButton />
+						<PostIndexItem post={post} />
+					</div>
 				))}
 			</ul>
 		);

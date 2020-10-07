@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createVote } from './votes';
 import axios from 'axios';
 
 export const fetchPosts = createAsyncThunk(
@@ -87,6 +88,9 @@ const postSlice = createSlice({
 		[deletePost.fulfilled]: (state, action) => {
 			state[action.payload._id] = action.payload;
 			return state;
+		},
+		[createVote.fulfilled]: (state, action) => {
+			// state[action.payload.postId]
 		},
 	},
 });

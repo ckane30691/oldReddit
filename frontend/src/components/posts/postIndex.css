@@ -2,3 +2,7 @@
 	color: blue;
 	font-weight: 500;
 }
+
+.post-container {
+	display: flex;
+}

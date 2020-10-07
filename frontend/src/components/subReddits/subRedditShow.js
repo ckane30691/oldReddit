@@ -11,14 +11,14 @@ export const SubRedditShow = (props) => {
 
 	useEffect(() => {
 		let mounted = true;
-		const fetchSub = async () => {
+		const fetchSubWithPosts = async () => {
 			let res = await dispatch(fetchSubReddit(subRedditId));
 			if (mounted && res.type === 'receiveSubReddit/fulfilled') {
 				setSubReddit(res.payload);
 				setHooksReady(true);
 			}
 		};
-		fetchSub();
+		fetchSubWithPosts();
 		// cleanup function
 		return () => (mounted = false);
 	}, [subReddit, dispatch, subRedditId]);
