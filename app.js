@@ -5,6 +5,7 @@ const db = require('./config/keys').mongoURI;
 const users = require('./routes/api/users');
 const subReddits = require('./routes/api/subReddits.js');
 const posts = require('./routes/api/posts.js');
+const votes = require('./routes/api/votes');
 const passport = require('passport');
 
 const port = process.env.PORT || 5000;
@@ -23,5 +24,6 @@ mongoose
 app.use('/api/users', users);
 app.use('/api/subReddits', subReddits);
 app.use('/api/posts', posts);
+app.use('/api/votes', votes);
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));

@@ -4,6 +4,7 @@ import axios from 'axios';
 export const createVote = createAsyncThunk(
 	'receiveVote',
 	async (vote, { rejectWithValue }) => {
+		console.log(vote);
 		try {
 			let res = await axios.post('/api/votes', vote);
 			return res.data;

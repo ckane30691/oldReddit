@@ -7,10 +7,14 @@ export const VoteButton = (props) => {
 
 	const handleVote = (e) => {
 		e.preventDefault();
+		console.log(props);
+		let vote = { postId: props.postId };
 		if (e.target.innerText === '▲') {
-			dispatch(createVote(1));
+			vote.value = 1;
+			dispatch(createVote(vote));
 		} else {
-			dispatch(createVote(-1));
+			vote.value = -1;
+			dispatch(createVote(vote));
 		}
 	};
 	return (

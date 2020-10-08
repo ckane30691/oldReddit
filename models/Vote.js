@@ -16,7 +16,7 @@ const VoteSchema = new Schema({
 		ref: 'comments',
 	},
 	postId: {
-		type: Schema.Types.postId,
+		type: Schema.Types.ObjectId,
 		ref: 'posts',
 	},
 });
