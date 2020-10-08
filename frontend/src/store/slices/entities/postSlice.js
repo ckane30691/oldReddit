@@ -90,7 +90,8 @@ const postSlice = createSlice({
 			return state;
 		},
 		[createVote.fulfilled]: (state, action) => {
-			// state[action.payload.postId]
+			console.log('vote recorded');
+			return state;
 		},
 	},
 });
