@@ -18,10 +18,16 @@ const PostSchema = new Schema(
 		body: {
 			type: String,
 		},
-		currentVote: {
+		voteCount: {
 			type: Number,
 			default: 0,
 		},
+		votes: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'votes',
+			},
+		],
 	},
 	{ timestamps: true }
 );

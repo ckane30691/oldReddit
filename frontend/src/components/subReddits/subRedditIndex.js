@@ -16,7 +16,9 @@ export const SubRedditIndex = (props) => {
 				setHooksReady(true);
 			}
 		};
-		fetchSubs();
+		if (!subReddits.length) {
+			fetchSubs();
+		}
 	}, [dispatch, subReddits]);
 	if (!hooksReady) return <div></div>;
 

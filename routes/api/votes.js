@@ -20,20 +20,50 @@ router.post(
 
 		if (req.body.postId) {
 			//TODO: Move this code into helper fn called handleVoteOnPost
-			const post = await Post.findById(req.body.postId);
-			if (post.currentVote != req.body.value) {
-				post.currentVote += req.body.value;
-			} else {
-				post.currentVote -= req.body.vote;
-			}
-			const newVote = new Vote({
-				userId: req.user.id,
-				value: req.body.value,
-				postId: req.body.postId,
-			});
+			const [post, votes] = await Promise.all([
+				Post.findById(req.body.postId),
+				Vote.find({ postId: req.body.postId }),
+			]);
 
-			await newVote.save();
-			res.json(newVote);
+			let hasVoted;
+
+			let voteToSave;
+
+			for (let i = 0; i < votes.length; i++) {
+				let vote = votes[i];
+				if (vote.userId == req.user.id) {
+					hasVoted = true;
+					if (vote.value == req.body.value) {
+						vote.value -= req.body.value;
+						post.voteCount -= req.body.value;
+					} else {
+						if (vote.value != 0) {
+							if (req.body.value == -1) {
+								post.voteCount += req.body.value - 1;
+							} else {
+								post.voteCount += req.body.value + 1;
+							}
+						} else {
+							post.voteCount += req.body.value;
+						}
+						vote.value = req.body.value;
+					}
+					voteToSave = vote;
+				}
+			}
+
+			if (!hasVoted) {
+				voteToSave = new Vote({
+					userId: req.user.id,
+					value: req.body.value,
+					postId: req.body.postId,
+				});
+				post.votes.push(voteToSave.id);
+				post.voteCount += req.body.value;
+			}
+
+			await Promise.all([voteToSave.save(), post.save()]);
+			res.json(post);
 		} else {
 			// add code for handling comment votes here
 		}

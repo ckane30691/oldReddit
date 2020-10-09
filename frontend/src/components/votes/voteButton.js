@@ -7,7 +7,6 @@ export const VoteButton = (props) => {
 
 	const handleVote = (e) => {
 		e.preventDefault();
-		console.log(props);
 		let vote = { postId: props.postId };
 		if (e.target.innerText === '▲') {
 			vote.value = 1;
@@ -20,6 +19,7 @@ export const VoteButton = (props) => {
 	return (
 		<div onClick={handleVote}>
 			<button>▲</button>
+			{props.voteCount}
 			<button>▼</button>
 		</div>
 	);

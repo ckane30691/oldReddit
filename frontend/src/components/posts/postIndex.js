@@ -28,7 +28,7 @@ export const PostIndex = (props) => {
 			<ul className="post-index">
 				{posts.map((post, idx) => (
 					<div className="post-container" key={`post${idx}`}>
-						<VoteButton postId={post._id} />
+						<VoteButton postId={post._id} voteCount={post.voteCount} />
 						<PostIndexItem post={post} />
 					</div>
 				))}
