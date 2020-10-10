@@ -20,10 +20,16 @@ const CommentSchema = new Schema({
 		type: String,
 		required: [true, 'A body is required'],
 	},
-	currentVote: {
+	voteCount: {
 		type: Number,
 		default: 0,
 	},
+	votes: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'votes',
+		},
+	],
 });
 
 module.exports = Comment = mongoose.model('comments', CommentSchema);

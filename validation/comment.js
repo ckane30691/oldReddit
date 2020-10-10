@@ -7,8 +7,10 @@ module.exports = function validateCommentInput(data) {
 	data.postId = !isEmpty(data.postId) ? data.postId : '';
 	data.body = !isEmpty(data.body) ? data.body : '';
 
-	if (Validator.isEmpty(data.title)) {
+	if (Validator.isEmpty(data.postId)) {
 		errors.postId = 'A post ID is required';
+	}
+	if (Validator.isEmpty(data.body)) {
 		errors.body = 'A body is required';
 	}
 

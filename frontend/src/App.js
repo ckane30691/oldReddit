@@ -11,6 +11,7 @@ import { SubRedditForm } from './components/subReddits/subRedditForm';
 import { PostIndex } from './components/posts/postIndex';
 import { SideBar } from './components/sideBar';
 import { PostForm } from './components/posts/postForm';
+import { PostShow } from './components/posts/postShow';
 
 const composeComponents = (...components) => {
 	return () => (
@@ -37,20 +38,21 @@ function App() {
 						path="/"
 						component={composeComponents(SessionForm, PostIndex)}
 					/>
-					<AuthRoute exact path="/signup" component={SessionForm} />
 					<AuthRoute exact path="/login" component={SessionForm} />
+					<AuthRoute exact path="/signup" component={SessionForm} />
 					<ProtectedRoute exact path="/posts/new" component={PostForm} />
+					<ProtectedRoute exact path="/posts/:id" component={PostShow} />
 					<ProtectedRoute
 						exact
 						path="/subReddits/new"
 						component={SubRedditForm}
 					/>
-					<ProtectedRoute exact path="/home" component={PlaceHolder} />
 					<ProtectedRoute
 						exact
 						path="/subReddits/:id"
 						component={SubRedditShow}
 					/>
+					<ProtectedRoute exact path="/home" component={PlaceHolder} />
 				</Switch>
 				<SideBar />
 			</BrowserRouter>

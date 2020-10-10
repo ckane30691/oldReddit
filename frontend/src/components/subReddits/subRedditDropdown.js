@@ -6,7 +6,6 @@ export const SubRedditDropDown = (props) => {
 	subReddits = Object.values(subReddits);
 	const update = (e) => {
 		const val = e.currentTarget.value;
-		debugger;
 		props.setSubRedditId(val);
 	};
 

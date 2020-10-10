@@ -17,59 +17,75 @@ router.post(
 		// if (!isValid) {
 		// 	return res.status(400).json(errors);
 		// }
-
-		if (req.body.postId) {
-			//TODO: Move this code into helper fn called handleVoteOnPost
-			const [post, votes] = await Promise.all([
-				Post.findById(req.body.postId),
-				Vote.find({ postId: req.body.postId }),
-			]);
-
-			let hasVoted;
-
-			let voteToSave;
-
-			for (let i = 0; i < votes.length; i++) {
-				let vote = votes[i];
-				if (vote.userId == req.user.id) {
-					hasVoted = true;
-					if (vote.value == req.body.value) {
-						vote.value -= req.body.value;
-						post.voteCount -= req.body.value;
-					} else {
-						if (vote.value != 0) {
-							if (req.body.value == -1) {
-								post.voteCount += req.body.value - 1;
-							} else {
-								post.voteCount += req.body.value + 1;
-							}
-						} else {
-							post.voteCount += req.body.value;
-						}
-						vote.value = req.body.value;
-					}
-					voteToSave = vote;
-				}
-			}
-
-			if (!hasVoted) {
-				voteToSave = new Vote({
-					userId: req.user.id,
-					value: req.body.value,
-					postId: req.body.postId,
-				});
-				post.votes.push(voteToSave.id);
-				post.voteCount += req.body.value;
-			}
-
-			await Promise.all([voteToSave.save(), post.save()]);
-			res.json(post);
-		} else {
-			// add code for handling comment votes here
-		}
 		try {
+			if (req.body.postId) {
+				let post = await handleVoteOnPost(req);
+				debugger;
+				res.json(post);
+			} else {
+				let comment = await handleVoteOnComment(req);
+				debugger;
+				res.json(comment);
+			}
 		} catch (errors) {
 			res.status(400).json(errors);
 		}
 	}
 );
+
+const handleVoteOnPost = async (req) => {
+	const [post, votes] = await Promise.all([
+		Post.findById(req.body.postId),
+		Vote.find({ postId: req.body.postId }),
+	]);
+	return handleVote(req, post, votes);
+};
+
+const handleVoteOnComment = async (req) => {
+	const [comment, votes] = await Promise.all([
+		Comment.findById(req.body.commentId),
+		Vote.find({ commentId: req.body.commentId }),
+	]);
+	return handleVote(req, comment, votes);
+};
+
+const handleVote = async (req, document, votes) => {
+	let hasVoted;
+	let voteToSave;
+
+	for (let i = 0; i < votes.length; i++) {
+		let vote = votes[i];
+		if (vote.userId == req.user.id) {
+			hasVoted = true;
+			if (vote.value == req.body.value) {
+				vote.value -= req.body.value;
+				document.voteCount -= req.body.value;
+			} else {
+				if (vote.value != 0) {
+					if (req.body.value == -1) {
+						document.voteCount += req.body.value - 1;
+					} else {
+						document.voteCount += req.body.value + 1;
+					}
+				} else {
+					document.voteCount += req.body.value;
+				}
+				vote.value = req.body.value;
+			}
+			voteToSave = vote;
+		}
+	}
+
+	if (!hasVoted) {
+		voteToSave = new Vote({
+			userId: req.user.id,
+			value: req.body.value,
+			postId: req.body.postId,
+		});
+		document.votes.push(voteToSave.id);
+		document.voteCount += req.body.value;
+	}
+
+	await Promise.all([voteToSave.save(), document.save()]);
+	return document;
+};

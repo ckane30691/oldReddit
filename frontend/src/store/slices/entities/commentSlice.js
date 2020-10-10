@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { fetchPost } from './postSlice';
 
 export const fetchComments = createAsyncThunk(
 	'receiveComments',
@@ -40,7 +41,12 @@ export const deleteComment = createAsyncThunk(
 const commentSlice = createSlice({
 	name: 'comments',
 	initialState: {},
-	reducers: {},
+	reducers: {
+		clearComments(state, action) {
+			state = {};
+			return state;
+		},
+	},
 	extraReducers: {
 		[fetchComments.fulfilled]: (state, action) => {
 			action.payload.forEach((comment) => {
@@ -56,7 +62,16 @@ const commentSlice = createSlice({
 			state[action.payload._id] = action.payload;
 			return state;
 		},
+		[fetchPost.fulfilled]: (state, action) => {
+			const comments = action.payload.comments;
+			comments.forEach((comment) => {
+				state[comment._id] = comment;
+			});
+			return state;
+		},
 	},
 });
+
+export const { clearComments } = commentSlice.actions;
 
 export default commentSlice.reducer;

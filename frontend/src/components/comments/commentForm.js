@@ -35,17 +35,16 @@ export const CommentForm = (props) => {
 	// };
 
 	const handleSubmit = async (e) => {
-		let res;
-		let postId = this.props.params.postId;
+		let postId = props.postId;
 		e.preventDefault();
 		let comment = {
 			postId,
 			body,
 		};
-		/*res = */ await dispatch(createComment(comment));
-		// if ((res.type = 'receiveComment/fulfilled')) {
-		// 	history.push('/home');
-		// }
+		let res = await dispatch(createComment(comment));
+		if ((res.type = 'receiveComment/fulfilled')) {
+			setBody('');
+		}
 	};
 
 	return (

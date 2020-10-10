@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const db = require('./config/keys').mongoURI;
 const users = require('./routes/api/users');
 const subReddits = require('./routes/api/subReddits.js');
+const comments = require('./routes/api/comments');
 const posts = require('./routes/api/posts.js');
 const votes = require('./routes/api/votes');
 const passport = require('passport');
@@ -23,6 +24,7 @@ mongoose
 
 app.use('/api/users', users);
 app.use('/api/subReddits', subReddits);
+app.use('/api/comments', comments);
 app.use('/api/posts', posts);
 app.use('/api/votes', votes);
 

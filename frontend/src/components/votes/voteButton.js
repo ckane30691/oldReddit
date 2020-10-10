@@ -8,7 +8,12 @@ export const VoteButton = (props) => {
 
 	const handleVote = async (e) => {
 		e.preventDefault();
-		let vote = { postId: props.postId };
+		let vote;
+		if (props.postId) {
+			vote = { postId: props.postId };
+		} else {
+			vote = { commentId: props.commentId };
+		}
 		if (e.target.innerText === '▲') {
 			vote.value = 1;
 		} else {

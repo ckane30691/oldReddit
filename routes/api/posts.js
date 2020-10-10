@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 	try {
-		let post = await Post.findById(req.params.id);
+		let post = await Post.findById(req.params.id).populate('comments');
 		res.json(post);
 	} catch (errors) {
 		res.status(404).json({ noPostFound: "That post doesn't exist" });

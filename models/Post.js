@@ -34,6 +34,12 @@ const PostSchema = new Schema(
 				ref: 'subReddits',
 			},
 		],
+		comments: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'comments',
+			},
+		],
 	},
 	{ timestamps: true }
 );

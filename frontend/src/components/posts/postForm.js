@@ -55,13 +55,11 @@ export const PostForm = (props) => {
 			url,
 			subId: subRedditId,
 		};
-		debugger;
 		res = await dispatch(createPost(post));
 		if (res.type === 'receivePost/fulfilled') {
-			history.push(`/post/${res.payload._id}`);
+			history.push(`/posts/${res.payload._id}`);
 		}
 	};
-
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className="errors">{renderErrors()}</div>

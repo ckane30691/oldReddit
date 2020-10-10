@@ -2,6 +2,7 @@ const express = require('express');
 const Comment = require('../../models/Comment');
 const passport = require('passport');
 const validateCommentInput = require('../../validation/comment');
+const Post = require('../../models/Post');
 
 const router = express.Router();
 
@@ -21,19 +22,20 @@ router.post(
 	passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
 		const { errors, isValid } = validateCommentInput(req.body);
-
 		if (!isValid) {
 			return res.status(400).json(errors);
 		}
 		try {
+			const post = await Post.findById(req.body.postId);
 			const comment = new Comment({
 				userId: req.user.id,
 				postId: req.body.postId,
 				body: req.body.body,
 				parentCommentId: req.body.parentCommentId,
 			});
+			post.comments.push(comment.id);
 
-			await comment.save();
+			await Promise.all([comment.save(), post.save()]);
 			res.json(comment);
 		} catch (errors) {
 			res.status(400).json(errors);
