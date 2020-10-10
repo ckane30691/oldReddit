@@ -10,7 +10,7 @@ module.exports = router;
 
 router.get('/', async (req, res) => {
 	try {
-		let posts = await Post.find().populate('votes');
+		let posts = await Post.find().sort({ voteCount: -1 });
 		// if (!posts) return res.status(404).json({ noPostsFound: 'No posts found' });
 		return res.json(posts);
 	} catch (errors) {
