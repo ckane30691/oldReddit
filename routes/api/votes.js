@@ -20,11 +20,9 @@ router.post(
 		try {
 			if (req.body.postId) {
 				let post = await handleVoteOnPost(req);
-				debugger;
 				res.json(post);
 			} else {
 				let comment = await handleVoteOnComment(req);
-				debugger;
 				res.json(comment);
 			}
 		} catch (errors) {
@@ -77,11 +75,19 @@ const handleVote = async (req, document, votes) => {
 	}
 
 	if (!hasVoted) {
-		voteToSave = new Vote({
-			userId: req.user.id,
-			value: req.body.value,
-			postId: req.body.postId,
-		});
+		if (req.body.postId) {
+			voteToSave = new Vote({
+				userId: req.user.id,
+				value: req.body.value,
+				postId: req.body.postId,
+			});
+		} else {
+			voteToSave = new Vote({
+				userId: req.user.id,
+				value: req.body.value,
+				commentId: req.body.commentId,
+			});
+		}
 		document.votes.push(voteToSave.id);
 		document.voteCount += req.body.value;
 	}

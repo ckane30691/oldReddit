@@ -54,7 +54,7 @@ export const PostShow = (props) => {
 	if (!hooksReady) return <div></div>;
 	return (
 		<div>
-			<VoteButton commentId={post._id} voteCount={post.voteCount} />
+			<VoteButton postId={post._id} voteCount={post.voteCount} />
 			<h1>{post.title}</h1>
 			<h2>{post.body}</h2>
 			<CommentForm postId={post._id} />
