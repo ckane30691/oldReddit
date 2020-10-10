@@ -28,6 +28,12 @@ const PostSchema = new Schema(
 				ref: 'votes',
 			},
 		],
+		subReddits: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'subReddits',
+			},
+		],
 	},
 	{ timestamps: true }
 );

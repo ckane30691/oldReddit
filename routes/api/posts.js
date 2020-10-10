@@ -1,6 +1,7 @@
 const express = require('express');
 const Post = require('../../models/Post');
 const PostSub = require('../../models/PostSub');
+const SubReddit = require('../../models/SubReddit');
 const passport = require('passport');
 const validatePostInput = require('../../validation/post');
 
@@ -37,19 +38,18 @@ router.post(
 			return res.status(400).json(errors);
 		}
 		try {
-			// How can I make these entries ATOMIC?
+			let sub = await SubReddit.findById(req.body.subId);
+
 			const newPost = new Post({
 				userId: req.user.id,
 				title: req.body.title,
 				url: req.body.url,
 				body: req.body.body,
 			});
-			const newPostSub = new PostSub({
-				postId: newPost._id,
-				subId: req.body.subId,
-			});
-			await newPost.save();
-			await newPostSub.save();
+
+			newPost.subReddits.push(req.body.subId);
+			sub.posts.push(newPost.id);
+			await Promise.all([newPost.save(), sub.save()]);
 			res.json(newPost);
 		} catch (errors) {
 			res.status(400).json(errors);

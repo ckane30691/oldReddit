@@ -15,6 +15,12 @@ const SubRedditSchema = new Schema({
 		type: String,
 		required: [true, 'A description is required'],
 	},
+	posts: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'posts',
+		},
+	],
 });
 
 module.exports = SubReddit = mongoose.model('subReddits', SubRedditSchema);

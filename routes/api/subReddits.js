@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 	try {
-		let subReddit = await SubReddit.findById(req.params.id);
+		let subReddit = await SubReddit.findById(req.params.id).populate('posts');
 		res.json(subReddit);
 	} catch (errors) {
 		res
