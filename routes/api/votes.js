@@ -75,18 +75,14 @@ const handleVote = async (req, document, votes) => {
 	}
 
 	if (!hasVoted) {
+		voteToSave = new Vote({
+			userId: req.user.id,
+			value: req.body.value,
+		});
 		if (req.body.postId) {
-			voteToSave = new Vote({
-				userId: req.user.id,
-				value: req.body.value,
-				postId: req.body.postId,
-			});
+			voteToSave.postId = req.body.postId;
 		} else {
-			voteToSave = new Vote({
-				userId: req.user.id,
-				value: req.body.value,
-				commentId: req.body.commentId,
-			});
+			voteToSave.commentId = req.body.commentId;
 		}
 		document.votes.push(voteToSave.id);
 		document.voteCount += req.body.value;
