@@ -1,25 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createVote } from '../../store/slices/entities/votes';
 import { useDispatch } from 'react-redux';
 
 export const VoteButton = (props) => {
 	const dispatch = useDispatch();
+	const [voteCount, setVoteCount] = useState(props.voteCount);
 
-	const handleVote = (e) => {
+	const handleVote = async (e) => {
 		e.preventDefault();
 		let vote = { postId: props.postId };
 		if (e.target.innerText === '▲') {
 			vote.value = 1;
-			dispatch(createVote(vote));
 		} else {
 			vote.value = -1;
-			dispatch(createVote(vote));
 		}
+		let res = await dispatch(createVote(vote));
+		setVoteCount(res.payload.voteCount);
 	};
+
 	return (
 		<div onClick={handleVote}>
 			<button>▲</button>
-			{props.voteCount}
+			{voteCount}
 			<button>▼</button>
 		</div>
 	);
