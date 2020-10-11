@@ -42,7 +42,7 @@ const commentSlice = createSlice({
 	name: 'comments',
 	initialState: {},
 	reducers: {
-		clearComments(state, action) {
+		clearComments(state) {
 			state = {};
 			return state;
 		},
@@ -55,16 +55,45 @@ const commentSlice = createSlice({
 			return state;
 		},
 		[createComment.fulfilled]: (state, action) => {
-			state[action.payload._id] = action.payload;
-			return state;
+			if (!action.payload.parentCommentId) {
+				state[action.payload._id] = action.payload;
+				return state;
+			} else {
+				const _recursiveInsert = (arr) => {
+					for (let i = 0; i < arr.length; i++) {
+						let obj = arr[i];
+						if (obj._id == action.payload.parentCommentId) {
+							(obj.children = obj.children || []).push(action.payload);
+							return;
+						}
+						if (!obj.children) continue;
+						for (let j = 0; j < obj.children.length; j++) {
+							let child = obj.children[j];
+							if (child._id == action.payload.parentCommentId) {
+								return (child.children = child.children || []).push(
+									action.payload
+								);
+							} else {
+								if (child.children) return _recursiveInsert(child.children);
+							}
+						}
+					}
+				};
+				_recursiveInsert(Object.values(state));
+				return state;
+				// 	state[action.payload.parentCommentId].childComments.push(
+				// 		action.payload
+				// 	);
+				// 	return state;
+			}
 		},
 		[deleteComment.fulfilled]: (state, action) => {
 			state[action.payload._id] = action.payload;
 			return state;
 		},
 		[fetchPost.fulfilled]: (state, action) => {
-			const comments = action.payload.comments;
-			comments.forEach((comment) => {
+			// let comments = _formatComments(action.payload.comments);
+			action.payload.formattedComments.forEach((comment) => {
 				state[comment._id] = comment;
 			});
 			return state;

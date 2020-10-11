@@ -26,18 +26,33 @@ router.post(
 			return res.status(400).json(errors);
 		}
 		try {
-			const post = await Post.findById(req.body.postId);
 			const comment = new Comment({
 				userId: req.user.id,
 				postId: req.body.postId,
 				body: req.body.body,
-				parentCommentId: req.body.parentCommentId,
 			});
-			post.comments.push(comment.id);
 
-			await Promise.all([comment.save(), post.save()]);
+			if (req.body.parentCommentId) {
+				// const topLevelComment = await Comment.findById(
+				// 	req.body.topLevelCommentId
+				// );
+				const [parentComment, post] = await Promise.all([
+					Comment.findById(req.body.parentCommentId),
+					Post.findById(req.body.postId),
+				]);
+				parentComment.childComments.push(comment.id);
+				post.comments.push(comment.id);
+				comment.parentCommentId = req.body.parentCommentId;
+				await Promise.all([comment.save(), post.save(), parentComment.save()]);
+			} else {
+				const post = await Post.findById(req.body.postId);
+				post.comments.push(comment.id);
+				await Promise.all([comment.save(), post.save()]);
+			}
+
 			res.json(comment);
 		} catch (errors) {
+			console.log(errors);
 			res.status(400).json(errors);
 		}
 	}

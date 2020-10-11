@@ -16,6 +16,12 @@ const CommentSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'comments',
 	},
+	childComments: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'comments',
+		},
+	],
 	body: {
 		type: String,
 		required: [true, 'A body is required'],

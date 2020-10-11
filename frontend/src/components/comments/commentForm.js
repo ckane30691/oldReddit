@@ -36,10 +36,12 @@ export const CommentForm = (props) => {
 
 	const handleSubmit = async (e) => {
 		let postId = props.postId;
+		let parentCommentId = props.parentCommentId;
 		e.preventDefault();
 		let comment = {
 			postId,
 			body,
+			parentCommentId,
 		};
 		let res = await dispatch(createComment(comment));
 		if ((res.type = 'receiveComment/fulfilled')) {

@@ -2,6 +2,7 @@ const express = require('express');
 const Post = require('../../models/Post');
 const PostSub = require('../../models/PostSub');
 const SubReddit = require('../../models/SubReddit');
+const Comment = require('../../models/Comment');
 const passport = require('passport');
 const validatePostInput = require('../../validation/post');
 
@@ -19,11 +20,43 @@ router.get('/', async (req, res) => {
 	}
 });
 
+const _formatComments = (commentList) => {
+	const commentMap = {};
+
+	// move all the comments into a map of id => comment
+	commentList.forEach((comment) => (commentMap[comment._id] = comment));
+
+	// iterate over the comments again and correctly nest the children
+	commentList.forEach((comment) => {
+		if (comment.parentCommentId != null) {
+			const parent = commentMap[comment.parentCommentId];
+			(parent.children = parent.children || []).push(comment);
+		}
+	});
+	debugger;
+	// filter the list to return a list of correctly nested comments
+	return commentList.filter((comment) => {
+		return comment.parentCommentId == null;
+	});
+};
+
 router.get('/:id', async (req, res) => {
 	try {
-		let post = await Post.findById(req.params.id).populate('comments');
+		let post = await Post.findById(req.params.id).lean().populate('comments'); //.populate([
+		// 	{
+		// 		path: 'comments',
+		// 		model: 'comments',
+		// 		populate: {
+		// 			path: 'childComments',
+		// 			model: 'comments',
+		// 		},
+		// 	},
+		// ]);
+
+		post.formattedComments = _formatComments(post.comments);
 		res.json(post);
 	} catch (errors) {
+		console.log(errors);
 		res.status(404).json({ noPostFound: "That post doesn't exist" });
 	}
 });
