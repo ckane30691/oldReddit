@@ -5,7 +5,10 @@ export const fetchSubReddits = createAsyncThunk(
 	'receiveSubReddits',
 	async (filters, { rejectWithValue }) => {
 		try {
-			let res = await axios.get('/api/subReddits', filters);
+			debugger;
+			let res = await axios.get('/api/subReddits', {
+				params: { filters },
+			});
 			return res.data;
 		} catch (err) {
 			return rejectWithValue(err.response.data);

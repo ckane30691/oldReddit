@@ -10,7 +10,10 @@ module.exports = router;
 
 router.get('/', async (req, res) => {
 	try {
-		let subReddits = await SubReddit.find(); //.sort({ date: -1 });
+		let subReddits = req.query.filters
+			? await SubReddit.find()
+			: await SubReddit.find({ userId: req.query.filters }); //.sort({ date: -1 });
+
 		res.json(subReddits);
 	} catch (err) {
 		res.status(404).json({ noSubRedditsFound: 'No subReddits found' });

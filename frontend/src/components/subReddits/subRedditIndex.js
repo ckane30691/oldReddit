@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchSubReddits } from '../../store/slices/entities/subRedditSlice';
 import { SubRedditIndexItem } from './subRedditIndexItem';
 require('./subRedditIndex.css');
@@ -7,10 +7,11 @@ require('./subRedditIndex.css');
 export const SubRedditIndex = (props) => {
 	const [hooksReady, setHooksReady] = useState(false);
 	const [subReddits, setSubReddits] = useState([]);
+	const user = useSelector((state) => state.session);
 	const dispatch = useDispatch();
 	useEffect(() => {
 		const fetchSubs = async () => {
-			let res = await dispatch(fetchSubReddits());
+			let res = await dispatch(fetchSubReddits(user.id));
 			if (res.type === 'receiveSubReddits/fulfilled') {
 				setSubReddits(Object.values(res.payload));
 				setHooksReady(true);

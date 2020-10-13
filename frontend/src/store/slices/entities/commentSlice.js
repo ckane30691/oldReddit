@@ -92,10 +92,10 @@ const commentSlice = createSlice({
 			return state;
 		},
 		[fetchPost.fulfilled]: (state, action) => {
-			// let comments = _formatComments(action.payload.comments);
-			action.payload.formattedComments.forEach((comment) => {
-				state[comment._id] = comment;
-			});
+			action.payload.formattedComments &&
+				action.payload.formattedComments.forEach((comment) => {
+					state[comment._id] = comment;
+				});
 			return state;
 		},
 	},
