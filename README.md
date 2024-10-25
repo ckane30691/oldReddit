@@ -1,7 +1,3 @@
-Here's an updated and refined version of your README based on the MongoDB strategy you're incorporating:
-
----
-
 # MERN Stack Reddit-Style Application
 
 A full-stack web application built with the MERN stack (MongoDB, Express, React, and Node.js) that mimics key features of Reddit. This project focuses on efficient data fetching, scalability, performance optimizations, and up-to-date security practices.
