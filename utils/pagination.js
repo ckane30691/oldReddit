@@ -1,6 +1,9 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 const mongoose = require('mongoose');
+
+// TODO: BREAK THIS UP INTO MULTIPLE FILES
+
 // Pagination Helpers
 const easyParse = (item) => {
 	return typeof item === 'string' ? JSON.parse(item) : item;
@@ -313,6 +316,19 @@ const generateNextPageToken = (items, limit, view) => {
 	return JSON.stringify(tokenData);
 };
 
+const calculateRankingScore = (item) => {
+	const G = 1.8; // The decay factor (adjust as needed)
+
+	// Get the number of hours since the post was created
+	const now = new Date();
+	const postAgeInMilliseconds = now - item.createdAt;
+	const postAgeInHours = postAgeInMilliseconds / (1000 * 60 * 60); // Convert ms to hours
+	// Calculate the rankingScore using the netUpvotes
+	const rankingScore = item.netUpvotes / Math.pow(postAgeInHours + 2, G);
+
+	item.rankingScore = rankingScore;
+};
+
 module.exports = {
 	easyParse,
 	parseFilters,
@@ -320,5 +336,6 @@ module.exports = {
 	structureCommentsByParentPath,
 	buildCommentQueryAndSort,
 	buildPostsQuery,
+	calculateRankingScore,
 	generateNextPageToken,
 };

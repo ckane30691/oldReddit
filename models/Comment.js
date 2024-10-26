@@ -1,25 +1,26 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const dynamoose = require('dynamoose');
 
-const CommentSchema = new Schema(
+const CommentSchema = new dynamoose.Schema(
 	{
-		userId: {
-			type: Schema.Types.ObjectId,
-			ref: 'users',
-			required: true,
+		commentId: {
+			type: String,
+			hashKey: true, // Sort key (for queries by post)
 		},
 		postId: {
-			type: Schema.Types.ObjectId,
-			ref: 'posts',
+			type: String,
+			rangeKey: true, // Partition key
+		},
+		userId: {
+			type: String,
 			required: true,
 		},
 		parentCommentId: {
-			type: Schema.Types.ObjectId,
-			ref: 'comments',
+			type: String,
+			required: false, // Null for top-level comments
 		},
 		body: {
 			type: String,
-			required: [true, 'A body is required'],
+			required: true,
 		},
 		rankingScore: {
 			type: Number,
@@ -31,23 +32,42 @@ const CommentSchema = new Schema(
 		},
 		parentPath: {
 			type: String,
-			default: '/'
-		}
+			default: '/',
+		},
+		createdAt: {
+			type: Date,
+			default: () => new Date(),
+		},
+		updatedAt: {
+			type: Date,
+			default: () => new Date(),
+		},
 	},
-	{timestamps: true}
+	{
+		timestamps: true, // Automatically manage createdAt and updatedAt
+		indexes: [
+			{
+				// Hot Index
+				name: 'GSI_Hot',
+				partitionKey: 'postId',
+				sortKey: 'rankingScore',
+			},
+			{
+				// Top Index
+				name: 'GSI_Top',
+				partitionKey: 'postId',
+				sortKey: 'netUpvotes',
+			},
+			{
+				// New Index
+				name: 'GSI_New',
+				partitionKey: 'postId',
+				sortKey: 'createdAt',
+			},
+		],
+	}
 );
 
-CommentSchema.methods.calculateRankingScore = function() {
-    const G = 1.8; // The decay factor (adjust as needed)
+const Comment = dynamoose.model('Comment', CommentSchema);
 
-    // Get the number of hours since the post was created
-    const now = new Date();
-    const postAgeInMilliseconds = now - this.createdAt;
-    const postAgeInHours = postAgeInMilliseconds / (1000 * 60 * 60); // Convert ms to hours
-    // Calculate the rankingScore using the netUpvotes
-    const rankingScore = this.netUpvotes / Math.pow((postAgeInHours + 2), G);
-
-    this.rankingScore = rankingScore;
-};
-
-module.exports = Comment = mongoose.model('comments', CommentSchema);
+module.exports = Comment;
