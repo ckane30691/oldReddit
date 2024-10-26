@@ -74,14 +74,17 @@ The application currently uses a single MongoDB cluster managed by MongoDB Atlas
 
 ### Sharding Strategy
 
-To prepare for scalability, I’m leveraging MongoDB’s built-in sharding features. For the traffic and workload outlined, sharding data across multiple clusters is crucial for scaling effectively. Here's the planned approach:
+To prepare for scalability, I’m utilizing MongoDB’s **built-in sharding** within a single cluster. For the traffic and workload outlined, sharding across nodes in a single MongoDB cluster is effective for distributing high read/write loads while minimizing operational complexity. Here’s the planned approach:
 
-- **Posts & Subreddits**: Will be moved to a dedicated cluster with sharding based on `subredditId`. This ensures the high volume of post reads and writes is balanced. Might consider a compound key like subRedditId + createdAt if certain subreddits become to hot.
-- **Votes**: A separate cluster will handle vote data, partitioned by `postId`. With over 1,000 TPS for votes, this ensures fast, independent scaling.
-- **Comments**: Managed in its own cluster, sharded by `postId`, since comments heavily depend on the posts they belong to and can grow recursively.
-- **Users**: Stored in another cluster for user-related activities and data, sharded by `userId`.
+- **Posts & Subreddits**: Data will be sharded based on `subredditId` to balance the high volume of post reads and writes across nodes. To manage “hot” subreddits, a compound shard key such as `subredditId + createdAt` can help distribute load further.
+  
+- **Votes**: Vote data will be sharded by `postId`, providing efficient scaling and balancing, with 1,000+ TPS anticipated for votes. Sharding by `postId` helps manage high-throughput, read-heavy voting activity effectively.
 
-This design isolates different high-traffic components of the application, reducing potential bottlenecks and optimizing for the read-heavy nature of the app. Given MongoDB's flexibility, the solution will allow the system to scale linearly as the user base grows.
+- **Comments**: Sharded by `postId`, which ties comments to their respective posts and allows MongoDB to distribute load and support recursive growth in comment threads efficiently.
+
+- **Users**: User data will be stored and sharded by `userId`, ensuring that user-related activities and queries remain fast and distributed across the cluster.
+
+This design provides high scalability while reducing the complexity and cost of managing multiple clusters. With MongoDB's flexibility, this single-cluster solution will allow the system to scale linearly as the user base grows, supporting efficient load distribution and isolating high-traffic features within the cluster through strategic sharding.
 
 ---
 
