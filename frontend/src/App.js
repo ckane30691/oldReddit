@@ -21,10 +21,9 @@ const composeComponents = (...components) => {
 	);
 };
 
-// TODO: Create a new branch called MongoDB Serverless where this current version will live
-// TODO: Create a new branch for the dynamoDB refactor
 // TODO: Swap out MongoDB for DynamoDB
 // TODO: Deploy lambda endpoints to production
+// TODO: Artillery scalability test
 // TODO: Update resume and start applying
 // TODO: Optimize fetching very deeply nested comments
 // TODO: Limit depth of nesting on comments
