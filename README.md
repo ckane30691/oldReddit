@@ -1,10 +1,6 @@
-Here's an updated and refined version of your README based on the MongoDB strategy you're incorporating:
+# MongoDB-Lambda-React-Node (MLRN) Reddit-Style Application
 
----
-
-# MERN Stack Reddit-Style Application
-
-A full-stack web application built with the MERN stack (MongoDB, Express, React, and Node.js) that mimics key features of Reddit. This project focuses on efficient data fetching, scalability, performance optimizations, and up-to-date security practices.
+A full-stack web application inspired by Reddit’s functionality, built with MongoDB, Lambda, React, and Node (MLRN) to support efficient data fetching, scalability, and high performance in a serverless architecture.
 
 ## Table of Contents
 
@@ -31,18 +27,18 @@ A full-stack web application built with the MERN stack (MongoDB, Express, React,
 
 ## Highlights
 
+- **Serverless Microservice Architecture**: Built on AWS Lambda, each endpoint is an independently scalable function. Lambda’s pay-as-you-go model reduces costs, and each function scales automatically based on load, ensuring a reliable and cost-efficient solution.
 - **Efficient Data Fetching**: Uses `Promise.all` to handle multiple asynchronous queries for posts and comments, reducing overall load time.
-- **Post Ranking**: Implements precomputed ranking scores (`rankingScore`, `netUpvotes`) to sort content efficiently based on "Hot," "New," and "Top" filters.
+- **Precomputed Post & Comment Ranking**: Implements precomputed ranking scores (`rankingScore`, `netUpvotes`) to sort content efficiently based on "Hot," "New," and "Top" filters.
 - **Database Throughput**: The application is designed to handle heavy read/write loads and supports the following throughput:
   - **8,000+ Transactions per Second (TPS)** for reads (screen views)
   - **5,500+ TPS** for page views
   - **1,000+ TPS** for upvotes
   - **10+ TPS** for post creation
   - A MongoDB sharding strategy is employed to distribute data across clusters (Posts/Subreddits, Votes, Comments, Users), ensuring scalability and fault tolerance.
-- **Caching with Redis**: Implemented Redis for caching frequently accessed data (e.g., hot posts and comments) to further reduce load times and optimize performance.
-- **Recursive Comment Fetching**: Server-side logic recursively fetches deeply nested comment threads, enabling seamless user interactions with replies and discussions.
+- **Caching with Redis**: Implemented Redis LRU caching strategy for frequently accessed data (e.g., hot posts and comments) to further reduce load times and optimize performance.
+- **Precomputed Comment Fetching**: Server-side logic precomputes the path to child replies avoiding a recursive N+1 query allowing child replies to be fetched via regular expression
 - **Reusability**: Frontend components such as a `PaginatedList` can handle paginated views of different data (posts, comments, replies) for scalability.
-- **Version & Security Updates**: Code is regularly updated to the latest package versions, resolving security vulnerabilities.
 
 ## Usage
 
@@ -78,14 +74,17 @@ The application currently uses a single MongoDB cluster managed by MongoDB Atlas
 
 ### Sharding Strategy
 
-To prepare for scalability, I’m leveraging MongoDB’s built-in sharding features. For the traffic and workload outlined, sharding data across multiple clusters is crucial for scaling effectively. Here's the planned approach:
+To prepare for scalability, I’m utilizing MongoDB’s **built-in sharding** within a single cluster. For the traffic and workload outlined, sharding across nodes in a single MongoDB cluster is effective for distributing high read/write loads while minimizing operational complexity. Here’s the planned approach:
 
-- **Posts & Subreddits**: Will be moved to a dedicated cluster with sharding based on `subredditId`. This ensures the high volume of post reads and writes is balanced.
-- **Votes**: A separate cluster will handle vote data, partitioned by `postId`. With over 1,000 TPS for votes, this ensures fast, independent scaling.
-- **Comments**: Managed in its own cluster, sharded by `postId`, since comments heavily depend on the posts they belong to and can grow recursively.
-- **Users**: Stored in another cluster for user-related activities and data, sharded by `userId`.
+- **Posts & Subreddits**: Data will be sharded based on `subredditId` to balance the high volume of post reads and writes across nodes. To manage “hot” subreddits, a compound shard key such as `subredditId + createdAt` can help distribute load further.
+  
+- **Votes**: Vote data will be sharded by `postId`, providing efficient scaling and balancing, with 1,000+ TPS anticipated for votes. Sharding by `postId` helps manage high-throughput, read-heavy voting activity effectively.
 
-This design isolates different high-traffic components of the application, reducing potential bottlenecks and optimizing for the read-heavy nature of the app. Given MongoDB's flexibility, the solution will allow the system to scale linearly as the user base grows.
+- **Comments**: Sharded by `postId`, which ties comments to their respective posts and allows MongoDB to distribute load and support recursive growth in comment threads efficiently.
+
+- **Users**: User data will be stored and sharded by `userId`, ensuring that user-related activities and queries remain fast and distributed across the cluster.
+
+This design provides high scalability while reducing the complexity and cost of managing multiple clusters. With MongoDB's flexibility, this single-cluster solution will allow the system to scale linearly as the user base grows, supporting efficient load distribution and isolating high-traffic features within the cluster through strategic sharding.
 
 ---
 
@@ -110,20 +109,32 @@ The app supports several filtering and pagination strategies to optimize perform
   - Posts can be filtered by `Hot`, `New`, and `Top` categories.
   - Pagination relies on MongoDB query strategies (`.sort()`, `.limit()`), using precomputed scores for ranking.
 - **Comments**:
-  - Recursive server-side logic fetches nested comments, allowing deep-threaded conversations.
+  - Paths for nested comments are precomputed upon creation allowing for efficient fetching of nested comments and avoiding a recursive N+1 fetch
   - Comments are paginated, with dynamic filtering for reply counts and voting activity.
 
 ## Performance Optimizations
 
 To ensure the app performs efficiently even with high traffic, the following optimizations have been incorporated:
 
+- **Lambda-Optimized**:
+
+  - Each endpoint operates independently with on-demand scaling, minimizing cold start times.
+  - AWS Gateway facilitates seamless routing to Lambda functions.
+
+- **Caching with Redis**:
+
+  - Frequently accessed data, such as top posts and comments, is cached in Redis, improving response times on read-heavy operations.
+
+- **Optimized Querying and Data Fetching**:
+
+  - Concurrent requests use `Promise.all` for faster response times.
+  - `lean()` in Mongoose for lightweight data responses.
+  - Precomputed comment paths, ranking scores, and net upvotes
+
 - **Memoization**:
+
   - Using `useCallback` and `useMemo` to minimize unnecessary re-renders.
   - Leveraging Reselect’s `createSelector` to memoize `useSelector` calls in React.
-- **Efficient Querying**:
-
-  - `Promise.all` handles concurrent requests, improving response times when fetching multiple data sources.
-  - Mongoose’s `.lean()` is used to return lightweight, plain JavaScript objects, reducing memory overhead.
 
 - **Lazy Loading**:
   - Components are lazy-loaded with `React.lazy()` and `Suspense`, improving initial page load times and reducing bandwidth consumption.
@@ -133,7 +144,7 @@ To ensure the app performs efficiently even with high traffic, the following opt
 - **MongoDB**: Used for database management with a sharding strategy to optimize scalability across posts, comments, votes, and users.
 - **Express**: Server framework for handling API requests and routing.
 - **React**: Frontend library for building interactive user interfaces.
-- **Node.js**: Backend runtime for executing JavaScript on the server.
+- **AWS Lambda**: Serverless microservices to handle API requests, routing, and autoscaling.
 - **Redis**: Implemented as a caching layer to store frequently accessed data and reduce response times for read-heavy operations.
 - **Mongoose**: ORM for MongoDB, used for schema definitions and efficient query handling.
 - **JWT (JSON Web Tokens)**: Used for secure authentication of users.
