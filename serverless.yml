@@ -1,3 +1,5 @@
+app: oldreddit
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
 # Welcome to Serverless!
 #
 # This file is the main config file for your service.
@@ -18,20 +20,28 @@ service: oldReddit
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
-# frameworkVersion: "=X.X.X"
 
 provider:
   name: aws
   runtime: nodejs20.x
+  profile: default
+  # you can overwrite defaults here
+  #  stage: dev
+  region: us-west-1
 
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
+  # you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - arn:aws:dynamodb:${self:provider.region}:*:table/User # Update to your region and table name
+        # - arn:aws:dynamodb:${self:provider.region}:*:table/Comment # Update to your region and table name
 #        - "s3:ListBucket"
 #      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
 #    - Effect: "Allow"

@@ -68,6 +68,6 @@ const CommentSchema = new dynamoose.Schema(
 	}
 );
 
-const Comment = dynamoose.model('Comment', CommentSchema);
+const Comment = dynamoose.model('Comments', CommentSchema);
 
 module.exports = Comment;

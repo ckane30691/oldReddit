@@ -1,13 +1,14 @@
-const mongoose = require('mongoose');
+// const dynamoose = require('dynamoose');
 const authenticate = require('../../../utils/authenticate');
-const keys = require('../../../config/keys');
+// const keys = require('../../../config/keys');
 const validateCommentInput = require('../../../validation/comment');
 const redisClient = require('../../../config/redisClient');
 const { easyParse } = require('../../../utils/pagination');
-mongoose.connect(keys.mongoURI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+
+// // Connect to DynamoDB based on environment
+// dynamoose.aws.sdk.config.update({
+// 	region: process.env.AWS_REGION || 'us-west-1',
+// });
 
 const Comment = require('../../../models/Comment');
 
