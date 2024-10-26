@@ -2,13 +2,13 @@ const dynamoose = require('dynamoose');
 
 const CommentSchema = new dynamoose.Schema(
 	{
-		commentId: {
-			type: String,
-			hashKey: true, // Sort key (for queries by post)
-		},
 		postId: {
 			type: String,
-			rangeKey: true, // Partition key
+			hashKey: true, // Partition key
+		},
+		commentId: {
+			type: String,
+			rangeKey: true, // Sort key (for queries by post)
 		},
 		userId: {
 			type: String,
