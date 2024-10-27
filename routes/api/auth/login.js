@@ -1,15 +1,8 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const validateLoginInput = require('../../../validation/login');
 const keys = require('../../../config/keys');
 const User = require('../../../models/User');
-
-dynamoose.aws.sdk.config.update({
-	region: 'us-west-1',
-	accessKeyId: keys.AWS_ACCESS_KEY,
-	secretAccessKey: keys.AWS_SECRET_ACCESS_KEY,
-});
 
 exports.handler = async (event) => {
 	const body = JSON.parse(event.body);
@@ -24,7 +17,13 @@ exports.handler = async (event) => {
 
 	const email = body.email;
 	const password = body.password;
-	const user = await User.findOne({ email });
+	let user = await User.query('email')
+		.eq(email)
+		.using('GSI_Email')
+		.limit(1)
+		.exec();
+
+	user = user[0] || null;
 
 	if (!user) {
 		errors.email = 'User not found';

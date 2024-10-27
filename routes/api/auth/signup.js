@@ -1,5 +1,3 @@
-const dynamoose = require('dynamoose');
-const AWS = require('aws-sdk');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const validateRegisterInput = require('../../../validation/signup');
@@ -19,7 +17,7 @@ exports.handler = async (event) => {
 	}
 
 	let user = await User.query('email').eq(body.email).using('GSI_Email').exec();
-	console.log('USER QUERIED');
+
 	if (user.count > 0) {
 		return {
 			statusCode: 400,

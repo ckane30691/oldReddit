@@ -22,11 +22,12 @@ const composeComponents = (...components) => {
 };
 
 // TODO: Swap out MongoDB for DynamoDB
-// TODO: Deploy lambda endpoints to production
+// TODO: Deploy project to production
 // TODO: Artillery scalability test
 // TODO: Update resume and start applying
-// TODO: Optimize fetching very deeply nested comments
+// TODO: Proper Logout functionality
 // TODO: Limit depth of nesting on comments
+// TODO: Optimize fetching very deeply nested comments
 // TODO: Client side caching
 // TODO: Caching of pagetokens so you can keep your spot
 // TODO: Archiving old pages
@@ -36,7 +37,7 @@ const composeComponents = (...components) => {
 // TODO: Implement subscriptions to subreddits
 // TODO: Add filter for time on TOP
 // TODO: User Profiles including vote history
-// TODO: More styling
+// TODO: More styling, loading icon
 // TODO: DELETE unused components
 
 function App() {
