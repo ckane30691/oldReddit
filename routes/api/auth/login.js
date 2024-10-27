@@ -36,7 +36,7 @@ exports.handler = async (event) => {
 	const isMatch = await bcrypt.compare(password, user.passwordDigest);
 	if (isMatch) {
 		const payload = {
-			id: user.id,
+			id: user.userId,
 			username: user.username,
 			email: user.email,
 		};

@@ -25,7 +25,7 @@ const composeComponents = (...components) => {
 // TODO: Deploy project to production
 // TODO: Artillery scalability test
 // TODO: Update resume and start applying
-// TODO: Proper Logout functionality
+// TODO: Proper Logout functionality + Refresh Tokens
 // TODO: Limit depth of nesting on comments
 // TODO: Optimize fetching very deeply nested comments
 // TODO: Client side caching
