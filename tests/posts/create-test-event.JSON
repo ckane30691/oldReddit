@@ -1,10 +1,10 @@
 {
     "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTU3MzQzYjNlMDVlMTAyYTZmMTU3NiIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTcyOTYzODA2MCwiZXhwIjoxNzI5NjQxNjYwfQ.D7GGrRINPhFkO_TtIpmGPeXwC6xOU8J5QPFpFqvvd8w"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZTFkYmIzLTlkOTctNGZiOC05MTMwLThmZDI0MTljMWU2OSIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTcyOTk5NzY0NSwiZXhwIjoxNzMwMDAxMjQ1fQ.jAnFU6Cwx46amWrqkr85B19HFWgKooCFQuC9EdPZP9M"
     },
     "body": {
-        "subId": "670cbd38c922fbd4063eff45",
-        "title": "Brand New Post!",
-        "body": "First of its kind"
+        "subReddit": "TIL",
+        "title": "TIL How Haskell Works",
+        "body": "In less than 20 minutes!"
     }
 }

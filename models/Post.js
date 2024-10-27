@@ -1,18 +1,31 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const dynamoose = require('dynamoose');
 
-const PostSchema = new Schema(
+const PostSchema = new dynamoose.Schema(
 	{
+		postId: {
+			type: String,
+			hashKey: true, //Partition Key
+		},
 		userId: {
-			type: Schema.Types.ObjectId,
-			ref: 'users',
+			type: String,
 			required: true,
 		},
 		title: {
 			type: String,
-			required: [true, 'Title is required'],
+			required: true,
 		},
-		url: {
+		postSuffix: {
+			type: String,
+			required: true,
+		},
+		subReddit: {
+			type: String,
+			required: true,
+		},
+		redirectLink: {
+			type: String,
+		},
+		objectStorageLink: {
 			type: String,
 		},
 		body: {
@@ -30,19 +43,6 @@ const PostSchema = new Schema(
 	{ timestamps: true }
 );
 
-// Instance method to calculate the rankingScore with an incoming vote
-PostSchema.methods.calculateRankingScore = function() {
-    const G = 1.8; // The decay factor (adjust as needed)
+const Post = dynamoose.model('Posts', PostSchema);
 
-    // Get the number of hours since the post was created
-    const now = new Date();
-    const postAgeInMilliseconds = now - this.createdAt;
-    const postAgeInHours = postAgeInMilliseconds / (1000 * 60 * 60); // Convert ms to hours
-    // Calculate the rankingScore using the netUpvotes
-    const rankingScore = this.netUpvotes / Math.pow((postAgeInHours + 2), G);
-
-    this.rankingScore = rankingScore;
-};
-
-
-module.exports = Post = mongoose.model('posts', PostSchema);
+module.exports = Post;

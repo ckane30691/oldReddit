@@ -34,14 +34,6 @@ const CommentSchema = new dynamoose.Schema(
 			type: String,
 			default: '/',
 		},
-		createdAt: {
-			type: Date,
-			default: () => new Date(),
-		},
-		updatedAt: {
-			type: Date,
-			default: () => new Date(),
-		},
 	},
 	{
 		timestamps: true, // Automatically manage createdAt and updatedAt

@@ -1,14 +1,8 @@
-// const dynamoose = require('dynamoose');
 const authenticate = require('../../../utils/authenticate');
-// const keys = require('../../../config/keys');
 const validateCommentInput = require('../../../validation/comment');
 const redisClient = require('../../../config/redisClient');
 const { easyParse } = require('../../../utils/pagination');
-
-// // Connect to DynamoDB based on environment
-// dynamoose.aws.sdk.config.update({
-// 	region: process.env.AWS_REGION || 'us-west-1',
-// });
+const { v4: uuidv4 } = require('uuid');
 
 const Comment = require('../../../models/Comment');
 
@@ -49,6 +43,7 @@ exports.handler = async (event) => {
 		}
 
 		const comment = new Comment({
+			commentId: uuidv4(),
 			userId: user.id,
 			postId: body.postId,
 			body: body.body,
@@ -58,7 +53,7 @@ exports.handler = async (event) => {
 			comment.parentCommentId = body.parentCommentId;
 			comment.parentPath = `${body.parentPath}${body.parentCommentId}/`;
 		}
-		comment.save();
+		await comment.save();
 
 		const cacheKey = `comments:${body.postId}:*`; // Invalidate all related comment caches
 		const keys = await redisClient.keys(cacheKey);

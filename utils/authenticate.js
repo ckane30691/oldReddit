@@ -10,7 +10,8 @@ const authenticate = async (token) => {
 		// For artillery test we'll get rid of this extra db call and just rely on the JWT verification
 		// This reflects a broader strategy of moving toward omitting the db check but issuing shorter
 		// lived JWTs + refresh tokens
-		const user = await User.get({ userId: decoded.id, email: decoded.email });
+		const user =
+			(await User.get({ userId: decoded.id, email: decoded.email })) || null;
 
 		if (!user) return false;
 		return user;

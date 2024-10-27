@@ -1,6 +1,5 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
-const mongoose = require('mongoose');
 
 // TODO: BREAK THIS UP INTO MULTIPLE FILES
 
