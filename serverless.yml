@@ -127,13 +127,13 @@ functions:
       - http:
           path: api/comments
           method: post
-  readAllComments:
+  getAllComments:
     handler: routes/api/comments/readAll.handler
     events:
       - http:
           path: api/comments
           method: get
-  readReplies:
+  getReplies:
     handler: routes/api/comments/readReplies.handler
     events:
       - http:
