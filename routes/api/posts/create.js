@@ -34,7 +34,7 @@ exports.handler = async (event) => {
 			};
 		}
 		const postId = uuidv4();
-		const postSuffix = `${postId.slice(-6)}-${body.title}`;
+		const postSuffix = `${postId.slice(-6)}-${body.title.split(' ').join('-')}`;
 
 		const newPost = new Post({
 			postId,

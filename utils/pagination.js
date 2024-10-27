@@ -29,11 +29,9 @@ const parseFilters = (query, entityName) => {
 		return { postId, view, limit, pageToken };
 	} else {
 		// posts
-		const subRedditId = query['filters[subRedditId]'];
-		const view = query['filters[view]'] || 'Hot';
-		const limit = query['limit'] || 10;
-		const pageToken = formatPageToken(query);
-		return { subRedditId, view, limit, pageToken };
+		const { subReddit, view, limit, pageToken } = query.filters;
+
+		return { subReddit, view, limit, pageToken };
 	}
 };
 
@@ -266,53 +264,54 @@ const structureCommentsByParentPath = (topLevelComments, replies, limit) => {
 	return structuredComments;
 };
 
-const buildPostsQuery = (postIds, view, pageToken) => {
-	let postsQuery = Post.find({ _id: { $in: postIds } });
+const buildPostsQuery = async (subReddit, view, pageToken) => {
+	let postsQuery = Post.query('subReddit').eq(subReddit);
 
+	let gsi;
 	// Apply sorting based on the view
 	if (view === 'New') {
-		postsQuery = postsQuery.sort({ createdAt: -1 });
-		if (pageToken) {
-			const { createdAt } = easyParse(pageToken);
-			postsQuery = postsQuery.where('createdAt').lt(new Date(createdAt));
-		}
+		gsi = 'GSI_New';
+		postsQuery = postsQuery.using(gsi).sort('descending');
 	} else if (view === 'Top') {
-		postsQuery = postsQuery.sort({ netUpvotes: -1, createdAt: -1 });
-		if (pageToken) {
-			const { netUpvotes, createdAt } = easyParse(pageToken);
-			postsQuery = postsQuery.or([
-				{ netUpvotes: { $lt: netUpvotes } },
-				{ netUpvotes, createdAt: { $lt: new Date(createdAt) } },
-			]);
-		}
+		gsi = 'GSI_Top';
+		postsQuery = postsQuery.using(gsi).sort('descending');
 	} else {
-		postsQuery = postsQuery.sort({ rankingScore: -1, createdAt: -1 });
-		if (pageToken) {
-			const { rankingScore, createdAt } = easyParse(pageToken);
-			postsQuery = postsQuery.or([
-				{ rankingScore: { $lt: rankingScore } },
-				{ rankingScore, createdAt: { $lt: new Date(createdAt) } },
-			]);
-		}
+		// Hot
+		gsi = 'GSI_Hot';
+		postsQuery = postsQuery.using(gsi); //.sort('descending');
+	}
+
+	if (pageToken) {
+		const lastKey = easyParse(pageToken);
+		postsQuery.startAt(lastKey);
+		// const { createdAt } = easyParse(pageToken);
+		// postsQuery = postsQuery.filter('createdAt').lt(new Date(createdAt));
 	}
 
 	return postsQuery;
 };
 
+// // Helper function to generate the nextPageToken for pagination
+// const generateNextPageToken = (items, limit, view) => {
+// 	if (items.length < limit) return null;
+
+// 	const lastItem = items[items.length - 1];
+// 	const tokenData = { createdAt: lastItem.createdAt };
+
+// 	if (view === 'Top') {
+// 		tokenData.netUpvotes = lastItem.netUpvotes;
+// 	} else if (view === 'Replies' || view === 'Hot') {
+// 		tokenData.rankingScore = lastItem.rankingScore;
+// 	}
+
+// 	return JSON.stringify(tokenData);
+// };
 // Helper function to generate the nextPageToken for pagination
-const generateNextPageToken = (items, limit, view) => {
-	if (items.length < limit) return null;
-
-	const lastItem = items[items.length - 1];
-	const tokenData = { createdAt: lastItem.createdAt };
-
-	if (view === 'Top') {
-		tokenData.netUpvotes = lastItem.netUpvotes;
-	} else if (view === 'Replies' || view === 'Hot') {
-		tokenData.rankingScore = lastItem.rankingScore;
-	}
-
-	return JSON.stringify(tokenData);
+const generateNextPageToken = (collection) => {
+	const nextPageToken = collection.lastKey
+		? JSON.stringify(result.lastKey)
+		: null;
+	return nextPageToken;
 };
 
 const calculateRankingScore = (item) => {

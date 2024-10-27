@@ -20,7 +20,25 @@ const PostSchema = new dynamoose.Schema(
 		},
 		subReddit: {
 			type: String,
+			rangeKey: true, //Sort Key
 			required: true,
+			index: [
+				{
+					global: true,
+					name: 'GSI_Hot',
+					rangeKey: 'rankingScore',
+				},
+				{
+					global: true,
+					name: 'GSI_Top',
+					rangeKey: 'netUpvotes',
+				},
+				{
+					global: true,
+					name: 'GSI_New',
+					rangeKey: 'createdAt',
+				},
+			],
 		},
 		redirectLink: {
 			type: String,
@@ -40,7 +58,11 @@ const PostSchema = new dynamoose.Schema(
 			default: 0,
 		},
 	},
-	{ timestamps: true }
+	{
+		create: true,
+		update: true,
+		timestamps: true,
+	}
 );
 
 const Post = dynamoose.model('Posts', PostSchema);
