@@ -3,7 +3,6 @@ const validateCommentInput = require('../../../validation/comment');
 const redisClient = require('../../../config/redisClient');
 const { easyParse } = require('../../../utils/pagination');
 const { v4: uuidv4 } = require('uuid');
-
 const Comment = require('../../../models/Comment');
 
 (async () => {
@@ -11,7 +10,7 @@ const Comment = require('../../../models/Comment');
 })();
 
 exports.handler = async (event) => {
-	const token = easyParse(event).headers.authorization?.split(' ')[1];
+	const token = easyParse(event).headers.Authorization?.split(' ')[1];
 
 	if (!token) {
 		return {
@@ -44,7 +43,7 @@ exports.handler = async (event) => {
 
 		const comment = new Comment({
 			commentId: uuidv4(),
-			userId: user.id,
+			userId: user.userId,
 			postId: body.postId,
 			body: body.body,
 		});

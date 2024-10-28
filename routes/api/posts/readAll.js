@@ -18,7 +18,6 @@ exports.handler = async (event) => {
 			queryParams,
 			'posts'
 		);
-		console.log(queryParams);
 
 		if (!subReddit) {
 			return {
