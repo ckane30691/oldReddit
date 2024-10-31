@@ -9,17 +9,17 @@ const CommentSchema = new dynamoose.Schema(
 				{
 					global: true,
 					name: 'GSI_Hot',
-					rangeKey: 'rankingScore',
+					rangeKey: 'parenthPath_rankingScore_createdAt',
 				},
 				{
 					global: true,
 					name: 'GSI_Top',
-					rangeKey: 'netUpvotes',
+					rangeKey: 'parentPath_netUpvotes_createdAt',
 				},
 				{
 					global: true,
 					name: 'GSI_New',
-					rangeKey: 'createdAt',
+					rangeKey: 'parentPath_createdAt',
 				},
 			],
 		},
@@ -39,6 +39,10 @@ const CommentSchema = new dynamoose.Schema(
 			type: String,
 			required: true,
 		},
+		replyCount: {
+			type: Number,
+			default: 0,
+		},
 		rankingScore: {
 			type: Number,
 			default: 0,
@@ -51,29 +55,43 @@ const CommentSchema = new dynamoose.Schema(
 			type: String,
 			default: '/',
 		},
+		// Composite Attributes for GSIs
+		parentPath_rankingScore_createdAt: {
+			type: String,
+			required: true,
+		},
+		parentPath_netUpvotes_createdAt: {
+			type: String,
+			required: true,
+		},
+		parentPath_createdAt: {
+			type: String,
+			required: true,
+		},
+		// postId_parentPath: {
+		// 	type: String,
+		// 	required: true,
+		// 	index: [
+		// 		{
+		// 			global: true,
+		// 			name: 'GSI_Hot',
+		// 			rangeKey: 'rankingScore_createdAt',
+		// 		},
+		// 		{
+		// 			global: true,
+		// 			name: 'GSI_Top',
+		// 			rangeKey: 'netUpvotes_createdAt',
+		// 		},
+		// 		{
+		// 			global: true,
+		// 			name: 'GSI_New',
+		// 			rangeKey: 'createdAt',
+		// 		},
+		// 	],
+		// },
 	},
 	{
-		timestamps: true, // Automatically manage createdAt and updatedAt
-		// indexes: [
-		// 	{
-		// 		// Hot Index
-		// 		name: 'GSI_Hot',
-		// 		partitionKey: 'postId',
-		// 		sortKey: 'rankingScore',
-		// 	},
-		// 	{
-		// 		// Top Index
-		// 		name: 'GSI_Top',
-		// 		partitionKey: 'postId',
-		// 		sortKey: 'netUpvotes',
-		// 	},
-		// 	{
-		// 		// New Index
-		// 		name: 'GSI_New',
-		// 		partitionKey: 'postId',
-		// 		sortKey: 'createdAt',
-		// 	},
-		// ],
+		timestamps: true,
 	}
 );
 

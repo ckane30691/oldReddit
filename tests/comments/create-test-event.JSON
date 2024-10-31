@@ -1,9 +1,9 @@
 {
     "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZTFkYmIzLTlkOTctNGZiOC05MTMwLThmZDI0MTljMWU2OSIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTczMDA3NjA0NywiZXhwIjoxNzMwMDc5NjQ3fQ.NvxPrGfS4Jf4Yt05jTn5zfqLuAveQYqjGjBpWDaVvtM"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZTFkYmIzLTlkOTctNGZiOC05MTMwLThmZDI0MTljMWU2OSIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTczMDM1MTg1NSwiZXhwIjoxNzMwMzU1NDU1fQ.IH0hb1PMJXG270fId6tI9kqR79Ekq4OKwGKZrCIxobE"
     },
     "body": {
-        "postId": "a389435e-6db9-4338-8e15-078146f43b3f",
-        "body": "DynamoDB Comment"
+        "postId": "67100a7ae0d14165de734cbf",
+        "body": "Another DynamoDB Test Comment"
     }
 }

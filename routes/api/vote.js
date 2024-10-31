@@ -103,6 +103,7 @@ const handleVote = async (body, user, document, vote) => {
 	}
 
 	calculateRankingScore(document);
+	// Make sure that we update composite attributes for comments here
 	await Promise.all([voteToSave.save(), document.save()]);
 
 	return document;

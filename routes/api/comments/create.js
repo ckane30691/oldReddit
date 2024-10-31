@@ -1,7 +1,7 @@
 const authenticate = require('../../../utils/authenticate');
 const validateCommentInput = require('../../../validation/comment');
 const redisClient = require('../../../config/redisClient');
-const { easyParse } = require('../../../utils/pagination');
+const { easyParse, padWithZeros } = require('../../../utils/pagination');
 const { v4: uuidv4 } = require('uuid');
 const Comment = require('../../../models/Comment');
 
@@ -46,12 +46,25 @@ exports.handler = async (event) => {
 			userId: user.userId,
 			postId: body.postId,
 			body: body.body,
+			parentPath: '/',
+			createdAt: new Date().toISOString(),
 		});
 
 		if (body.parentCommentId) {
 			comment.parentCommentId = body.parentCommentId;
 			comment.parentPath = `${body.parentPath}${body.parentCommentId}/`;
 		}
+
+		// TODO: Move to helper function
+		// Pad zeros for lexicographical sorting
+		const lengthOfPad = 6;
+		const paddedRankingScore = padWithZeros(0, lengthOfPad);
+		const paddedNetUpvotesScore = padWithZeros(0, lengthOfPad);
+		// Update composite attributes for GSIs
+		comment.parentPath_createdAt = `${comment.parentPath}_${comment.createdAt}`;
+		comment.parentPath_rankingScore_createdAt = `${comment.parentPath}_${paddedRankingScore}_${comment.createdAt}`;
+		comment.parentPath_netUpvotes_createdAt = `${comment.parentPath}_${paddedNetUpvotesScore}_${comment.createdAt}`;
+
 		await comment.save();
 
 		const cacheKey = `comments:${body.postId}:*`; // Invalidate all related comment caches

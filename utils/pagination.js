@@ -8,25 +8,31 @@ const easyParse = (item) => {
 	return typeof item === 'string' ? JSON.parse(item) : item;
 };
 
-const formatPageToken = (query) => {
-	const pageToken = {};
-	let createdAt = query['pageToken[createdAt]'];
-	let rankingScore = query['pageToken[rankingScore]'];
-	let netUpvotes = query['pageToken[netUpvotes]'];
-	if (createdAt) pageToken.createdAt = createdAt;
-	if (rankingScore) pageToken.rankingScore = rankingScore;
-	if (netUpvotes) pageToken.netUpvotes = netUpvotes;
-	return Object.keys(pageToken).length ? pageToken : null;
+const padWithZeros = (number, length) => {
+	return number.toString().padStart(length, '0');
 };
+
+// const formatPageToken = (query) => {
+// 	const pageToken = {};
+// 	let createdAt = query['pageToken[createdAt]'];
+// 	let rankingScore = query['pageToken[rankingScore]'];
+// 	let netUpvotes = query['pageToken[netUpvotes]'];
+// 	if (createdAt) pageToken.createdAt = createdAt;
+// 	if (rankingScore) pageToken.rankingScore = rankingScore;
+// 	if (netUpvotes) pageToken.netUpvotes = netUpvotes;
+// 	return Object.keys(pageToken).length ? pageToken : null;
+// };
 
 // Helper function to parse query filters
 const parseFilters = (query, entityName) => {
 	if (entityName === 'comments') {
-		const postId = query['filters[postId]'];
-		const view = query['filters[view]'] || 'Hot';
-		const limit = query['limit'] || 10;
-		const pageToken = formatPageToken(query);
+		const { postId, view, limit, pageToken } = query.filters;
 		return { postId, view, limit, pageToken };
+		// const postId = query['filters[postId]'];
+		// const view = query['filters[view]'] || 'Hot';
+		// const limit = query['limit'] || 10;
+		// const pageToken = formatPageToken(query);
+		// return { postId, view, limit, pageToken };
 	} else {
 		// posts
 		const { subReddit, view, limit, pageToken } = query.filters;
@@ -151,115 +157,149 @@ const structureReplies = (replies, limit, topLevelId) => {
 	return rootReplies;
 };
 
-// Optimized by fetching nested comments via precomputed path
-const buildCommentQueryAndSort = async (postId, view, pageToken, limit) => {
-	let paginationQuery = {};
-	let sortOption;
+const fetchTopLevelCommentsAndReplies = async (
+	postId,
+	view,
+	pageToken,
+	limit
+) => {
+	console.log(postId, view, pageToken, limit);
+	let commentQuery = Comment.query('postId')
+		.eq(`${postId}`)
+		.limit(Number(limit));
 
-	if (view === 'Hot') {
-		sortOption = { rankingScore: -1, createdAt: -1 };
-		if (pageToken) {
-			const { rankingScore, createdAt } = easyParse(pageToken);
-
-			paginationQuery.$or = [
-				{ rankingScore: { $lt: parseInt(rankingScore) } },
-				{
-					rankingScore: parseInt(rankingScore),
-					createdAt: { $lt: new Date(createdAt) },
-				},
-			];
-		}
-	} else if (view === 'New') {
-		sortOption = { createdAt: -1 };
-		if (pageToken) {
-			const { createdAt } = easyParse(pageToken);
-
-			paginationQuery.createdAt = { $lt: new Date(createdAt) };
-		}
+	let gsi;
+	if (view === 'New') {
+		gsi = 'GSI_New';
+		commentQuery = commentQuery.using(gsi).sort('descending');
 	} else if (view === 'Top') {
-		sortOption = { netUpvotes: -1, createdAt: -1 };
-		if (pageToken) {
-			const { netUpvotes, createdAt } = easyParse(pageToken);
-
-			paginationQuery.$or = [
-				{ netUpvotes: { $lt: parseInt(netUpvotes) } },
-				{
-					netUpvotes: parseInt(netUpvotes),
-					createdAt: { $lt: new Date(createdAt) },
-				},
-			];
-		}
+		gsi = 'GSI_Top';
+		commentQuery = commentQuery.using(gsi).sort('descending');
+	} else {
+		// Hot
+		gsi = 'GSI_Hot';
+		commentQuery = commentQuery.using(gsi).sort('descending');
 	}
-
-	// MongoDB aggregation with $facet to handle both top-level comments and replies
-	return Comment.aggregate([
-		{
-			$facet: {
-				// Top-level comments (parentPath: '/')
-				topLevelComments: [
-					{
-						$match: {
-							postId: new mongoose.Types.ObjectId(postId),
-							parentPath: '/',
-							...paginationQuery,
-						},
-					},
-					{ $sort: sortOption },
-					{ $limit: parseInt(limit) }, // Limit for top-level comments
-				],
-				// Replies (one or two levels deep)
-				replies: [
-					{
-						$match: {
-							postId: new mongoose.Types.ObjectId(postId),
-							parentPath: { $regex: '^/[^/]+/' }, // Regex for nested replies
-						},
-					},
-					{ $sort: sortOption }, // Apply same sorting to replies
-					{ $limit: parseInt(limit * 2) }, // Arbitrary high limit for replies
-				],
-			},
-		},
-	]).exec();
+	if (pageToken) {
+		const lastKey = easyParse(pageToken);
+		commentQuery = commentQuery.startAt(lastKey);
+	}
+	console.log(commentQuery);
+	return await commentQuery.exec();
 };
 
-const structureCommentsByParentPath = (topLevelComments, replies, limit) => {
+// Optimized by fetching nested comments via precomputed path
+// const buildCommentQueryAndSort = async (postId, view, pageToken, limit) => {
+// 	let paginationQuery = {};
+// 	let sortOption;
+
+// 	if (view === 'Hot') {
+// 		sortOption = { rankingScore: -1, createdAt: -1 };
+// 		if (pageToken) {
+// 			const { rankingScore, createdAt } = easyParse(pageToken);
+
+// 			paginationQuery.$or = [
+// 				{ rankingScore: { $lt: parseInt(rankingScore) } },
+// 				{
+// 					rankingScore: parseInt(rankingScore),
+// 					createdAt: { $lt: new Date(createdAt) },
+// 				},
+// 			];
+// 		}
+// 	} else if (view === 'New') {
+// 		sortOption = { createdAt: -1 };
+// 		if (pageToken) {
+// 			const { createdAt } = easyParse(pageToken);
+
+// 			paginationQuery.createdAt = { $lt: new Date(createdAt) };
+// 		}
+// 	} else if (view === 'Top') {
+// 		sortOption = { netUpvotes: -1, createdAt: -1 };
+// 		if (pageToken) {
+// 			const { netUpvotes, createdAt } = easyParse(pageToken);
+
+// 			paginationQuery.$or = [
+// 				{ netUpvotes: { $lt: parseInt(netUpvotes) } },
+// 				{
+// 					netUpvotes: parseInt(netUpvotes),
+// 					createdAt: { $lt: new Date(createdAt) },
+// 				},
+// 			];
+// 		}
+// 	}
+
+// 	// MongoDB aggregation with $facet to handle both top-level comments and replies
+// 	return Comment.aggregate([
+// 		{
+// 			$facet: {
+// 				// Top-level comments (parentPath: '/')
+// 				topLevelComments: [
+// 					{
+// 						$match: {
+// 							postId: new mongoose.Types.ObjectId(postId),
+// 							parentPath: '/',
+// 							...paginationQuery,
+// 						},
+// 					},
+// 					{ $sort: sortOption },
+// 					{ $limit: parseInt(limit) }, // Limit for top-level comments
+// 				],
+// 				// Replies (one or two levels deep)
+// 				replies: [
+// 					{
+// 						$match: {
+// 							postId: new mongoose.Types.ObjectId(postId),
+// 							parentPath: { $regex: '^/[^/]+/' }, // Regex for nested replies
+// 						},
+// 					},
+// 					{ $sort: sortOption }, // Apply same sorting to replies
+// 					{ $limit: parseInt(limit * 2) }, // Arbitrary high limit for replies
+// 				],
+// 			},
+// 		},
+// 	]).exec();
+// };
+
+const nestCommentsByParentId = (comments, limit) => {
 	const commentMap = {};
 	const structuredComments = [];
 
 	// Create a map of comment _id to comment object
-	topLevelComments.forEach((comment) => {
+	comments.forEach((comment) => {
 		commentMap[comment._id] = comment;
 		comment.replies = [];
 		comment.replyNextPageToken = null;
-		structuredComments.push(comment);
+		if (comment.parentId === null) {
+			structuredComments.push(comment);
+		}
 	});
 
-	replies.forEach((reply) => {
-		commentMap[reply._id] = reply;
-		reply.replies = [];
-		reply.replyNextPageToken = null;
-	});
+	// replies.forEach((reply) => {
+	// 	commentMap[reply._id] = reply;
+	// 	reply.replies = [];
+	// 	reply.replyNextPageToken = null;
+	// });
 
-	replies.forEach((reply) => {
-		const parentId = reply.parentCommentId;
+	comments.forEach((comment) => {
+		const parentId = comment.parentCommentId;
 		if (parentId && commentMap[parentId]) {
-			commentMap[parentId].replies.push(reply);
+			commentMap[parentId].replies.push(comment);
 		}
 	});
 
 	// Generate next page token for each parent comment if the replies exceed the limit
-	for (const comment of Object.values(commentMap)) {
-		if (comment.replies.length > limit) {
-			// Trim replies to fit within the limit
-			comment.replies = comment.replies.slice(0, limit);
-			comment.replyNextPageToken = generateNextPageToken(
-				comment.replies,
-				limit,
-				'Replies'
-			);
-		}
-	}
+	// NOTE: Will adjust pagination logic once done with initial refactor
+	// for (const comment of Object.values(commentMap)) {
+	// 	if (comment.replies.length > limit) {
+	// 		// Trim replies to fit within the limit
+	// 		comment.replies = comment.replies.slice(0, limit);
+	// 		comment.replyNextPageToken = generateNextPageToken(
+	// 			comment.replies,
+	// 			limit,
+	// 			'Replies'
+	// 		);
+	// 	}
+	// }
 
 	return structuredComments;
 };
@@ -278,12 +318,12 @@ const buildPostsQuery = async (subReddit, view, pageToken) => {
 	} else {
 		// Hot
 		gsi = 'GSI_Hot';
-		postsQuery = postsQuery.using(gsi); //.sort('descending');
+		postsQuery = postsQuery.using(gsi).sort('descending');
 	}
 
 	if (pageToken) {
 		const lastKey = easyParse(pageToken);
-		postsQuery.startAt(lastKey);
+		postsQuery = postsQuery.startAt(lastKey);
 		// const { createdAt } = easyParse(pageToken);
 		// postsQuery = postsQuery.filter('createdAt').lt(new Date(createdAt));
 	}
@@ -329,10 +369,11 @@ const calculateRankingScore = (item) => {
 
 module.exports = {
 	easyParse,
+	padWithZeros,
 	parseFilters,
 	fetchRepliesUsingParentPath,
-	structureCommentsByParentPath,
-	buildCommentQueryAndSort,
+	nestCommentsByParentId,
+	fetchTopLevelCommentsAndReplies,
 	buildPostsQuery,
 	calculateRankingScore,
 	generateNextPageToken,
