@@ -26,6 +26,12 @@ const CommentSchema = new dynamoose.Schema(
 		commentId: {
 			type: String,
 			rangeKey: true, // Sort key (for queries by post)
+			index: [
+				{
+					global: true,
+					name: 'GSI_Find_By_CommentId',
+				},
+			],
 		},
 		userId: {
 			type: String,
@@ -68,27 +74,6 @@ const CommentSchema = new dynamoose.Schema(
 			type: String,
 			required: true,
 		},
-		// postId_parentPath: {
-		// 	type: String,
-		// 	required: true,
-		// 	index: [
-		// 		{
-		// 			global: true,
-		// 			name: 'GSI_Hot',
-		// 			rangeKey: 'rankingScore_createdAt',
-		// 		},
-		// 		{
-		// 			global: true,
-		// 			name: 'GSI_Top',
-		// 			rangeKey: 'netUpvotes_createdAt',
-		// 		},
-		// 		{
-		// 			global: true,
-		// 			name: 'GSI_New',
-		// 			rangeKey: 'createdAt',
-		// 		},
-		// 	],
-		// },
 	},
 	{
 		timestamps: true,

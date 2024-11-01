@@ -1,12 +1,6 @@
-const mongoose = require('mongoose');
 const authenticate = require('../../utils/authenticate');
-const keys = require('../../config/keys');
 const { easyParse, calculateRankingScore } = require('../../utils/pagination');
-
-mongoose.connect(keys.mongoURI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+const { v4: uuidv4 } = require('uuid');
 
 const Post = require('../../models/Post');
 const Comment = require('../../models/Comment');
@@ -64,25 +58,37 @@ exports.handler = async (event) => {
 
 const handleVoteOnPost = async (body, user) => {
 	const [post, vote] = await Promise.all([
-		Post.findById(body.postId),
-		Vote.findOne({ postId: body.postId, userId: user._id }),
+		Post.query('postId').eq(body.postId).limit(1).exec(),
+		Vote.query('postId')
+			.eq(body.postId)
+			.using('GSI_Find_By_PostId')
+			.where('userId')
+			.eq(user.userId)
+			.limit(1)
+			.exec(),
 	]);
-	return handleVote(body, user, post, vote);
+	return handleVote(body, user, post[0], vote[0]);
 };
 
 const handleVoteOnComment = async (body, user) => {
 	const [comment, vote] = await Promise.all([
-		Comment.findById(body.commentId),
-		Vote.findOne({ commentId: body.commentId, userId: user._id }),
+		Comment.query('commentId').eq(body.commentId).limit(1).exec(),
+		Vote.query('commentId')
+			.eq(body.commentId)
+			.using('GSI_Find_By_CommentId')
+			.where('userId')
+			.eq(user.userId)
+			.limit(1)
+			.exec(),
 	]);
-	return handleVote(body, user, comment, vote);
+	return handleVote(body, user, comment[0], vote[0]);
 };
 
 const handleVote = async (body, user, document, vote) => {
 	let voteToSave;
 	const bodyValue = Number(body?.value);
 
-	if (vote && vote.userId?.toString() == user?._id?.toString()) {
+	if (vote && vote.userId === user.userId) {
 		const voteValue = Number(vote.value);
 		if (voteValue === bodyValue) {
 			document.netUpvotes -= voteValue;
@@ -94,12 +100,14 @@ const handleVote = async (body, user, document, vote) => {
 		voteToSave = vote;
 	} else {
 		voteToSave = new Vote({
-			userId: user._id,
+			voteId: uuidv4(),
+			userId: user.userId,
 			value: bodyValue,
 			postId: body.postId || undefined,
 			commentId: body.commentId || undefined,
 		});
 		document.netUpvotes += bodyValue;
+		//TODO: Update composite attributes on comments
 	}
 
 	calculateRankingScore(document);

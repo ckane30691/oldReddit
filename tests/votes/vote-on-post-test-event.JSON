@@ -1,10 +1,9 @@
 {
     "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTU3MzQzYjNlMDVlMTAyYTZmMTU3NiIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTcyOTQ4NDg2OCwiZXhwIjoxNzI5NDg4NDY4fQ.1haCQe0lMMAa0NucS21VA1lZknFp2pWoQE_-2tC-v44"
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZTFkYmIzLTlkOTctNGZiOC05MTMwLThmZDI0MTljMWU2OSIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTczMDQzMTYzMSwiZXhwIjoxNzMwNDM1MjMxfQ.scb3QHVjxUA3yuH0RakhlcddJlLAlA0Mgm37vObjBz8"
     },
     "body": {
-        "userId": "67157343b3e05e102a6f1576",
         "value": "1",
-        "postId": "670f4f3c1706144448c17797"
+        "postId": "d2bf0e8c-2b23-448b-aa6c-c28d723f3561"
     }
 }
