@@ -1,61 +1,59 @@
-const mongoose = require('mongoose');
-const keys = require('../../../config/keys');
 const authenticate = require('../../../utils/authenticate');
-const validateSubRedditInput = require('../../../validation/subReddit')
-const { easyParse } = require('../../../utils/pagination')
-mongoose.connect(keys.mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+const validateSubRedditInput = require('../../../validation/subReddit');
+const { easyParse } = require('../../../utils/pagination');
+const { v4: uuidv4 } = require('uuid');
 
 const SubReddit = require('../../../models/SubReddit');
 
 exports.handler = async (event) => {
-    const token = easyParse(event).headers.authorization?.split(' ')[1];
+	const token = easyParse(event).headers.authorization?.split(' ')[1];
 
-    if (!token) {
-        return {
-            statusCode: 401,
-            body: JSON.stringify({ message: 'No token provided' }),
-        };
-    }
+	if (!token) {
+		return {
+			statusCode: 401,
+			body: JSON.stringify({ message: 'No token provided' }),
+		};
+	}
 
-    try {
-        const user = await authenticate(token);
+	try {
+		const user = await authenticate(token);
 
-        if (!user) {
-            return {
-                statusCode: 401,
-                body: JSON.stringify({ message: 'Invalid token' }),
-            };
-        }
+		if (!user) {
+			return {
+				statusCode: 401,
+				body: JSON.stringify({ message: 'Invalid token' }),
+			};
+		}
 
-        const body = easyParse(event.body);
+		const body = easyParse(event.body);
 
-        const { errors, isValid } = validateSubRedditInput(body);
-        
-        if (!isValid) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: errors })
-            }
-        }
+		const { errors, isValid } = validateSubRedditInput(body);
 
-        const newSubReddit = new SubReddit({
-            moderatorId: user._id,
-            title: body.title,
-            desc: body.desc,
-        });
+		if (!isValid) {
+			return {
+				statusCode: 400,
+				body: JSON.stringify({ message: errors }),
+			};
+		}
 
-        await newSubReddit.save();
+		const newSubReddit = new SubReddit({
+			subRedditId: uuidv4(),
+			moderatorId: user.userId,
+			title: body.title,
+			desc: body.desc,
+		});
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify(newSubReddit)
-        }
+		await newSubReddit.save();
 
-    } catch (error) {
-        console.log(error)
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: error })
-        }
-    }
-}
+		return {
+			statusCode: 200,
+			body: JSON.stringify(newSubReddit),
+		};
+	} catch (error) {
+		console.log(error);
+		return {
+			statusCode: 400,
+			body: JSON.stringify({ message: error }),
+		};
+	}
+};

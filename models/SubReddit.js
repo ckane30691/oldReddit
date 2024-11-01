@@ -1,10 +1,13 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const dynamoose = require('dynamoose');
 
-const SubRedditSchema = new Schema({
+const SubRedditSchema = new dynamoose.Schema({
+	subRedditId: {
+		type: String,
+		required: true,
+		hashKey: true,
+	},
 	moderatorId: {
-		type: Schema.Types.ObjectId,
-		ref: 'users',
+		type: String,
 		required: true,
 	},
 	title: {
@@ -14,7 +17,9 @@ const SubRedditSchema = new Schema({
 	desc: {
 		type: String,
 		required: [true, 'A description is required'],
-	}
+	},
 });
 
-module.exports = SubReddit = mongoose.model('subReddits', SubRedditSchema);
+const SubReddit = dynamoose.model('SubReddits', SubRedditSchema);
+
+module.exports = SubReddit;
