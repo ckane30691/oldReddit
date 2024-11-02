@@ -1,15 +1,24 @@
-import React/*, { useState, useEffect, useRef } */from 'react';
-import { fetchPosts, clearPosts, selectPostArray } from '../../store/slices/entities/postSlice';
+import React /*, { useState, useEffect, useRef } */ from 'react';
+import {
+	fetchPosts,
+	clearPosts,
+	selectPostArray,
+} from '../../store/slices/entities/postSlice';
 import { PostIndexItem } from './postIndexItem';
 import { VoteButton } from '../votes/voteButton';
 import PaginatedList from '../paginatedList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faAlignLeft} from '@fortawesome/free-solid-svg-icons';
+import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
 require('./postIndex.css');
 
 export const PostIndex = (props) => {
-	const initialFilter = { view: "Hot", subRedditId: props.match.params.id };
-	
+	const initialFilter = {
+		view: 'Hot',
+		subReddit: props.match.params.id.split('_')[0],
+	};
+
+	console.log(initialFilter);
+
 	return (
 		<PaginatedList
 			fetchAction={fetchPosts}
@@ -19,8 +28,8 @@ export const PostIndex = (props) => {
 			entityName="posts"
 			renderItem={(post, idx) => (
 				<div className="post-container" key={`post${idx}`}>
-					<span className="rank">{idx+1}</span>
-					<VoteButton postId={post._id} netUpvotes={post.netUpvotes} />
+					<span className="rank">{idx + 1}</span>
+					<VoteButton postId={post.postId} netUpvotes={post.netUpvotes} />
 					<FontAwesomeIcon size="2x" icon={faAlignLeft} />
 					<PostIndexItem post={post} />
 				</div>

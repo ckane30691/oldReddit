@@ -14,6 +14,7 @@ exports.handler = async (event) => {
 	try {
 		// Parse query parameters from Lambda event
 		const queryParams = easyParse(event.queryStringParameters) || {};
+		console.log(queryParams);
 		const { subReddit, view, limit, pageToken } = parseFilters(
 			queryParams,
 			'posts'

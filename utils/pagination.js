@@ -12,31 +12,35 @@ const padWithZeros = (number, length) => {
 	return number.toString().padStart(length, '0');
 };
 
-// const formatPageToken = (query) => {
-// 	const pageToken = {};
-// 	let createdAt = query['pageToken[createdAt]'];
-// 	let rankingScore = query['pageToken[rankingScore]'];
-// 	let netUpvotes = query['pageToken[netUpvotes]'];
-// 	if (createdAt) pageToken.createdAt = createdAt;
-// 	if (rankingScore) pageToken.rankingScore = rankingScore;
-// 	if (netUpvotes) pageToken.netUpvotes = netUpvotes;
-// 	return Object.keys(pageToken).length ? pageToken : null;
-// };
+const formatPageToken = (query) => {
+	const pageToken = {};
+	let createdAt = query['pageToken[createdAt]'];
+	let rankingScore = query['pageToken[rankingScore]'];
+	let netUpvotes = query['pageToken[netUpvotes]'];
+	if (createdAt) pageToken.createdAt = createdAt;
+	if (rankingScore) pageToken.rankingScore = rankingScore;
+	if (netUpvotes) pageToken.netUpvotes = netUpvotes;
+	return Object.keys(pageToken).length ? pageToken : null;
+};
 
 // Helper function to parse query filters
 const parseFilters = (query, entityName) => {
 	if (entityName === 'comments') {
-		const { postId, view, limit, pageToken } = query.filters;
-		return { postId, view, limit, pageToken };
-		// const postId = query['filters[postId]'];
-		// const view = query['filters[view]'] || 'Hot';
-		// const limit = query['limit'] || 10;
-		// const pageToken = formatPageToken(query);
+		// const { postId, view, limit, pageToken } = query.filters;
 		// return { postId, view, limit, pageToken };
+		const postId = query['filters[postId]'];
+		const view = query['filters[view]'] || 'Hot';
+		const limit = query['limit'] || 10;
+		const pageToken = formatPageToken(query);
+		return { postId, view, limit, pageToken };
 	} else {
 		// posts
-		const { subReddit, view, limit, pageToken } = query.filters;
-
+		// const { subReddit, view, limit, pageToken } = easyParse(query.filters);
+		// return { subReddit, view, limit, pageToken };
+		const subReddit = query['filters[subReddit]'];
+		const view = query['filters[view]'] || 'Hot';
+		const limit = query['limit'] || 10;
+		const pageToken = formatPageToken(query);
 		return { subReddit, view, limit, pageToken };
 	}
 };
