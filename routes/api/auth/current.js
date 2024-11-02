@@ -1,7 +1,7 @@
 const authenticate = require('../../../utils/authenticate');
 
 exports.handler = async (event) => {
-	const token = event.headers.Authorization?.split(' ')[1];
+	const token = event.headers.authorization?.split(' ')[1];
 
 	if (!token) {
 		return {

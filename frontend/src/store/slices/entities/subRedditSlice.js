@@ -4,9 +4,8 @@ import axios from 'axios';
 
 const selectSubs = (state) => state.entities.subReddits;
 
-export const selectSubRedditsArray = createSelector(
-	[selectSubs],
-	(subs) => (subs ? Object.values(subs) : [])
+export const selectSubRedditsArray = createSelector([selectSubs], (subs) =>
+	subs ? Object.values(subs) : []
 );
 
 export const fetchSubReddits = createAsyncThunk(
@@ -89,28 +88,28 @@ const subRedditSlice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
-		.addCase(fetchSubReddits.fulfilled, (state, action) => {
-			action.payload.forEach((subReddit) => {
-				state[subReddit._id] = subReddit;
-				return state
+			.addCase(fetchSubReddits.fulfilled, (state, action) => {
+				action.payload.forEach((subReddit) => {
+					state[subReddit.subRedditId] = subReddit;
+					return state;
+				});
+			})
+			.addCase(fetchSubReddit.fulfilled, (state, action) => {
+				state[action.payload.subRedditId] = action.payload;
+				return state;
+			})
+			.addCase(createSubReddit.fulfilled, (state, action) => {
+				state[action.payload.subRedditId] = action.payload;
+				return state;
+			})
+			.addCase(deleteSubReddit.fulfilled, (state, action) => {
+				delete state[action.payload.subRedditId];
+				return state;
+			})
+			.addCase(updateSubReddit.fulfilled, (state, action) => {
+				state[action.payload.subRedditId] = action.payload;
+				return state;
 			});
-		})
-		.addCase(fetchSubReddit.fulfilled, (state, action) => {
-			state[action.payload._id] = action.payload;
-			return state
-		})
-		.addCase(createSubReddit.fulfilled, (state, action) => {
-			state[action.payload._id] = action.payload;
-			return state
-		})
-		.addCase(deleteSubReddit.fulfilled, (state, action) => {
-			delete state[action.payload._id];
-			return state
-		})
-		.addCase(updateSubReddit.fulfilled, (state, action) => {
-			state[action.payload._id] = action.payload;
-			return state
-		})
 	},
 });
 

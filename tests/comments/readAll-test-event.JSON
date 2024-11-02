@@ -1,6 +1,6 @@
 {
     "headers": {
-        "Authorization": null
+        "authorization": null
     },
     "queryStringParameters": {
         "filters": {
