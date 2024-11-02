@@ -84,28 +84,28 @@ const postSlice = createSlice({
 		builder
 			.addCase(fetchPosts.fulfilled, (state, action) => {
 				action?.payload?.posts?.forEach((post) => {
-					state[post._id] = post;
+					state[post.postId] = post;
 				});
 				return state;
 			})
 			.addCase(fetchPost.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
+				state[action.payload.postId] = action.payload;
 				return state;
 			})
 			.addCase(createPost.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
+				state[action.payload.postId] = action.payload;
 				return state;
 			})
 			.addCase(updatePost.fulfilled, (state, action) => {
-				delete state[action.payload._id];
+				delete state[action.payload.postId];
 				return state;
 			})
 			.addCase(deletePost.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
+				state[action.payload.postId] = action.payload;
 				return state;
 			})
 			.addCase(createVote.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
+				state[action.payload.postId] = action.payload;
 				return state;
 			});
 	},
