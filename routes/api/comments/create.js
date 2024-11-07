@@ -48,6 +48,8 @@ exports.handler = async (event) => {
 			body: body.body,
 			parentPath: '/',
 			createdAt: new Date().toISOString(),
+			rankingScore: 0,
+			netUpvotes: 0,
 		});
 
 		if (body.parentCommentId) {
