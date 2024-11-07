@@ -21,7 +21,8 @@ const composeComponents = (...components) => {
 	);
 };
 
-// TODO: Swap out MongoDB for DynamoDB
+// TODO: Fix Replies and comments pagination
+// TODO: Decouple vote component so it doesn't cause rerenders
 // TODO: Deploy project to production
 // TODO: Artillery scalability test
 // TODO: Update resume and start applying

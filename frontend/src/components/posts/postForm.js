@@ -57,7 +57,7 @@ export const PostForm = (props) => {
 		};
 		res = await dispatch(createPost(post));
 		if (res.type === 'posts/create/fulfilled') {
-			history.push(`/posts/${res.payload._id}`);
+			history.push(`/posts/${res.payload.postId}`);
 		}
 	};
 	return (

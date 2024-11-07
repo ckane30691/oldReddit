@@ -30,10 +30,11 @@ exports.handler = async (event) => {
 
 		// Handle vote on a post or a comment
 		let response;
-		if (body.postId) {
-			response = await handleVoteOnPost(body, user);
-		} else if (body.commentId) {
+		console.log('VOTE BODY: ', body);
+		if (body.commentId) {
 			response = await handleVoteOnComment(body, user);
+		} else if (body.postId) {
+			response = await handleVoteOnPost(body, user);
 		} else {
 			return {
 				statusCode: 400,
@@ -108,6 +109,7 @@ const handleVote = async (body, user, document, vote) => {
 		});
 		document.netUpvotes += bodyValue;
 		//TODO: Update composite attributes on comments
+		// TODO: Invalidate Redis Cache
 	}
 
 	calculateRankingScore(document);

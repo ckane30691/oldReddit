@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const createVote = createAsyncThunk(
-	'receiveVote',
+	'votes/create',
 	async (vote, { rejectWithValue }) => {
 		try {
 			let res = await axios.post('/api/votes', vote);

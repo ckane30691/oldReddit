@@ -30,16 +30,16 @@ exports.handler = async (event) => {
 		const cacheKey = `posts:${subReddit}:${view}:${limit}:${JSON.stringify(
 			pageToken
 		)}`;
-		const cachedPosts = await redisClient.get(cacheKey);
+		// const cachedPosts = await redisClient.get(cacheKey);
 
-		if (cachedPosts) {
-			console.log('Cache hit for posts');
-			let { posts, nextPageToken } = easyParse(cachedPosts);
-			return {
-				statusCode: 200,
-				body: JSON.stringify({ posts, nextPageToken }),
-			};
-		}
+		// if (cachedPosts) {
+		// 	console.log('Cache hit for posts');
+		// 	let { posts, nextPageToken } = easyParse(cachedPosts);
+		// 	return {
+		// 		statusCode: 200,
+		// 		body: JSON.stringify({ posts, nextPageToken }),
+		// 	};
+		// }
 
 		// Cache miss: Fetch posts from database (MongoDB, DynamoDB, etc.)
 		let postsQuery = await buildPostsQuery(subReddit, view, pageToken);

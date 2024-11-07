@@ -17,7 +17,10 @@ export const SubRedditDropDown = (props) => {
 				</option>
 				{subReddits.map((subReddit) => {
 					return (
-						<option key={`sub-${subReddit._id}`} value={subReddit._id}>
+						<option
+							key={`sub-${subReddit.subRedditId}`}
+							value={subReddit.subRedditId}
+						>
 							{subReddit.title}
 						</option>
 					);

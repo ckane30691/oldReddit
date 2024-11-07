@@ -74,14 +74,14 @@ const commentSlice = createSlice({
 					const _recursiveInsert = (arr) => {
 						for (let i = 0; i < arr.length; i++) {
 							let obj = arr[i];
-							if (obj._id === action.payload.parentCommentId) {
+							if (obj.commentId === action.payload.parentCommentId) {
 								(obj.replies = obj.replies || []).push(action.payload);
 								return;
 							}
 							if (!obj.replies) continue;
 							for (let j = 0; j < obj.replies.length; j++) {
 								let child = obj.replies[j];
-								if (child._id === action.payload.parentCommentId) {
+								if (child.commentId === action.payload.parentCommentId) {
 									return (child.replies = child.replies || []).push(
 										action.payload
 									);

@@ -18,12 +18,15 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 		setLoadingReplies(true);
 
 		try {
-			const res = await axios.get(`/api/comments/${comment._id}/replies`, {
-				params: {
-					pageToken: replyNextPageToken,
-					parentPath,
-				},
-			});
+			const res = await axios.get(
+				`/api/comments/${comment.commentId}/replies`,
+				{
+					params: {
+						pageToken: replyNextPageToken,
+						parentPath,
+					},
+				}
+			);
 
 			// Update state with newly loaded replies
 			setLoadedReplies((prevReplies) => [...prevReplies, ...res.data?.replies]);
@@ -41,7 +44,10 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 		<ul>
 			{loadedReplies.map((reply, idx) => (
 				<div className="comment-container" key={`comment${idx}`}>
-					<VoteButton commentId={reply._id} netUpvotes={reply.netUpvotes} />
+					<VoteButton
+						commentId={reply.commentId}
+						netUpvotes={reply.netUpvotes}
+					/>
 					<CommentIndexItem
 						key={`com${idx}`}
 						comment={reply}
@@ -62,7 +68,7 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 
 			<CommentForm
 				postId={comment.postId}
-				parentCommentId={comment._id}
+				parentCommentId={comment.commentId}
 				parentPath={comment.parentPath}
 				onNewReply={handleNewReply}
 			/>

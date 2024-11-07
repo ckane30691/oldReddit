@@ -128,7 +128,7 @@ const structureReplies = (replies, limit, topLevelId) => {
 	for (const reply of replies) {
 		reply.replies = []; // Initialize the replies array
 		reply.replyNextPageToken = null; // Initialize the nextPageToken for child replies
-		replyMap[reply._id] = reply;
+		replyMap[reply.commentId] = reply;
 	}
 
 	// Now organize replies into a hierarchy based on parentCommentId
@@ -270,10 +270,10 @@ const nestCommentsByParentId = (comments, limit) => {
 
 	// Create a map of comment _id to comment object
 	comments.forEach((comment) => {
-		commentMap[comment._id] = comment;
+		commentMap[comment.commentId] = comment;
 		comment.replies = [];
 		comment.replyNextPageToken = null;
-		if (comment.parentId === null) {
+		if (comment.parentCommentId == null) {
 			structuredComments.push(comment);
 		}
 	});
