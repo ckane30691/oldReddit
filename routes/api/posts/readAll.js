@@ -46,6 +46,7 @@ exports.handler = async (event) => {
 		postsQuery = postsQuery.limit(Number(limit));
 		const posts = await postsQuery.exec();
 		let nextPageToken = generateNextPageToken(posts);
+		console.log(nextPageToken);
 
 		// Cache result in Redis for 5 minutes
 		await redisClient.set(

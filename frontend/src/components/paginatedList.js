@@ -41,6 +41,8 @@ const PaginatedList = ({
 			let res = await dispatch(
 				fetchAction({ filter: state.filter, pageToken: state.pageToken })
 			);
+			console.log(state.pageToken);
+			console.log(res);
 			if (res.type === `${entityName}/fetchAll/fulfilled`) {
 				if (res.payload.nextPageToken) {
 					setState((prevState) => ({

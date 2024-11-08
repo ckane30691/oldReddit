@@ -14,7 +14,7 @@ export const PostForm = (props) => {
 	const [title, setTitle] = useState('');
 	const [url, setUrl] = useState('');
 	const [body, setBody] = useState('');
-	const [subRedditId, setSubRedditId] = useState('');
+	const [subReddit, setSubReddit] = useState('');
 	// TODO: Write <SubredditDropdown />
 
 	const update = (field) => {
@@ -53,7 +53,7 @@ export const PostForm = (props) => {
 			title,
 			body,
 			url,
-			subId: subRedditId,
+			subReddit,
 		};
 		res = await dispatch(createPost(post));
 		if (res.type === 'posts/create/fulfilled') {
@@ -63,7 +63,7 @@ export const PostForm = (props) => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className="errors">{renderErrors()}</div>
-			<SubRedditDropDown setSubRedditId={setSubRedditId} />
+			<SubRedditDropDown setSubReddit={setSubReddit} />
 			<input
 				required
 				type="text"

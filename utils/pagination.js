@@ -12,14 +12,33 @@ const padWithZeros = (number, length) => {
 	return number.toString().padStart(length, '0');
 };
 
-const formatPageToken = (query) => {
+const formatPageTokenForPosts = (query) => {
 	const pageToken = {};
 	let createdAt = query['pageToken[createdAt]'];
 	let rankingScore = query['pageToken[rankingScore]'];
 	let netUpvotes = query['pageToken[netUpvotes]'];
+	let postId = query['pageToken[postId]'];
+	let subReddit = query['pageToken[subReddit]'];
+	if (subReddit) pageToken.subReddit = subReddit;
+	if (rankingScore) pageToken.rankingScore = Number(rankingScore);
+	if (createdAt) pageToken.createdAt = Number(createdAt);
+	if (netUpvotes) pageToken.netUpvotes = Number(netUpvotes);
+	if (postId) pageToken.postId = postId;
+	return Object.keys(pageToken).length ? pageToken : null;
+};
+
+const formatPageTokenForComments = (query) => {
+	const pageToken = {};
+	let createdAt = query['pageToken[createdAt]'];
+	let rankingScore = query['pageToken[rankingScore]'];
+	let netUpvotes = query['pageToken[netUpvotes]'];
+	let postId = query['pageToken[postId]'];
+	let subReddit = query['pageToken[subReddit]'];
+	if (subReddit) pageToken.subReddit = subReddit;
+	if (rankingScore) pageToken.rankingScore = Number(rankingScore);
 	if (createdAt) pageToken.createdAt = createdAt;
-	if (rankingScore) pageToken.rankingScore = rankingScore;
-	if (netUpvotes) pageToken.netUpvotes = netUpvotes;
+	if (netUpvotes) pageToken.netUpvotes = Number(netUpvotes);
+	if (postId) pageToken.postId = postId;
 	return Object.keys(pageToken).length ? pageToken : null;
 };
 
@@ -31,7 +50,7 @@ const parseFilters = (query, entityName) => {
 		const postId = query['filters[postId]'];
 		const view = query['filters[view]'] || 'Hot';
 		const limit = query['limit'] || 10;
-		const pageToken = formatPageToken(query);
+		const pageToken = formatPageTokenForComments(query);
 		return { postId, view, limit, pageToken };
 	} else {
 		// posts
@@ -40,7 +59,7 @@ const parseFilters = (query, entityName) => {
 		const subReddit = query['filters[subReddit]'];
 		const view = query['filters[view]'] || 'Hot';
 		const limit = query['limit'] || 10;
-		const pageToken = formatPageToken(query);
+		const pageToken = formatPageTokenForPosts(query);
 		return { subReddit, view, limit, pageToken };
 	}
 };
@@ -326,6 +345,7 @@ const buildPostsQuery = async (subReddit, view, pageToken) => {
 	}
 
 	if (pageToken) {
+		console.log('PAGE TOKEN: ', pageToken);
 		const lastKey = easyParse(pageToken);
 		postsQuery = postsQuery.startAt(lastKey);
 		// const { createdAt } = easyParse(pageToken);
@@ -352,8 +372,9 @@ const buildPostsQuery = async (subReddit, view, pageToken) => {
 // };
 // Helper function to generate the nextPageToken for pagination
 const generateNextPageToken = (collection) => {
+	console.log('LAST KEY: ', collection.lastKey);
 	const nextPageToken = collection.lastKey
-		? JSON.stringify(result.lastKey)
+		? JSON.stringify(collection.lastKey)
 		: null;
 	return nextPageToken;
 };

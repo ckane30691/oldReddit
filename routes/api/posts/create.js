@@ -10,7 +10,7 @@ const Post = require('../../../models/Post');
 })();
 
 exports.handler = async (event) => {
-	const token = easyParse(event).headers.Authorization?.split(' ')[1];
+	const token = easyParse(event).headers.authorization?.split(' ')[1];
 	if (!token) {
 		return {
 			statusCode: 401,
