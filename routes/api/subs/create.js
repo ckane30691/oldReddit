@@ -1,9 +1,13 @@
 const authenticate = require('../../../utils/authenticate');
 const validateSubRedditInput = require('../../../validation/subReddit');
+const redisClient = require('../../../config/redisClient');
 const { easyParse } = require('../../../utils/pagination');
 const { v4: uuidv4 } = require('uuid');
-
 const SubReddit = require('../../../models/SubReddit');
+
+(async () => {
+	await redisClient.connect().catch(console.error);
+})();
 
 exports.handler = async (event) => {
 	const token = easyParse(event).headers.authorization?.split(' ')[1];
@@ -44,6 +48,13 @@ exports.handler = async (event) => {
 		});
 
 		await newSubReddit.save();
+
+		const cacheKey = `subReddits:`; // Invalidate all related comment caches
+		const keys = await redisClient.keys(cacheKey);
+		for (let i = 0; i < keys.length; i++) {
+			let key = keys[i];
+			await redisClient.del(key);
+		}
 
 		return {
 			statusCode: 200,
