@@ -14,7 +14,7 @@ exports.handler = async (event) => {
 	try {
 		// Parse query parameters from Lambda event
 		const queryParams = easyParse(event.queryStringParameters) || {};
-		console.log(queryParams);
+
 		const { subReddit, view, limit, pageToken } = parseFilters(
 			queryParams,
 			'posts'
@@ -30,23 +30,22 @@ exports.handler = async (event) => {
 		const cacheKey = `posts:${subReddit}:${view}:${limit}:${JSON.stringify(
 			pageToken
 		)}`;
-		// const cachedPosts = await redisClient.get(cacheKey);
+		const cachedPosts = await redisClient.get(cacheKey);
 
-		// if (cachedPosts) {
-		// 	console.log('Cache hit for posts');
-		// 	let { posts, nextPageToken } = easyParse(cachedPosts);
-		// 	return {
-		// 		statusCode: 200,
-		// 		body: JSON.stringify({ posts, nextPageToken }),
-		// 	};
-		// }
+		if (cachedPosts) {
+			console.log('Cache hit for posts');
+			let { posts, nextPageToken } = easyParse(cachedPosts);
+			return {
+				statusCode: 200,
+				body: JSON.stringify({ posts, nextPageToken }),
+			};
+		}
 
 		// Cache miss: Fetch posts from database (MongoDB, DynamoDB, etc.)
 		let postsQuery = await buildPostsQuery(subReddit, view, pageToken);
 		postsQuery = postsQuery.limit(Number(limit));
 		const posts = await postsQuery.exec();
 		let nextPageToken = generateNextPageToken(posts);
-		console.log(nextPageToken);
 
 		// Cache result in Redis for 5 minutes
 		await redisClient.set(

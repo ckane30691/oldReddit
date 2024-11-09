@@ -345,7 +345,6 @@ const buildPostsQuery = async (subReddit, view, pageToken) => {
 	}
 
 	if (pageToken) {
-		console.log('PAGE TOKEN: ', pageToken);
 		const lastKey = easyParse(pageToken);
 		postsQuery = postsQuery.startAt(lastKey);
 		// const { createdAt } = easyParse(pageToken);
@@ -372,7 +371,6 @@ const buildPostsQuery = async (subReddit, view, pageToken) => {
 // };
 // Helper function to generate the nextPageToken for pagination
 const generateNextPageToken = (collection) => {
-	console.log('LAST KEY: ', collection.lastKey);
 	const nextPageToken = collection.lastKey
 		? JSON.stringify(collection.lastKey)
 		: null;
