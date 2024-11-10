@@ -1,5 +1,5 @@
 const authenticate = require('../../utils/authenticate');
-const { easyParse, calculateRankingScore } = require('../../utils/pagination');
+const { easyParse } = require('../../utils/pagination');
 const { v4: uuidv4 } = require('uuid');
 
 const Post = require('../../models/Post');
@@ -29,6 +29,7 @@ exports.handler = async (event) => {
 		const body = easyParse(event.body);
 
 		// Handle vote on a post or a comment
+		// TODO: MOVE TO DB TRIGGER
 		let response;
 		console.log('VOTE BODY: ', body);
 		if (body.commentId) {
@@ -58,44 +59,44 @@ exports.handler = async (event) => {
 };
 
 const handleVoteOnPost = async (body, user) => {
-	const [post, vote] = await Promise.all([
-		Post.query('postId').eq(body.postId).limit(1).exec(),
-		Vote.query('postId')
-			.eq(body.postId)
-			.using('GSI_Find_By_PostId')
-			.where('userId')
-			.eq(user.userId)
-			.limit(1)
-			.exec(),
-	]);
-	return handleVote(body, user, post[0], vote[0]);
+	// const [post, vote] = await Promise.all([
+	// Post.query('postId').eq(body.postId).limit(1).exec(),
+	const vote = await Vote.query('postId')
+		.eq(body.postId)
+		.using('GSI_Find_By_PostId')
+		.where('userId')
+		.eq(user.userId)
+		.limit(1)
+		.exec();
+	// ]);
+	return handleVote(body, user, vote[0]);
 };
 
 const handleVoteOnComment = async (body, user) => {
-	const [comment, vote] = await Promise.all([
-		Comment.query('commentId').eq(body.commentId).limit(1).exec(),
-		Vote.query('commentId')
-			.eq(body.commentId)
-			.using('GSI_Find_By_CommentId')
-			.where('userId')
-			.eq(user.userId)
-			.limit(1)
-			.exec(),
-	]);
-	return handleVote(body, user, comment[0], vote[0]);
+	// const [comment, vote] = await Promise.all([
+	// Comment.query('commentId').eq(body.commentId).limit(1).exec(),
+	const vote = await Vote.query('commentId')
+		.eq(body.commentId)
+		.using('GSI_Find_By_CommentId')
+		.where('userId')
+		.eq(user.userId)
+		.limit(1)
+		.exec();
+	// ]);
+	return handleVote(body, user, vote[0]);
 };
 
-const handleVote = async (body, user, document, vote) => {
+const handleVote = async (body, user, vote) => {
 	let voteToSave;
 	const bodyValue = Number(body?.value);
 
 	if (vote && vote.userId === user.userId) {
 		const voteValue = Number(vote.value);
 		if (voteValue === bodyValue) {
-			document.netUpvotes -= voteValue;
+			// document.netUpvotes -= voteValue;
 			vote.value = 0;
 		} else {
-			document.netUpvotes += bodyValue - voteValue;
+			// document.netUpvotes += bodyValue - voteValue;
 			vote.value = bodyValue;
 		}
 		voteToSave = vote;
@@ -107,14 +108,13 @@ const handleVote = async (body, user, document, vote) => {
 			postId: body.postId || undefined,
 			commentId: body.commentId || undefined,
 		});
-		document.netUpvotes += bodyValue;
-		//TODO: Update composite attributes on comments
-		// TODO: Invalidate Redis Cache
+		// document.netUpvotes += bodyValue;
 	}
 
-	calculateRankingScore(document);
+	// calculateRankingScore(document);
 	// Make sure that we update composite attributes for comments here
-	await Promise.all([voteToSave.save(), document.save()]);
+	// await Promise.all([voteToSave.save(), document.save()]);
+	await voteToSave.save();
 
-	return document;
+	return voteToSave;
 };

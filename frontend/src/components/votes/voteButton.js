@@ -6,6 +6,7 @@ require('./voteButton.css');
 export const VoteButton = (props) => {
 	const dispatch = useDispatch();
 	const [voteCount, setVoteCount] = useState(props.netUpvotes);
+	const [hasVoted, setHasVoted] = useState(0);
 
 	const handleVote = async (e) => {
 		e.preventDefault();
@@ -20,15 +21,38 @@ export const VoteButton = (props) => {
 		} else {
 			vote.value = -1;
 		}
-		let res = await dispatch(createVote(vote));
-		setVoteCount(res.payload.netUpvotes);
+
+		const res = await dispatch(createVote(vote));
+		if (res.payload.value === 1) {
+			setHasVoted(1);
+			setVoteCount(voteCount + 1); // Increase by 1 for upvote
+		} else if (res.payload.value === -1) {
+			setHasVoted(-1);
+			setVoteCount(voteCount - 1); // Decrease by 1 for downvote
+		} else {
+			// you already voted
+			setHasVoted(0);
+			setVoteCount(voteCount - vote.value);
+		}
+	};
+
+	const getClassName = (el) => {
+		if (hasVoted === 1) {
+			if (el === 'count' || el === 'up') {
+				return 'upVoted';
+			}
+		} else if (hasVoted === -1) {
+			if (el === 'count' || el === 'down') {
+				return 'downVoted';
+			}
+		}
 	};
 
 	return (
 		<div className="vote-button" onClick={handleVote}>
-			<button>▲</button>
-			{voteCount}
-			<button>▼</button>
+			<button className={getClassName('up')}>▲</button>
+			<span className={getClassName('count')}>{voteCount}</span>
+			<button className={getClassName('down')}>▼</button>
 		</div>
 	);
 };

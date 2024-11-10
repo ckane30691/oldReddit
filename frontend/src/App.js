@@ -22,7 +22,6 @@ const composeComponents = (...components) => {
 };
 
 // TODO: Fix Replies and comments pagination
-// TODO: Decouple vote component so it doesn't cause rerenders
 // TODO: Deploy project to production
 // TODO: Artillery scalability test
 // TODO: Update resume and start applying

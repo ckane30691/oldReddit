@@ -58,24 +58,16 @@ exports.handler = async (event) => {
 			limit
 		);
 
-		console.log(topLevelCommentsAndReplies);
+		// console.log(topLevelCommentsAndReplies);
 
 		// const { topLevelComments, replies } = aggregatedComments[0];
 
-		const replyLimit = 5;
-
 		const structuredComments = nestCommentsByParentId(
-			topLevelCommentsAndReplies,
-			replyLimit
+			topLevelCommentsAndReplies
 		);
 
 		// Will revist pagination after initial refactor
-		// const nextPageToken = generateNextPageToken(
-		// 	structuredComments,
-		// 	limit,
-		// 	view
-		// );
-		let nextPageToken = null; //placeholder for now
+		const nextPageToken = generateNextPageToken(topLevelCommentsAndReplies);
 		// Cache the results with an expiration time
 		// redisClient.set(
 		// 	cacheKey,

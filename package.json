@@ -26,7 +26,8 @@
     "validator": "^13.1.1"
   },
   "devDependencies": {
-    "serverless": "^4.4.7",
-    "serverless-offline": "^14.3.3"
+    "serverless": "^3",
+    "serverless-offline": "^13",
+    "serverless-offline-dynamodb-streams": "^7.0.0"
   }
 }

@@ -28,6 +28,7 @@ const formatPageTokenForPosts = (query) => {
 };
 
 const formatPageTokenForComments = (query) => {
+	console.log(query);
 	const pageToken = {};
 	let createdAt = query['pageToken[createdAt]'];
 	let rankingScore = query['pageToken[rankingScore]'];
@@ -283,7 +284,7 @@ const fetchTopLevelCommentsAndReplies = async (
 // 	]).exec();
 // };
 
-const nestCommentsByParentId = (comments, limit) => {
+const nestCommentsByParentId = (comments) => {
 	const commentMap = {};
 	const structuredComments = [];
 
@@ -377,19 +378,6 @@ const generateNextPageToken = (collection) => {
 	return nextPageToken;
 };
 
-const calculateRankingScore = (item) => {
-	const G = 1.8; // The decay factor (adjust as needed)
-
-	// Get the number of hours since the post was created
-	const now = new Date();
-	const postAgeInMilliseconds = now - item.createdAt;
-	const postAgeInHours = postAgeInMilliseconds / (1000 * 60 * 60); // Convert ms to hours
-	// Calculate the rankingScore using the netUpvotes
-	const rankingScore = item.netUpvotes / Math.pow(postAgeInHours + 2, G);
-
-	item.rankingScore = rankingScore;
-};
-
 module.exports = {
 	easyParse,
 	padWithZeros,
@@ -398,6 +386,5 @@ module.exports = {
 	nestCommentsByParentId,
 	fetchTopLevelCommentsAndReplies,
 	buildPostsQuery,
-	calculateRankingScore,
 	generateNextPageToken,
 };
