@@ -29,10 +29,12 @@ exports.handler = async (event) => {
 			if (newVote.commentId) {
 				document = await Comment.query('commentId')
 					.eq(newVote.commentId)
+					.using('GSI_Find_By_CommentId')
 					.limit(1)
 					.exec();
 
 				if (document[0]) {
+					document = document[0];
 					document.netUpvotes = (document.netUpvotes || 0) + voteChange;
 					calculateRankingScore(document);
 					const lengthOfPad = 6;
@@ -93,5 +95,5 @@ const calculateRankingScore = (item) => {
 	// Calculate the rankingScore using the netUpvotes
 	const rankingScore = item.netUpvotes / Math.pow(postAgeInHours + 2, G);
 
-	item.rankingScore = rankingScore;
+	item.rankingScore = parseInt(Math.floor(rankingScore * 100000));
 };

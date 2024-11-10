@@ -49,7 +49,7 @@ exports.handler = async (event) => {
 
 		await newSubReddit.save();
 
-		const cacheKey = `subReddits:`; // Invalidate all related comment caches
+		const cacheKey = `subReddits:`; // Invalidate all related subreddit caches
 		const keys = await redisClient.keys(cacheKey);
 		for (let i = 0; i < keys.length; i++) {
 			let key = keys[i];

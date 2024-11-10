@@ -32,7 +32,7 @@ export const getCachedVote = (cache, props) => {
 	return cache.find(
 		(v) =>
 			(v.commentId && v.commentId === props.commentId) ||
-			v.postId === props.postId
+			(v.postId && v.postId === props.postId)
 	);
 };
 
@@ -46,7 +46,7 @@ const _evictCachedVote = (vote, cache) => {
 	const existingIndex = cache.findIndex(
 		(v) =>
 			(v.commentId && v.commentId === vote.commentId) ||
-			v.postId === vote.postId
+			(v.postId && v.postId === vote.postId)
 	);
 	if (existingIndex !== -1) {
 		cache.splice(existingIndex, 1); // Remove existing vote
