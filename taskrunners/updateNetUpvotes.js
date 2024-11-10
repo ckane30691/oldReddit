@@ -1,6 +1,12 @@
 const AWS = require('aws-sdk');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
+const redisClient = require('../config/redisClient');
+const { padWithZeros } = require('../utils/pagination');
+
+(async () => {
+	await redisClient.connect().catch(console.error);
+})();
 
 exports.handler = async (event) => {
 	console.log('Inside DB Triggered Taskrunner:');
@@ -25,23 +31,53 @@ exports.handler = async (event) => {
 					.eq(newVote.commentId)
 					.limit(1)
 					.exec();
+
+				if (document[0]) {
+					document.netUpvotes = (document.netUpvotes || 0) + voteChange;
+					calculateRankingScore(document);
+					const lengthOfPad = 6;
+					const paddedRankingScore = padWithZeros(
+						document.rankingScore,
+						lengthOfPad
+					);
+					const paddedNetUpvotesScore = padWithZeros(
+						document.netUpvotes,
+						lengthOfPad
+					);
+					document.parentPath_rankingScore_createdAt = `${document.parentPath}_${paddedRankingScore}_${document.createdAt}`;
+					document.parentPath_netUpvotes_createdAt = `${document.parentPath}_${paddedNetUpvotesScore}_${document.createdAt}`;
+
+					// const cacheKey = `comments:${body.postId}:*`; // Invalidate all related comment caches
+					// const keys = await redisClient.keys(cacheKey);
+					// for (let i = 0; i < keys.length; i++) {
+					// 	let key = keys[i];
+					// 	await redisClient.del(key);
+					// }
+					await document.save();
+					console.log('Comments net upvotes updated');
+				}
 			} else if (newVote.postId) {
 				document = await Post.query('postId')
 					.eq(newVote.postId)
 					.limit(1)
 					.exec();
-			}
 
-			if (document[0]) {
-				document = document[0];
-				// Update net upvotes and ranking score
-				document.netUpvotes = (document.netUpvotes || 0) + voteChange;
-				calculateRankingScore(document);
-				console.log('DOCUMENT NETUPVOTES UPDATED!');
-				await document.save();
+				if (document[0]) {
+					document = document[0];
+					// Update net upvotes and ranking score
+					document.netUpvotes = (document.netUpvotes || 0) + voteChange;
+					calculateRankingScore(document);
 
-				//TODO: Update composite attributes on comments
-				// TODO: Invalidate Redis Cache
+					// TODO: Invalidate Redis Cache
+					const cacheKey = `posts:${document.subReddit}:*`; // Invalidate all related post caches
+					const keys = await redisClient.keys(cacheKey);
+					for (let i = 0; i < keys.length; i++) {
+						let key = keys[i];
+						await redisClient.del(key);
+					}
+					await document.save();
+					console.log('Posts net upvotes updated!');
+				}
 			}
 		}
 	}

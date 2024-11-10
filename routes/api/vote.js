@@ -108,12 +108,7 @@ const handleVote = async (body, user, vote) => {
 			postId: body.postId || undefined,
 			commentId: body.commentId || undefined,
 		});
-		// document.netUpvotes += bodyValue;
 	}
-
-	// calculateRankingScore(document);
-	// Make sure that we update composite attributes for comments here
-	// await Promise.all([voteToSave.save(), document.save()]);
 	await voteToSave.save();
 
 	return voteToSave;

@@ -48,7 +48,6 @@ const _evictCachedVote = (vote, cache) => {
 			(v.commentId && v.commentId === vote.commentId) ||
 			v.postId === vote.postId
 	);
-	console.log('EXISTING INDEX:', existingIndex);
 	if (existingIndex !== -1) {
 		cache.splice(existingIndex, 1); // Remove existing vote
 	}
