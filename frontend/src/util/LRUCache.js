@@ -52,3 +52,7 @@ const _evictCachedVote = (vote, cache) => {
 		cache.splice(existingIndex, 1); // Remove existing vote
 	}
 };
+
+export const clearCache = (cacheKey) => {
+	localStorage.setItem(cacheKey, '[]');
+};
