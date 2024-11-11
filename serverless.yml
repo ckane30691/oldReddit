@@ -48,6 +48,7 @@ provider:
         - arn:aws:dynamodb:${self:provider.region}:*:table/SubReddits
         - arn:aws:dynamodb:${self:provider.region}:*:table/Posts
         - arn:aws:dynamodb:${self:provider.region}:*:table/Comments
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
         - arn:aws:dynamodb:${self:provider.region}:*:table/Votes
         - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
 
@@ -131,6 +132,15 @@ functions:
           enabled: true
           type: dynamodb
           arn: arn:aws:dynamodb:us-west-1:034362062339:table/Votes/stream/2024-11-09T21:19:31.071
+          batchSize: 1
+          startingPosition: LATEST
+  updateReplyCount:
+    handler: taskrunners/updateReplyCount.handler
+    events:
+      - stream:
+          enabled: true
+          type: dynamodb
+          arn: arn:aws:dynamodb:us-west-1:034362062339:table/Comments/stream/2024-11-11T05:08:56.344
           batchSize: 1
           startingPosition: LATEST
 

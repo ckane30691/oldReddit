@@ -21,7 +21,9 @@ const composeComponents = (...components) => {
 	);
 };
 
-// TODO: Fix Replies and comments pagination
+// work on displaying number of replies and button to load more
+// start with pagination on top level comments
+// work on getting next level deep of replies with pagination
 // TODO: Deploy project to production
 // TODO: Artillery scalability test
 // TODO: Update resume and start applying

@@ -50,6 +50,7 @@ exports.handler = async (event) => {
 			createdAt: new Date().toISOString(),
 			rankingScore: 0,
 			netUpvotes: 0,
+			replyCount: 0,
 		});
 
 		if (body.parentCommentId) {

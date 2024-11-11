@@ -49,6 +49,10 @@ const PostSchema = new dynamoose.Schema(
 		body: {
 			type: String,
 		},
+		replyCount: {
+			type: Number,
+			default: 0,
+		},
 		rankingScore: {
 			type: Number,
 			default: 0,

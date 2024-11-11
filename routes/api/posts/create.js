@@ -44,6 +44,7 @@ exports.handler = async (event) => {
 			postSuffix,
 			body: body.body,
 			subReddit: body.subReddit,
+			replyCount: 0,
 		});
 
 		const cacheKey = `posts:${body.subReddit}:*`; // Invalidate all related comment caches
