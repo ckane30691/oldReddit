@@ -37,6 +37,10 @@ const CommentSchema = new dynamoose.Schema(
 			type: String,
 			required: true,
 		},
+		author: {
+			type: String,
+			required: true,
+		},
 		parentCommentId: {
 			type: String,
 			required: false, // Null for top-level comments

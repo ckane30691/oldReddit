@@ -64,6 +64,7 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 
 	return (
 		<li>
+			<h1>{comment.author}</h1>
 			<div className="comment-body">{comment.body}</div>
 
 			<CommentForm

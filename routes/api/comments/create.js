@@ -44,6 +44,7 @@ exports.handler = async (event) => {
 		const comment = new Comment({
 			commentId: uuidv4(),
 			userId: user.userId,
+			author: user.username,
 			postId: body.postId,
 			body: body.body,
 			parentPath: '/',
