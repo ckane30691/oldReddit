@@ -30,16 +30,32 @@ const formatPageTokenForPosts = (query) => {
 const formatPageTokenForComments = (query) => {
 	console.log(query);
 	const pageToken = {};
-	let createdAt = query['pageToken[createdAt]'];
-	let rankingScore = query['pageToken[rankingScore]'];
-	let netUpvotes = query['pageToken[netUpvotes]'];
+	let parentPath_createdAt = query['pageToken[parentPath_createdAt]'];
+
+	let parentPath_rankingScore_createdAt =
+		query['pageToken[parentPath_rankingScore_createdAt]'];
+
+	let parentPath_netUpvotes_createdAt =
+		query['pageToken[parentPath_netUpvotes_createdAt]'];
+
 	let postId = query['pageToken[postId]'];
-	let subReddit = query['pageToken[subReddit]'];
-	if (subReddit) pageToken.subReddit = subReddit;
-	if (rankingScore) pageToken.rankingScore = Number(rankingScore);
-	if (createdAt) pageToken.createdAt = createdAt;
-	if (netUpvotes) pageToken.netUpvotes = Number(netUpvotes);
+
+	let commentId = query['pageToken[commentId]'];
+
+	if (parentPath_rankingScore_createdAt)
+		pageToken.parentPath_rankingScore_createdAt =
+			parentPath_rankingScore_createdAt;
+
+	if (parentPath_createdAt)
+		pageToken.parentPath_createdAt = parentPath_createdAt;
+
+	if (parentPath_netUpvotes_createdAt)
+		pageToken.parentPath_netUpvotes_createdAt = parentPath_netUpvotes_createdAt;
+
 	if (postId) pageToken.postId = postId;
+
+	if (commentId) pageToken.commentId = commentId;
+
 	return Object.keys(pageToken).length ? pageToken : null;
 };
 
@@ -206,6 +222,7 @@ const fetchTopLevelCommentsAndReplies = async (
 	}
 	if (pageToken) {
 		const lastKey = easyParse(pageToken);
+		console.log('LAST KEY: ', lastKey);
 		commentQuery = commentQuery.startAt(lastKey);
 	}
 	console.log(commentQuery);

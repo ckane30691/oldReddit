@@ -9,6 +9,7 @@ import {
 	clearComments,
 	fetchComments,
 } from '../../store/slices/entities/commentSlice';
+import { getTimeSincePost } from '../../util/timeSincePost';
 
 export const PostShow = (props) => {
 	let postId = props.match.params.id;
@@ -41,6 +42,13 @@ export const PostShow = (props) => {
 				<div className="post-show">
 					<VoteButton postId={post.postId} netUpvotes={post.netUpvotes} />
 					<h1 className="post-title">{post.title}</h1>
+					<h2>
+						submitted {getTimeSincePost(post)} by {post.author}
+					</h2>
+					<h2>
+						{post.replyCount || 0}{' '}
+						{post.replyCount === 1 ? 'comment' : 'comments'}
+					</h2>
 					<h2>{post.body}</h2>
 				</div>
 

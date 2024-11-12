@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CommentForm } from './commentForm';
 import { VoteButton } from '../votes/voteButton';
+import { getTimeSincePost } from '../../util/timeSincePost';
 import axios from 'axios';
 
 export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
@@ -9,6 +10,7 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 	const [replyNextPageToken, setReplyNextPageToken] = useState(
 		comment.replyNextPageToken || null
 	);
+	const [displayReplyForm, setDisplayReplyForm] = useState(false);
 	const [loadingReplies, setLoadingReplies] = useState(false);
 
 	// Function to load more replies
@@ -62,17 +64,27 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 		setLoadedReplies((prevReplies) => [...prevReplies, newReply]);
 	};
 
+	const displayForm = () => {
+		setDisplayReplyForm(true);
+	};
+
 	return (
 		<li>
-			<h1>{comment.author}</h1>
+			<h1>
+				{comment.author} <span>{getTimeSincePost(comment)}</span>
+			</h1>
 			<div className="comment-body">{comment.body}</div>
+			<button onClick={displayForm}>reply</button>
 
-			<CommentForm
-				postId={comment.postId}
-				parentCommentId={comment.commentId}
-				parentPath={comment.parentPath}
-				onNewReply={handleNewReply}
-			/>
+			{displayReplyForm && (
+				<CommentForm
+					setDisplayReplyForm={setDisplayReplyForm}
+					postId={comment.postId}
+					parentCommentId={comment.commentId}
+					parentPath={comment.parentPath}
+					onNewReply={handleNewReply}
+				/>
+			)}
 
 			{renderChildComments()}
 

@@ -60,6 +60,15 @@ export const CommentForm = (props) => {
 				onChange={update('body')}
 			/>
 			<input className="comment-submit" type="submit" value="Save" />
+
+			{props.setDisplayReplyForm && (
+				<button
+					onClick={() => props.setDisplayReplyForm(false)}
+					className="comment-cancel"
+				>
+					Cancel
+				</button>
+			)}
 		</form>
 	);
 };

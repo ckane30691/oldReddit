@@ -68,6 +68,7 @@ exports.handler = async (event) => {
 
 		// Will revist pagination after initial refactor
 		const nextPageToken = generateNextPageToken(topLevelCommentsAndReplies);
+		console.log('pagetoken: ', nextPageToken);
 		// Cache the results with an expiration time
 		// redisClient.set(
 		// 	cacheKey,
