@@ -17,8 +17,6 @@ export const PostIndex = (props) => {
 		subReddit: props.match.params.id.split('_')[0],
 	};
 
-	console.log(initialFilter);
-
 	return (
 		<PaginatedList
 			fetchAction={fetchPosts}

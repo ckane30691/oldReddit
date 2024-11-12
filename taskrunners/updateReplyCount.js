@@ -15,7 +15,6 @@ exports.handler = async (event) => {
 			const comment = AWS.DynamoDB.Converter.unmarshall(
 				record.dynamodb.NewImage
 			);
-
 			// If reply update reply count on parent and on post
 			if (comment.parentCommentId) {
 				let [post, parentComment] = await Promise.all([
@@ -30,8 +29,10 @@ exports.handler = async (event) => {
 				post = post[0];
 				parentComment = parentComment[0];
 
-				post.replyCount += 1;
-				parentComment.replyCount += 1;
+				post.replyCount = post.replyCount ? post.replyCount + 1 : 1;
+				parentComment.replyCount = parentComment.replyCount
+					? parentComment.replyCount + 1
+					: 1;
 
 				calculateRankingScore(post);
 				calculateRankingScore(parentComment);
@@ -61,7 +62,7 @@ exports.handler = async (event) => {
 
 				post = post[0];
 
-				post.replyCount += 1;
+				post.replyCount = post.replyCount ? post.replyCount + 1 : 1;
 
 				calculateRankingScore(post);
 

@@ -39,6 +39,7 @@ exports.handler = async (event) => {
 		const newPost = new Post({
 			postId,
 			userId: user.userId,
+			author: user.username,
 			title: body.title,
 			redirectLink: body.redirectLink,
 			postSuffix,
