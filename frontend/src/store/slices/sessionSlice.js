@@ -61,6 +61,8 @@ export const loginUser = createAsyncThunk(
 			setAuthToken(token);
 			// Decode token to get user data
 			const decoded = jwt_decode(token);
+			// Clear any cached votes
+			clearCache('userVoteCache');
 			return decoded;
 		} catch (err) {
 			return rejectWithValue(err.response.data);

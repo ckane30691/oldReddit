@@ -112,48 +112,48 @@ const parseFilters = (query, entityName) => {
 // };
 
 // Optimized Approach using Precomputed Path
-const fetchRepliesUsingParentPath = async (
-	parentCommentId,
-	parentPath,
-	limit,
-	pageToken
-) => {
-	// Build the query using the parentPath
-	let query = {
-		parentPath: { $regex: `^${parentPath}${parentCommentId}/` },
-	};
+// const fetchRepliesUsingParentPath = async (
+// 	parentCommentId,
+// 	parentPath,
+// 	limit,
+// 	pageToken
+// ) => {
+// 	// Build the query using the parentPath
+// 	let query = {
+// 		parentPath: { $regex: `^${parentPath}${parentCommentId}/` },
+// 	};
 
-	// Handle pagination for replies using pageToken
-	let sortOption = { rankingScore: -1, createdAt: -1 }; // Sort replies by ranking and creation time
-	if (pageToken) {
-		const { rankingScore, createdAt } = easyParse(pageToken);
+// 	// Handle pagination for replies using pageToken
+// 	let sortOption = { rankingScore: -1, createdAt: -1 }; // Sort replies by ranking and creation time
+// 	if (pageToken) {
+// 		const { rankingScore, createdAt } = easyParse(pageToken);
 
-		query.$or = [
-			{ rankingScore: { $lt: parseInt(rankingScore) } },
-			{
-				rankingScore: parseInt(rankingScore),
-				createdAt: { $lt: new Date(createdAt) },
-			},
-		];
-	}
+// 		query.$or = [
+// 			{ rankingScore: { $lt: parseInt(rankingScore) } },
+// 			{
+// 				rankingScore: parseInt(rankingScore),
+// 				createdAt: { $lt: new Date(createdAt) },
+// 			},
+// 		];
+// 	}
 
-	// Fetch all replies that match the parent path, sorted and limited
-	const replies = await Comment.find(query)
-		.sort(sortOption)
-		.limit(parseInt(limit))
-		.lean();
+// 	// Fetch all replies that match the parent path, sorted and limited
+// 	const replies = await Comment.find(query)
+// 		.sort(sortOption)
+// 		.limit(parseInt(limit))
+// 		.lean();
 
-	const structuredReplies = structureReplies(replies, limit, parentCommentId);
+// 	const structuredReplies = structureReplies(replies, limit, parentCommentId);
 
-	// Generate pagination token for the next set of replies
-	const nextPageToken = generateNextPageToken(
-		structuredReplies,
-		limit,
-		'Replies'
-	);
+// 	// Generate pagination token for the next set of replies
+// 	const nextPageToken = generateNextPageToken(
+// 		structuredReplies,
+// 		limit,
+// 		'Replies'
+// 	);
 
-	return { replies: structuredReplies, nextPageToken };
-};
+// 	return { replies: structuredReplies, nextPageToken };
+// };
 
 const structureReplies = (replies, limit, topLevelId) => {
 	// Create a map where each comment ID will be the key and the value is the comment object
@@ -415,7 +415,7 @@ module.exports = {
 	easyParse,
 	padWithZeros,
 	parseFilters,
-	fetchRepliesUsingParentPath,
+	// fetchRepliesUsingParentPath,
 	nestCommentsByParentId,
 	fetchTopLevelCommentsAndReplies,
 	buildPostsQuery,

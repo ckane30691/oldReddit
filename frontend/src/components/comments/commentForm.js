@@ -36,7 +36,13 @@ export const CommentForm = (props) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const { postId, parentCommentId, onNewReply, parentPath } = props;
+		const {
+			postId,
+			parentCommentId,
+			onNewReply,
+			parentPath,
+			setDisplayReplyForm,
+		} = props;
 		let comment = { postId, body, parentCommentId, parentPath };
 
 		let res = await dispatch(createComment(comment));
@@ -46,6 +52,10 @@ export const CommentForm = (props) => {
 
 		if (onNewReply) {
 			onNewReply(res.payload);
+		}
+
+		if (setDisplayReplyForm) {
+			setDisplayReplyForm(false);
 		}
 	};
 

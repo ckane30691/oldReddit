@@ -47,7 +47,7 @@ exports.handler = async (event) => {
 			author: user.username,
 			postId: body.postId,
 			body: body.body,
-			parentPath: '/',
+			parentPath: '~/',
 			createdAt: new Date().toISOString(),
 			rankingScore: 0,
 			netUpvotes: 0,
@@ -55,6 +55,9 @@ exports.handler = async (event) => {
 		});
 
 		if (body.parentCommentId) {
+			// remove top level comment idenitfier if needed
+			body.parentPath =
+				body.parentPath[0] === '~' ? body.parentPath.slice(1) : body.parentPath;
 			comment.parentCommentId = body.parentCommentId;
 			comment.parentPath = `${body.parentPath}${body.parentCommentId}/`;
 		}

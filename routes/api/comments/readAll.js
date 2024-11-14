@@ -43,7 +43,7 @@ exports.handler = async (event) => {
 		// 	};
 		// }
 
-		// Cache miss: Fetch from MongoDB
+		// Cache miss: Fetch from DynamoDB
 		// const aggregatedComments = await buildCommentQueryAndSort(
 		// 	postId,
 		// 	view,
@@ -58,7 +58,7 @@ exports.handler = async (event) => {
 			limit
 		);
 
-		// console.log(topLevelCommentsAndReplies);
+		console.log(topLevelCommentsAndReplies);
 
 		// const { topLevelComments, replies } = aggregatedComments[0];
 

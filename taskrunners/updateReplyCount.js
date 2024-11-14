@@ -2,14 +2,13 @@ const AWS = require('aws-sdk');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const redisClient = require('../config/redisClient');
-const { calculateRankingScore } = require('../utils/pagination');
+const { padWithZeros, calculateRankingScore } = require('../utils/pagination');
 
 (async () => {
 	await redisClient.connect().catch(console.error);
 })();
 
 exports.handler = async (event) => {
-	console.log('Inside DB Triggered Reply Count Update Taskrunner:');
 	for (const record of event.Records) {
 		if (record.eventName === 'INSERT') {
 			const comment = AWS.DynamoDB.Converter.unmarshall(
@@ -17,7 +16,7 @@ exports.handler = async (event) => {
 			);
 			// If reply update reply count on parent and on post
 			if (comment.parentCommentId) {
-				let [post, parentComment] = await Promise.all([
+				let [parentComment, post] = await Promise.all([
 					Comment.query('commentId')
 						.eq(comment.parentCommentId)
 						.using('GSI_Find_By_CommentId')
@@ -36,6 +35,14 @@ exports.handler = async (event) => {
 
 				calculateRankingScore(post);
 				calculateRankingScore(parentComment);
+
+				const lengthOfPad = 6;
+				const paddedRankingScore = padWithZeros(
+					parentComment.rankingScore,
+					lengthOfPad
+				);
+
+				parentComment.parentPath_rankingScore_createdAt = `${parentComment.parentPath}_${paddedRankingScore}_${parentComment.createdAt}`;
 
 				const commentCacheKey = `comments:${comment.postId}:*`; // Invalidate all related comment caches
 				const commentKeys = await redisClient.keys(commentCacheKey);

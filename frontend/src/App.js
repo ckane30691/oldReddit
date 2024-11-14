@@ -22,7 +22,6 @@ const composeComponents = (...components) => {
 };
 
 // work on displaying number of replies and button to load more
-// start with pagination on top level comments
 // work on getting next level deep of replies with pagination
 // TODO: Deploy project to production
 // TODO: Artillery scalability test

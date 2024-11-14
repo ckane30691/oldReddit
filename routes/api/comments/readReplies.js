@@ -1,15 +1,8 @@
-const mongoose = require('mongoose');
-const keys = require('../../../config/keys');
 const redisClient = require('../../../config/redisClient');
 const {
 	easyParse,
 	fetchRepliesUsingParentPath,
 } = require('../../../utils/pagination');
-
-mongoose.connect(keys.mongoURI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
 
 (async () => {
 	await redisClient.connect().catch(console.error);
@@ -17,7 +10,7 @@ mongoose.connect(keys.mongoURI, {
 
 exports.handler = async (event) => {
 	try {
-		const queryParams = event.queryStringParameters || {};
+		const queryParams = easyParse(event.queryStringParameters) || {};
 		const { limit = 5, pageToken = null, parentPath } = easyParse(queryParams);
 		const { commentId } = easyParse(event.pathParameters);
 
@@ -28,15 +21,15 @@ exports.handler = async (event) => {
 		// Check Redis cache first
 		const cachedReplies = await redisClient.get(cacheKey);
 
-		if (cachedReplies) {
-			console.log('Cache hit for replies');
-			let { replies, nextPageToken } = easyParse(cachedReplies);
+		// if (cachedReplies) {
+		// 	console.log('Cache hit for replies');
+		// 	let { replies, nextPageToken } = easyParse(cachedReplies);
 
-			return {
-				statusCode: 200,
-				body: JSON.stringify({ replies, replyNextPageToken: nextPageToken }),
-			};
-		}
+		// 	return {
+		// 		statusCode: 200,
+		// 		body: JSON.stringify({ replies, replyNextPageToken: nextPageToken }),
+		// 	};
+		// }
 
 		// Cache miss: Fetch replies for the specified comment with pagination
 		const { replies, nextPageToken } = await fetchRepliesUsingParentPath(

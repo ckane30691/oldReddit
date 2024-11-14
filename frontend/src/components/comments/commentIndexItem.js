@@ -13,31 +13,37 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 	const [displayReplyForm, setDisplayReplyForm] = useState(false);
 	const [loadingReplies, setLoadingReplies] = useState(false);
 
+	const remainingReplies = comment.replyCount - loadedReplies.length;
 	// Function to load more replies
 	const loadMoreReplies = async () => {
-		if (!replyNextPageToken || loadingReplies) return;
+		if (loadingReplies) return;
 
-		setLoadingReplies(true);
+		if (remainingReplies || replyNextPageToken) {
+			setLoadingReplies(true);
 
-		try {
-			const res = await axios.get(
-				`/api/comments/${comment.commentId}/replies`,
-				{
-					params: {
-						pageToken: replyNextPageToken,
-						parentPath,
-					},
-				}
-			);
+			try {
+				const res = await axios.get(
+					`/api/comments/${comment.commentId}/replies`,
+					{
+						params: {
+							pageToken: replyNextPageToken,
+							parentPath,
+						},
+					}
+				);
 
-			// Update state with newly loaded replies
-			setLoadedReplies((prevReplies) => [...prevReplies, ...res.data?.replies]);
+				// Update state with newly loaded replies
+				setLoadedReplies((prevReplies) => [
+					...prevReplies,
+					...res.data?.replies,
+				]);
 
-			setReplyNextPageToken(res.data.replyNextPageToken);
-		} catch (error) {
-			console.error('Error loading more replies:', error);
-		} finally {
-			setLoadingReplies(false);
+				setReplyNextPageToken(res.data.replyNextPageToken);
+			} catch (error) {
+				console.error('Error loading more replies:', error);
+			} finally {
+				setLoadingReplies(false);
+			}
 		}
 	};
 
@@ -88,9 +94,11 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 
 			{renderChildComments()}
 
-			{replyNextPageToken && (
+			{(replyNextPageToken || remainingReplies > 0) && (
 				<button onClick={loadMoreReplies} disabled={loadingReplies}>
-					{loadingReplies ? 'Loading...' : 'Load more replies'}
+					{loadingReplies
+						? 'Loading...'
+						: `Load more comments (${remainingReplies} remaining)`}
 				</button>
 			)}
 		</li>
