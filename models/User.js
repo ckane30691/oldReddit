@@ -1,4 +1,4 @@
-const dynamoose = require('dynamoose');
+const dynamoose = require('../config/dynamoose');
 
 const UserSchema = new dynamoose.Schema(
 	{
@@ -9,6 +9,10 @@ const UserSchema = new dynamoose.Schema(
 		email: {
 			type: String,
 			rangeKey: true, // Sort Key
+			index: {
+				global: true,
+				name: 'GSI_Email',
+			},
 		},
 		username: {
 			type: String,
@@ -21,12 +25,6 @@ const UserSchema = new dynamoose.Schema(
 	},
 	{
 		timestamps: true,
-		indexes: [
-			{
-				name: 'GSI_Email',
-				hashKey: 'email', // Partition Key for GSI
-			},
-		],
 	}
 );
 

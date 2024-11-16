@@ -2,6 +2,7 @@ const authenticate = require('../../../utils/authenticate');
 const validateCommentInput = require('../../../validation/comment');
 const redisClient = require('../../../config/redisClient');
 const { easyParse, padWithZeros } = require('../../../utils/pagination');
+const adjustDepth = require('../../../utils/comments/adjustDepth');
 const { v4: uuidv4 } = require('uuid');
 const Comment = require('../../../models/Comment');
 
@@ -47,17 +48,28 @@ exports.handler = async (event) => {
 			author: user.username,
 			postId: body.postId,
 			body: body.body,
-			parentPath: '~/',
+			parentPath: '/',
+			depth: '99',
 			createdAt: new Date().toISOString(),
 			rankingScore: 0,
 			netUpvotes: 0,
 			replyCount: 0,
 		});
 
+		// TODO: Move to helper function
 		if (body.parentCommentId) {
 			// remove top level comment idenitfier if needed
-			body.parentPath =
-				body.parentPath[0] === '~' ? body.parentPath.slice(1) : body.parentPath;
+			if (body.depth === '99') {
+				comment.topLevelCommentId = body.parentCommentId;
+			} else if (body.depth === '00') {
+				return {
+					statusCode: 400,
+					body: JSON.stringify({ error: 'Maximum Reply Depth Reached' }),
+				};
+			} else {
+				comment.topLevelCommentId = body.topLevelCommentId;
+			}
+			comment.depth = adjustDepth(body.depth);
 			comment.parentCommentId = body.parentCommentId;
 			comment.parentPath = `${body.parentPath}${body.parentCommentId}/`;
 		}
@@ -68,9 +80,9 @@ exports.handler = async (event) => {
 		const paddedRankingScore = padWithZeros(0, lengthOfPad);
 		const paddedNetUpvotesScore = padWithZeros(0, lengthOfPad);
 		// Update composite attributes for GSIs
-		comment.parentPath_createdAt = `${comment.parentPath}_${comment.createdAt}`;
-		comment.parentPath_rankingScore_createdAt = `${comment.parentPath}_${paddedRankingScore}_${comment.createdAt}`;
-		comment.parentPath_netUpvotes_createdAt = `${comment.parentPath}_${paddedNetUpvotesScore}_${comment.createdAt}`;
+		comment.parentPath_createdAt = `${comment.depth}_${comment.parentPath}_${comment.createdAt}`;
+		comment.parentPath_rankingScore_createdAt = `${comment.depth}_${comment.parentPath}_${paddedRankingScore}_${comment.createdAt}`;
+		comment.parentPath_netUpvotes_createdAt = `${comment.depth}_${comment.parentPath}_${paddedNetUpvotesScore}_${comment.createdAt}`;
 
 		await comment.save();
 

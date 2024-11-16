@@ -1,4 +1,4 @@
-const dynamoose = require('dynamoose');
+const dynamoose = require('../config/dynamoose');
 
 const VoteSchema = new dynamoose.Schema({
 	voteId: {

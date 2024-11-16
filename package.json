@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "serverless": "^3",
+    "serverless-dynamodb": "^0.2.56",
     "serverless-offline": "^13",
     "serverless-offline-dynamodb-streams": "^7.0.0"
   }

@@ -154,8 +154,49 @@ const parseFilters = (query, entityName) => {
 
 // 	return { replies: structuredReplies, nextPageToken };
 // };
+const fetchRepliesUsingParentPath = async (
+	topLevelCommentId,
+	commentId,
+	parentPath,
+	limit,
+	depth,
+	pageToken
+) => {
+	console.log('TOP LEVEL COMMENT ID: ', topLevelCommentId);
+	console.log('LIMIT: ', limit);
+	let commentQuery = Comment.query('topLevelCommentId')
+		.eq(topLevelCommentId)
+		.using('GSI_Hot_Replies')
+		.sort('descending')
+		.where('depth')
+		.beginsWith(`${depth[0]}`)
+		.and()
+		.where('parentPath')
+		.beginsWith(`${parentPath}${commentId}`)
+		.limit(Number(limit));
 
-const structureReplies = (replies, limit, topLevelId) => {
+	//TODO: Sort replies by filter
+	// let gsi;
+	// if (view === 'New') {
+	// 	gsi = 'GSI_New';
+	// 	commentQuery = commentQuery.using(gsi).sort('descending');
+	// } else if (view === 'Top') {
+	// 	gsi = 'GSI_Top';
+	// 	commentQuery = commentQuery.using(gsi).sort('descending');
+	// } else {
+	// 	// Hot
+	// 	gsi = 'GSI_Hot';
+	// 	commentQuery = commentQuery.using(gsi).sort('descending');
+	// }
+	if (pageToken) {
+		console.log('FOUND PAGE TOKEN: ', pageToken);
+		const lastKey = easyParse(pageToken);
+		commentQuery = commentQuery.startAt(lastKey);
+	}
+	return await commentQuery.exec();
+};
+
+const nestRepliesByParentId = (replies, parentCommentId) => {
 	// Create a map where each comment ID will be the key and the value is the comment object
 	const replyMap = {};
 	const rootReplies = [];
@@ -169,7 +210,7 @@ const structureReplies = (replies, limit, topLevelId) => {
 
 	// Now organize replies into a hierarchy based on parentCommentId
 	for (const reply of replies) {
-		if (String(reply.parentCommentId) !== String(topLevelId)) {
+		if (String(reply.parentCommentId) !== String(parentCommentId)) {
 			// If the comment has a parent, add it to its parent's replies array
 			const parentComment = replyMap[reply.parentCommentId];
 			if (parentComment) {
@@ -178,19 +219,6 @@ const structureReplies = (replies, limit, topLevelId) => {
 		} else {
 			// If no parent, it's a top-level comment, add it to the root
 			rootReplies.push(reply);
-		}
-	}
-
-	// Generate next page token for each parent comment if the replies exceed the limit
-	for (const reply of Object.values(replyMap)) {
-		if (reply.replies.length > limit) {
-			// Trim replies to fit within the limit
-			reply.replies = reply.replies.slice(0, limit);
-			reply.replyNextPageToken = generateNextPageToken(
-				reply.replies,
-				limit,
-				'Replies'
-			);
 		}
 	}
 
@@ -222,10 +250,8 @@ const fetchTopLevelCommentsAndReplies = async (
 	}
 	if (pageToken) {
 		const lastKey = easyParse(pageToken);
-		console.log('LAST KEY: ', lastKey);
 		commentQuery = commentQuery.startAt(lastKey);
 	}
-	console.log(commentQuery);
 	return await commentQuery.exec();
 };
 
@@ -415,7 +441,8 @@ module.exports = {
 	easyParse,
 	padWithZeros,
 	parseFilters,
-	// fetchRepliesUsingParentPath,
+	nestRepliesByParentId,
+	fetchRepliesUsingParentPath,
 	nestCommentsByParentId,
 	fetchTopLevelCommentsAndReplies,
 	buildPostsQuery,

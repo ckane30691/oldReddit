@@ -21,6 +21,10 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 		if (remainingReplies || replyNextPageToken) {
 			setLoadingReplies(true);
 
+			const topLevelCommentId = comment.topLevelCommentId
+				? comment.topLevelCommentId
+				: comment.commentId;
+
 			try {
 				const res = await axios.get(
 					`/api/comments/${comment.commentId}/replies`,
@@ -28,6 +32,8 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 						params: {
 							pageToken: replyNextPageToken,
 							parentPath,
+							topLevelCommentId,
+							depth: comment.depth,
 						},
 					}
 				);
@@ -88,6 +94,8 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 					postId={comment.postId}
 					parentCommentId={comment.commentId}
 					parentPath={comment.parentPath}
+					depth={comment.depth}
+					topLevelCommentId={comment.topLevelCommentId}
 					onNewReply={handleNewReply}
 				/>
 			)}

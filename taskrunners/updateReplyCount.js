@@ -4,6 +4,11 @@ const Comment = require('../models/Comment');
 const redisClient = require('../config/redisClient');
 const { padWithZeros, calculateRankingScore } = require('../utils/pagination');
 
+AWS.config.update({
+	region: 'us-west-1',
+	endpoint: 'http://localhost:8000', // Connect to local DynamoDB
+});
+
 (async () => {
 	await redisClient.connect().catch(console.error);
 })();
@@ -42,7 +47,7 @@ exports.handler = async (event) => {
 					lengthOfPad
 				);
 
-				parentComment.parentPath_rankingScore_createdAt = `${parentComment.parentPath}_${paddedRankingScore}_${parentComment.createdAt}`;
+				parentComment.parentPath_rankingScore_createdAt = `${parentComment.depth}_${parentComment.parentPath}_${paddedRankingScore}_${parentComment.createdAt}`;
 
 				const commentCacheKey = `comments:${comment.postId}:*`; // Invalidate all related comment caches
 				const commentKeys = await redisClient.keys(commentCacheKey);

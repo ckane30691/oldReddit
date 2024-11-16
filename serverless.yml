@@ -28,6 +28,8 @@ provider:
   # you can overwrite defaults here
   #  stage: dev
   region: us-west-1
+  environment:
+    NODE_ENV: 'development'
 
   # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
@@ -144,14 +146,24 @@ functions:
           batchSize: 1
           startingPosition: LATEST
 
-    environment:
-      NODE_ENV: 'development'
-#      variable2: value2
 plugins:
+  - serverless-dynamodb
   - serverless-offline-dynamodb-streams
   - serverless-offline
 
 custom:
+  serverless-dynamodb:
+    stages:
+      - dev
+    start:
+      docker: true
+      image: amazon/dynamodb-local
+      port: 8000
+      shareDb: true
+      inMemory: true # Set to false if you want persistent storage
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true # Automatically create tables on start         s
   serverless-offline:
     port: 5000
     noPrependStageInUrl: true

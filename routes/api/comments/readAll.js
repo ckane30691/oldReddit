@@ -44,13 +44,6 @@ exports.handler = async (event) => {
 		// }
 
 		// Cache miss: Fetch from DynamoDB
-		// const aggregatedComments = await buildCommentQueryAndSort(
-		// 	postId,
-		// 	view,
-		// 	pageToken,
-		// 	limit
-		// );
-		console.log('FETCHING COMMENTS');
 		const topLevelCommentsAndReplies = await fetchTopLevelCommentsAndReplies(
 			postId,
 			view,
@@ -58,24 +51,19 @@ exports.handler = async (event) => {
 			limit
 		);
 
-		console.log(topLevelCommentsAndReplies);
-
-		// const { topLevelComments, replies } = aggregatedComments[0];
-
 		const structuredComments = nestCommentsByParentId(
 			topLevelCommentsAndReplies
 		);
 
-		// Will revist pagination after initial refactor
 		const nextPageToken = generateNextPageToken(topLevelCommentsAndReplies);
-		console.log('pagetoken: ', nextPageToken);
+
 		// Cache the results with an expiration time
-		// redisClient.set(
-		// 	cacheKey,
-		// 	JSON.stringify({ comments: structuredComments, nextPageToken }),
-		// 	'EX',
-		// 	60 * 5
-		// ); // Cache for 5 minutes
+		redisClient.set(
+			cacheKey,
+			JSON.stringify({ comments: structuredComments, nextPageToken }),
+			'EX',
+			60 * 5
+		); // Cache for 5 minutes
 
 		return {
 			statusCode: 200,

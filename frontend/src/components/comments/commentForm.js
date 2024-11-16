@@ -41,9 +41,19 @@ export const CommentForm = (props) => {
 			parentCommentId,
 			onNewReply,
 			parentPath,
+			depth,
 			setDisplayReplyForm,
+			topLevelCommentId,
 		} = props;
-		let comment = { postId, body, parentCommentId, parentPath };
+
+		const comment = {
+			postId,
+			body,
+			parentCommentId,
+			parentPath,
+			depth,
+			topLevelCommentId,
+		};
 
 		let res = await dispatch(createComment(comment));
 		if ((res.type = 'comments/create/fulfilled')) {

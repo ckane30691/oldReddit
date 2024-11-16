@@ -1,4 +1,4 @@
-const dynamoose = require('dynamoose');
+const dynamoose = require('../config/dynamoose');
 
 const CommentSchema = new dynamoose.Schema(
 	{
@@ -41,13 +41,28 @@ const CommentSchema = new dynamoose.Schema(
 			type: String,
 			required: true,
 		},
+		topLevelCommentId: {
+			type: String,
+			required: false,
+		},
 		parentCommentId: {
 			type: String,
 			required: false, // Null for top-level comments
+			index: [
+				{
+					global: true,
+					name: 'GSI_Hot_Replies',
+					rangeKey: 'parenthPath_rankingScore_createdAt',
+				},
+			],
 		},
 		body: {
 			type: String,
 			required: true,
+		},
+		depth: {
+			type: String,
+			default: '99',
 		},
 		replyCount: {
 			type: Number,
