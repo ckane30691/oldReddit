@@ -9,7 +9,7 @@ const CommentSchema = new dynamoose.Schema(
 				{
 					global: true,
 					name: 'GSI_Hot',
-					rangeKey: 'parenthPath_rankingScore_createdAt',
+					rangeKey: 'parentPath_rankingScore_createdAt',
 				},
 				{
 					global: true,
@@ -52,7 +52,7 @@ const CommentSchema = new dynamoose.Schema(
 				{
 					global: true,
 					name: 'GSI_Hot_Replies',
-					rangeKey: 'parenthPath_rankingScore_createdAt',
+					rangeKey: 'parentPath_rankingScore_createdAt',
 				},
 			],
 		},

@@ -4,7 +4,9 @@ exports.handler = async (event) => {
 	const postId = event.pathParameters.id;
 
 	try {
-		const post = await Post.get(postId);
+		let post = await Post.query('postId').eq(postId).limit(1).exec();
+		post = post[0];
+		console.log(post);
 		if (post) {
 			return {
 				statusCode: 200,
