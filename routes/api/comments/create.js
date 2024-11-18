@@ -84,6 +84,7 @@ exports.handler = async (event) => {
 		comment.parentPath_rankingScore_createdAt = `${comment.depth}_${comment.parentPath}_${paddedRankingScore}_${comment.createdAt}`;
 		comment.parentPath_netUpvotes_createdAt = `${comment.depth}_${comment.parentPath}_${paddedNetUpvotesScore}_${comment.createdAt}`;
 
+		console.log(comment);
 		await comment.save();
 
 		const cacheKey = `comments:${body.postId}:*`; // Invalidate all related comment caches

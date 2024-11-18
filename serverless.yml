@@ -32,27 +32,29 @@ provider:
     NODE_ENV: 'development'
 
   # you can add statements to the Lambda function's IAM Role here
-  # iamRoleStatements:
-  #   - Effect: 'Allow'
-  #     Action:
-  #       - dynamodb:Query
-  #       - dynamodb:Scan
-  #       - dynamodb:GetItem
-  #       - dynamodb:PutItem
-  #       - dynamodb:UpdateItem
-  #       - dynamodb:DeleteItem
-  #       - dynamodb:ListStreams
-  #       - dynamodb:DescribeStream
-  #       - dynamodb:GetRecords
-  #       - dynamodb:GetShardIterator
-  #     Resource:
-  #       - arn:aws:dynamodb:${self:provider.region}:*:table/Users
-  #       - arn:aws:dynamodb:${self:provider.region}:*:table/SubReddits
-  #       - arn:aws:dynamodb:${self:provider.region}:*:table/Posts
-  #       - arn:aws:dynamodb:${self:provider.region}:*:table/Comments
-  #       - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
-  #       - arn:aws:dynamodb:${self:provider.region}:*:table/Votes
-  #       - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        #       - dynamodb:Query
+        #       - dynamodb:Scan
+        #       - dynamodb:GetItem
+        #       - dynamodb:PutItem
+        #       - dynamodb:UpdateItem
+        #       - dynamodb:DeleteItem
+        - dynamodb:ListStreams
+        - dynamodb:DescribeStream
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+      Resource:
+        #       - arn:aws:dynamodb:${self:provider.region}:*:table/Users
+        #       - arn:aws:dynamodb:${self:provider.region}:*:table/SubReddits
+        #       - arn:aws:dynamodb:${self:provider.region}:*:table/Posts
+        #       - arn:aws:dynamodb:${self:provider.region}:*:table/Comments
+        # - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
+        - arn:aws:dynamodb:ddblocal:*:table/Comments/stream/*
+        #       - arn:aws:dynamodb:${self:provider.region}:*:table/Votes
+        # - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
+        - arn:aws:dynamodb:ddblocal:*:table/Votes/stream/*
 
 functions:
   signup:
@@ -133,7 +135,7 @@ functions:
       - stream:
           enabled: true
           type: dynamodb
-          arn: arn:aws:dynamodb:us-west-1:034362062339:table/Votes/stream/2024-11-09T21:19:31.071
+          arn: arn:aws:dynamodb:ddblocal:000000000000:table/Votes/stream/2024-11-17T22:05:50.556
           batchSize: 1
           startingPosition: LATEST
   updateReplyCount:
@@ -142,7 +144,7 @@ functions:
       - stream:
           enabled: true
           type: dynamodb
-          arn: arn:aws:dynamodb:us-west-1:034362062339:table/Comments/stream/2024-11-11T05:08:56.344
+          arn: arn:aws:dynamodb:ddblocal:000000000000:table/Comments/stream/2024-11-17T22:05:50.581
           batchSize: 1
           startingPosition: LATEST
 
@@ -168,6 +170,36 @@ custom:
   serverless-offline:
     port: 5000
     noPrependStageInUrl: true
+resources:
+  Resources:
+    VoteDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Votes
+        AttributeDefinitions:
+          - AttributeName: voteId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: voteId
+            KeyType: HASH
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    CommentDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Comments
+        AttributeDefinitions:
+          - AttributeName: postId
+            AttributeType: S
+          - AttributeName: commentId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: postId
+            KeyType: HASH
+          - AttributeName: commentId
+            KeyType: RANGE
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
 # you can add CloudFormation resource templates here
 #resources:
 #  Resources:

@@ -26,6 +26,7 @@ const CommentSchema = new dynamoose.Schema(
 		commentId: {
 			type: String,
 			rangeKey: true, // Sort key (for queries by post)
+			required: true,
 			index: [
 				{
 					global: true,

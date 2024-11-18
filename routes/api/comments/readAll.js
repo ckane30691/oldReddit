@@ -51,6 +51,8 @@ exports.handler = async (event) => {
 			limit
 		);
 
+		console.log(topLevelCommentsAndReplies);
+
 		const structuredComments = nestCommentsByParentId(
 			topLevelCommentsAndReplies
 		);
