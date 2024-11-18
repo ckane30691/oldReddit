@@ -5,7 +5,7 @@ const redisClient = require('../config/redisClient');
 const { padWithZeros, calculateRankingScore } = require('../utils/pagination');
 
 AWS.config.update({
-	region: 'us-west-1',
+	region: 'localhost',
 	endpoint: 'http://localhost:8000', // Connect to local DynamoDB
 });
 

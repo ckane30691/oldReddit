@@ -35,12 +35,12 @@ provider:
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
-        #       - dynamodb:Query
-        #       - dynamodb:Scan
-        #       - dynamodb:GetItem
-        #       - dynamodb:PutItem
-        #       - dynamodb:UpdateItem
-        #       - dynamodb:DeleteItem
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
         - dynamodb:ListStreams
         - dynamodb:DescribeStream
         - dynamodb:GetRecords
@@ -51,9 +51,11 @@ provider:
         #       - arn:aws:dynamodb:${self:provider.region}:*:table/Posts
         #       - arn:aws:dynamodb:${self:provider.region}:*:table/Comments
         # - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
+        - arn:aws:dynamodb:ddblocal:*:table/Comments
         - arn:aws:dynamodb:ddblocal:*:table/Comments/stream/*
         #       - arn:aws:dynamodb:${self:provider.region}:*:table/Votes
         # - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
+        - arn:aws:dynamodb:ddblocal:*:table/Votes
         - arn:aws:dynamodb:ddblocal:*:table/Votes/stream/*
 
 functions:
@@ -135,7 +137,8 @@ functions:
       - stream:
           enabled: true
           type: dynamodb
-          arn: arn:aws:dynamodb:ddblocal:000000000000:table/Votes/stream/2024-11-17T22:05:50.556
+          arn:
+            Fn::GetAtt: [VoteDynamoDBTable, StreamArn]
           batchSize: 1
           startingPosition: LATEST
   updateReplyCount:
@@ -144,7 +147,7 @@ functions:
       - stream:
           enabled: true
           type: dynamodb
-          arn: arn:aws:dynamodb:ddblocal:000000000000:table/Comments/stream/2024-11-17T22:05:50.581
+          arn: arn:aws:dynamodb:ddblocal:000000000000:table/Comments/stream/2024-11-18T03:32:57.411
           batchSize: 1
           startingPosition: LATEST
 
@@ -154,6 +157,8 @@ plugins:
   - serverless-offline
 
 custom:
+  serverless-offline-dynamodb-streams:
+    endpoint: http://0.0.0.0:8000
   serverless-dynamodb:
     stages:
       - dev

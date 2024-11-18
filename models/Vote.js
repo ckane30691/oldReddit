@@ -37,6 +37,6 @@ const VoteSchema = new dynamoose.Schema({
 	},
 });
 
-const Vote = dynamoose.model('Votes', VoteSchema, { update: true });
+const Vote = dynamoose.model('Votes', VoteSchema);
 
 module.exports = Vote;
