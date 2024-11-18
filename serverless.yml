@@ -147,7 +147,8 @@ functions:
       - stream:
           enabled: true
           type: dynamodb
-          arn: arn:aws:dynamodb:ddblocal:000000000000:table/Comments/stream/2024-11-18T03:32:57.411
+          arn:
+            Fn::GetAtt: [CommentDynamoDBTable, StreamArn]
           batchSize: 1
           startingPosition: LATEST
 

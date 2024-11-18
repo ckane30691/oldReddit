@@ -54,9 +54,7 @@ exports.handler = async (event) => {
 			pageToken
 		);
 
-		console.log(replies);
-
-		const structuredReplies = nestRepliesByParentId(replies, commentId);
+		// const structuredReplies = nestRepliesByParentId(replies, commentId);
 
 		const nextPageToken = generateNextPageToken(replies);
 
@@ -64,7 +62,7 @@ exports.handler = async (event) => {
 		redisClient.set(
 			cacheKey,
 			JSON.stringify({
-				replies: structuredReplies,
+				replies,
 				nextPageToken: nextPageToken,
 			}),
 			'EX',
@@ -74,7 +72,7 @@ exports.handler = async (event) => {
 		return {
 			statusCode: 200,
 			body: JSON.stringify({
-				replies: structuredReplies,
+				replies,
 				replyNextPageToken: nextPageToken,
 			}),
 		};

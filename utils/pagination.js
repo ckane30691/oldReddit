@@ -66,7 +66,7 @@ const parseFilters = (query, entityName) => {
 		// return { postId, view, limit, pageToken };
 		const postId = query['filters[postId]'];
 		const view = query['filters[view]'] || 'Hot';
-		const limit = query['limit'] || 10;
+		const limit = query['limit'] || 25;
 		const pageToken = formatPageTokenForComments(query);
 		return { postId, view, limit, pageToken };
 	} else {
@@ -164,15 +164,10 @@ const fetchRepliesUsingParentPath = async (
 ) => {
 	console.log('TOP LEVEL COMMENT ID: ', topLevelCommentId);
 	console.log('LIMIT: ', limit);
-	let commentQuery = Comment.query('topLevelCommentId')
-		.eq(topLevelCommentId)
+	let commentQuery = Comment.query('parentCommentId')
+		.eq(commentId)
 		.using('GSI_Hot_Replies')
 		.sort('descending')
-		.where('depth')
-		.beginsWith(`${depth[0]}`)
-		.and()
-		.where('parentPath')
-		.beginsWith(`${parentPath}${commentId}`)
 		.limit(Number(limit));
 
 	//TODO: Sort replies by filter
