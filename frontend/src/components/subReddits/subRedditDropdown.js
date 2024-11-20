@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+require('./subRedditDropdown.css');
 
 export const SubRedditDropDown = ({ setSubReddit }) => {
 	let subReddits = useSelector((state) => state.entities.subReddits);

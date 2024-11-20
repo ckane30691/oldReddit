@@ -98,25 +98,29 @@ const PaginatedList = ({
 			: 'comment-filter-button';
 	};
 
+	const isSelected = (selection) => {
+		return state?.filter?.view === selection ? 'selected' : null;
+	};
+
 	// Render list
 	return (
 		<div className="filter-container">
 			{/* Filter buttons */}
 			<div className={entityName.concat('-filters')}>
 				<button
-					className={getButtonClass()}
+					className={`${getButtonClass()} ${isSelected('Hot')}`}
 					onClick={() => handleFilterChange('Hot')}
 				>
 					Hot
 				</button>
 				<button
-					className={getButtonClass()}
+					className={`${getButtonClass()} ${isSelected('New')}`}
 					onClick={() => handleFilterChange('New')}
 				>
 					New
 				</button>
 				<button
-					className={getButtonClass()}
+					className={`${getButtonClass()} ${isSelected('Top')}`}
 					onClick={() => handleFilterChange('Top')}
 				>
 					Top

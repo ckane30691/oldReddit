@@ -3,8 +3,9 @@ import { CommentForm } from './commentForm';
 import { VoteButton } from '../votes/voteButton';
 import { getTimeSincePost } from '../../util/timeSincePost';
 import axios from 'axios';
+require('./commentIndexItem.css');
 
-export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
+export const CommentIndexItem = ({ comment, parentPath = '/', isReply }) => {
 	// State to track loaded replies and nextPageToken for replies
 	const [loadedReplies, setLoadedReplies] = useState(comment.replies || []);
 	const [replyNextPageToken, setReplyNextPageToken] = useState(
@@ -57,7 +58,10 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 	const renderChildComments = () => (
 		<ul>
 			{loadedReplies.map((reply, idx) => (
-				<div className="comment-container" key={`comment${idx}`}>
+				<div
+					className="comment-container reply-container"
+					key={`comment${idx}`}
+				>
 					<VoteButton
 						commentId={reply.commentId}
 						netUpvotes={reply.netUpvotes}
@@ -81,12 +85,15 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 	};
 
 	return (
-		<li>
-			<h1>
-				{comment.author} <span>{getTimeSincePost(comment)}</span>
+		<li className="comment-li">
+			<h1 className="author small">
+				{comment.author}{' '}
+				<span className="time-since-post">{getTimeSincePost(comment)}</span>
 			</h1>
 			<div className="comment-body">{comment.body}</div>
-			<button onClick={displayForm}>reply</button>
+			<button className="reply-button small" onClick={displayForm}>
+				reply
+			</button>
 
 			{displayReplyForm && (
 				<CommentForm

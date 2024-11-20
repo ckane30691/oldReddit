@@ -5,8 +5,8 @@
 }
 .posts-filters {
     position: absolute;
-    top: -25px;
-    left: 100px
+    top: -62px;
+    left: 120px
 }
 /* Style for filter buttons when rendering posts */
 .post-filter-button {
@@ -38,4 +38,8 @@
     padding: 5px;
     margin-right: 5px;
     cursor: pointer;
+}
+
+.selected {
+    color: orange
 }

@@ -21,18 +21,16 @@ const composeComponents = (...components) => {
 	);
 };
 
-// work on displaying number of replies and button to load more
-// work on getting next level deep of replies with pagination
-// TODO: Deploy project to production
-// TODO: Artillery scalability test
+// TODO: Styling, Add Redis back in for comments, Fix initial redirect after logging in
+// TODO: Update README
+// TODO: Update Master Branch
 // TODO: Update resume and start applying
+// TODO: Deploy project to production
 // TODO: Proper Logout functionality + Refresh Tokens
-// TODO: Limit depth of nesting on comments
-// TODO: Optimize fetching very deeply nested comments
+// TODO: Artillery scalability test
 // TODO: Client side caching
 // TODO: Caching of pagetokens so you can keep your spot
 // TODO: Archiving old pages
-// TODO: Update pageranks with a cron job or something
 // TODO: S3 Bucket for direct image uploads
 // TODO: CDN
 // TODO: Implement subscriptions to subreddits

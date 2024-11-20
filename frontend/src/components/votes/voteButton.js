@@ -64,7 +64,7 @@ export const VoteButton = (props) => {
 	};
 
 	return (
-		<div className="vote-button" onClick={handleVote}>
+		<div className={`vote-button ${props.isPostVote}`} onClick={handleVote}>
 			<button className={getClassName('up')}>▲</button>
 			<span className={getClassName('count')}>{voteCount}</span>
 			<button className={getClassName('down')}>▼</button>

@@ -37,24 +37,32 @@ export const PostShow = (props) => {
 	if (!hooksReady) return <div>Loading...</div>;
 
 	return (
-		<div className="post-show-container">
-			<div className="post-comment-form-container">
-				<div className="post-show">
-					<VoteButton postId={post.postId} netUpvotes={post.netUpvotes} />
-					<h1 className="post-title">{post.title}</h1>
-					<h2>
-						submitted {getTimeSincePost(post)} by {post.author}
-					</h2>
+		<>
+			<h1 className="subReddit">{post.subReddit}</h1>
+			<div className="post-show-container">
+				<div className="post-comment-form-container">
+					<div className="post-show">
+						<VoteButton
+							isPostVote="post-vote"
+							postId={post.postId}
+							netUpvotes={post.netUpvotes}
+						/>
+						<h1 className="post-title">{post.title}</h1>
+						<h2 className="post-submitted-info">
+							submitted {getTimeSincePost(post)} by{' '}
+							<span className="author">{post.author}</span>
+						</h2>
+						<h2 className={post.body ? 'post-body' : ''}>{post.body}</h2>
+					</div>
+
+					<CommentForm postId={post.postId} />
 					<h2>
 						{post.replyCount || 0}{' '}
 						{post.replyCount === 1 ? 'comment' : 'comments'}
 					</h2>
-					<h2>{post.body}</h2>
 				</div>
-
-				<CommentForm postId={post.postId} />
+				<CommentIndex postId={post.postId} />
 			</div>
-			<CommentIndex postId={post.postId} />
-		</div>
+		</>
 	);
 };

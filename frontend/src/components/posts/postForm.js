@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createPost } from '../../store/slices/entities/postSlice';
 import { useHistory } from 'react-router-dom';
 import { SubRedditDropDown } from '../subReddits/subRedditDropdown';
+require('./postForm.css');
 
 export const PostForm = (props) => {
 	// TODO: ADD EDIT FUNCTIONALITY TO FORM
@@ -61,29 +62,36 @@ export const PostForm = (props) => {
 		}
 	};
 	return (
-		<form onSubmit={handleSubmit}>
+		<form className="post-form" onSubmit={handleSubmit}>
 			<div className="errors">{renderErrors()}</div>
 			<SubRedditDropDown setSubReddit={setSubReddit} />
-			<input
+			<textarea
+				className="post-text-area title-link"
 				required
 				type="text"
 				value={title}
 				onChange={update('title')}
 				placeholder="Enter Title"
 			/>
-			<input
+			<textarea
+				className="post-text-area title-link"
 				type="text"
 				value={url}
 				onChange={update('url')}
 				placeholder="Enter Url"
 			/>
-			<input
+			<textarea
+				className="post-text-area post-body-area"
 				type="text"
 				value={body}
 				onChange={update('body')}
 				placeholder="Enter Body"
 			/>
-			<input type="submit" value="Create Post" />
+			<input
+				className="comment-button post-form-button"
+				type="submit"
+				value="Create Post"
+			/>
 		</form>
 	);
 };

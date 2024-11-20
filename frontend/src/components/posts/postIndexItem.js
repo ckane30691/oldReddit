@@ -19,10 +19,11 @@ export const PostIndexItem = ({ post }) => {
 				<Link className="post-link" to={`/posts/${post.postId}`}>
 					{post.title}
 				</Link>
-				<h2>
-					submitted {getTimeSincePost(post)} by {post.author}
+				<h2 className="post-submitted-info small">
+					submitted {getTimeSincePost(post)} by{' '}
+					<span className="author">{post.author}</span>
 				</h2>
-				<p>
+				<p className="post-comment-count small">
 					{post.replyCount || 0}{' '}
 					{post.replyCount === 1 ? 'comment' : 'comments'}
 				</p>
