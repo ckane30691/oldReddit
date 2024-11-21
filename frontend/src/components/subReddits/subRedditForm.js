@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSubReddit } from '../../store/slices/entities/subRedditSlice';
 import { useHistory } from 'react-router-dom';
+require('./subRedditForm.css');
 
 export const SubRedditForm = (props) => {
 	// TODO: ADD EDIT FUNCTIONALITY TO FORM
@@ -52,23 +53,29 @@ export const SubRedditForm = (props) => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form className="subreddit-form" onSubmit={handleSubmit}>
 			<div className="errors">{renderErrors()}</div>
-			<input
+			<textarea
+				className="subreddit-textarea"
 				required
 				type="text"
 				value={title}
 				onChange={update('title')}
-				placeholder="Enter Title"
+				placeholder="Enter subreddit name"
 			/>
-			<input
+			<textarea
+				className="subreddit-textarea"
 				required
 				type="text"
 				value={desc}
 				onChange={update('desc')}
 				placeholder="Enter Description"
 			/>
-			<input type="submit" value="Create SubReddit" />
+			<input
+				className="subreddit-submit"
+				type="submit"
+				value="Create SubReddit"
+			/>
 		</form>
 	);
 };

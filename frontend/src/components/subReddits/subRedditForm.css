@@ -1,0 +1,29 @@
+.subreddit-form {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-top: 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+    background-color: rgb(255,219,219);
+    width: 525px;
+    padding-bottom: 10px;
+}
+.subreddit-textarea {
+    border: 1px solid gray;
+    width: 492px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    background-color: white;
+    padding-left: 10px;
+    padding-top: 10px;
+    margin-bottom: 15px;
+}
+
+.subreddit-submit {
+    width: 125px;
+    background-color: #efefef;
+    padding: 2px 5px 2px;
+    border-width: 1px;
+    border-style: solid;
+}
