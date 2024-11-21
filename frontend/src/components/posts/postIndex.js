@@ -19,7 +19,7 @@ export const PostIndex = (props) => {
 
 	return (
 		<>
-			<h1 className="subReddit">{initialFilter.subReddit}</h1>
+			<h1 className="subReddit">r/{initialFilter.subReddit}</h1>
 			<PaginatedList
 				fetchAction={fetchPosts}
 				clearAction={clearPosts}

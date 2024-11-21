@@ -131,7 +131,11 @@ const PaginatedList = ({
 			<ul className={entityName.concat('-list')}>
 				{items.map((item, idx) => renderItem(item, idx))}
 			</ul>
-			<button onClick={loadMore}>Load More</button>
+			{state.pageToken && (
+				<button className="load-more-button small" onClick={loadMore}>
+					Load More
+				</button>
+			)}
 		</div>
 	);
 };

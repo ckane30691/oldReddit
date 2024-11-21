@@ -43,3 +43,17 @@
 .selected {
     color: orange
 }
+
+.load-more-button {
+    color: #369;
+    font-weight: bold;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 1px 4px;
+}
+
+.load-more-button:hover {
+    background: #f0f0f0;
+    border: 1px solid #82A6C9;
+}

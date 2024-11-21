@@ -38,7 +38,7 @@ export const PostShow = (props) => {
 
 	return (
 		<>
-			<h1 className="subReddit">{post.subReddit}</h1>
+			<h1 className="subReddit">r/{post.subReddit}</h1>
 			<div className="post-show-container">
 				<div className="post-comment-form-container">
 					<div className="post-show">
