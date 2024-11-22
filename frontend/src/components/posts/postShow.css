@@ -1,6 +1,7 @@
 .post-show-container {
     position: relative;
     padding-top: 15px;
+    padding-bottom: 100px;
 }
 
 .post-comment-form-container {

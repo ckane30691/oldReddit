@@ -45,6 +45,7 @@ exports.handler = async (event) => {
 			moderatorId: user.userId,
 			title: body.title,
 			desc: body.desc,
+			category: 'default', //will eventually revist this
 		});
 
 		await newSubReddit.save();

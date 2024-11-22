@@ -30,7 +30,7 @@ exports.handler = async (event) => {
 			};
 		}
 
-		const subReddits = await SubReddit.scan().exec();
+		const subReddits = await SubReddit.query('category').eq('default').exec();
 
 		//Cache the results with an expiration time
 		await redisClient.set(
@@ -44,6 +44,7 @@ exports.handler = async (event) => {
 			body: JSON.stringify(subReddits),
 		};
 	} catch (err) {
+		console.log(err);
 		return {
 			statusCode: 404,
 			body: JSON.stringify({ noSubRedditsFound: 'No subReddits found' }),

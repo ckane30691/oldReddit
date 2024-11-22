@@ -18,8 +18,17 @@ const SubRedditSchema = new dynamoose.Schema({
 		type: String,
 		required: [true, 'A description is required'],
 	},
+	category: {
+		type: String,
+		index: {
+			global: true,
+			name: 'GSI_Category',
+		},
+	},
 });
 
-const SubReddit = dynamoose.model('SubReddits', SubRedditSchema);
+const SubReddit = dynamoose.model('SubReddits', SubRedditSchema, {
+	update: true,
+});
 
 module.exports = SubReddit;

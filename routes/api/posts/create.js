@@ -44,11 +44,11 @@ exports.handler = async (event) => {
 			redirectLink: body.redirectLink,
 			postSuffix,
 			body: body.body,
-			subReddit: body.subReddit,
+			subReddit: body.subReddit.split(' ').join('_'),
 			replyCount: 0,
 		});
 
-		const cacheKey = `posts:${body.subReddit}:*`; // Invalidate all related comment caches
+		const cacheKey = `posts:${newPost.subReddit}:*`; // Invalidate all related comment caches
 		const keys = await redisClient.keys(cacheKey);
 		for (let i = 0; i < keys.length; i++) {
 			let key = keys[i];

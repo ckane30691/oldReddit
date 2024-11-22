@@ -13,20 +13,34 @@ export const PostIndexItem = ({ post }) => {
 		/*res =*/ await dispatch(deletePost(post.postId));
 	};
 
-	return (
-		<li className="link-container">
-			<>
+	const renderTitleLink = () => {
+		if (post.redirectLink) {
+			return (
+				<a className="post-link" target="blank" href={`${post.redirectLink}`}>
+					{post.title}
+				</a>
+			);
+		} else {
+			return (
 				<Link className="post-link" to={`/posts/${post.postId}`}>
 					{post.title}
 				</Link>
+			);
+		}
+	};
+
+	return (
+		<li className="link-container">
+			<>
+				{renderTitleLink()}
 				<h2 className="post-submitted-info small">
 					submitted {getTimeSincePost(post)} by{' '}
 					<span className="author">{post.author}</span>
 				</h2>
-				<p className="post-comment-count small">
+				<Link className="post-comment-count small" to={`/posts/${post.postId}`}>
 					{post.replyCount || 0}{' '}
 					{post.replyCount === 1 ? 'comment' : 'comments'}
-				</p>
+				</Link>
 				{/* <button onClick={handleDelete}>Delete</button> */}
 			</>
 		</li>

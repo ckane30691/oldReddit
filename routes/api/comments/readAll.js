@@ -31,17 +31,17 @@ exports.handler = async (event) => {
 		)}`; // Create a unique cache key
 
 		// Check Redis cache first
-		// const cachedComments = await redisClient.get(cacheKey);
+		const cachedComments = await redisClient.get(cacheKey);
 
-		// if (cachedComments) {
-		// 	console.log('Cache hit for comments');
-		// 	let { comments, nextPageToken } = easyParse(cachedComments);
+		if (cachedComments) {
+			console.log('Cache hit for comments');
+			let { comments, nextPageToken } = easyParse(cachedComments);
 
-		// 	return {
-		// 		statusCode: 200,
-		// 		body: JSON.stringify({ comments, nextPageToken }),
-		// 	};
-		// }
+			return {
+				statusCode: 200,
+				body: JSON.stringify({ comments, nextPageToken }),
+			};
+		}
 
 		// Cache miss: Fetch from DynamoDB
 		const topLevelCommentsAndReplies = await fetchTopLevelCommentsAndReplies(

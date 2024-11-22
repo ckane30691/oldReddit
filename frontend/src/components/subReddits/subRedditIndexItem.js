@@ -13,7 +13,11 @@ export const SubRedditIndexItem = ({ subReddit }) => {
 	return (
 		<li>
 			<h1>
-				<Link to={`/subReddits/${subReddit.title}_${subReddit.subRedditId}`}>
+				<Link
+					to={`/subReddits/${subReddit.title.split(' ').join('_')}#${
+						subReddit.subRedditId
+					}`}
+				>
 					{subReddit?.title?.toUpperCase()}
 				</Link>{' '}
 				-

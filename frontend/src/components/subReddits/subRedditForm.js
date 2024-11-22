@@ -64,7 +64,7 @@ export const SubRedditForm = (props) => {
 				placeholder="Enter subreddit name"
 			/>
 			<textarea
-				className="subreddit-textarea"
+				className="subreddit-textarea subreddit-desc"
 				required
 				type="text"
 				value={desc}

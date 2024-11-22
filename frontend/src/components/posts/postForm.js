@@ -53,7 +53,7 @@ export const PostForm = (props) => {
 		let post = {
 			title,
 			body,
-			url,
+			redirectLink: url,
 			subReddit,
 		};
 		res = await dispatch(createPost(post));
@@ -78,7 +78,7 @@ export const PostForm = (props) => {
 				type="text"
 				value={url}
 				onChange={update('url')}
-				placeholder="Enter Url"
+				placeholder="Enter Url (Optional)"
 			/>
 			<textarea
 				className="post-text-area post-body-area"

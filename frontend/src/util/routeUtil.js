@@ -6,8 +6,8 @@ const Auth = ({ component: Component, path, loggedIn, exact }) => (
 	<Route
 		path={path}
 		exact={exact}
-		render={(props) =>
-			!loggedIn ? <Component {...props} /> : <Redirect to="/" />
+		render={
+			(props) => (!loggedIn ? <Component {...props} /> : <Redirect to="/" />) //Adjust once deployed to prod
 		}
 	/>
 );

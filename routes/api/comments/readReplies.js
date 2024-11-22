@@ -30,15 +30,15 @@ exports.handler = async (event) => {
 		// Check Redis cache first
 		const cachedReplies = await redisClient.get(cacheKey);
 
-		// if (cachedReplies) {
-		// 	console.log('Cache hit for replies');
-		// 	let { replies, nextPageToken } = easyParse(cachedReplies);
+		if (cachedReplies) {
+			console.log('Cache hit for replies');
+			let { replies, nextPageToken } = easyParse(cachedReplies);
 
-		// 	return {
-		// 		statusCode: 200,
-		// 		body: JSON.stringify({ replies, replyNextPageToken: nextPageToken }),
-		// 	};
-		// }
+			return {
+				statusCode: 200,
+				body: JSON.stringify({ replies, replyNextPageToken: nextPageToken }),
+			};
+		}
 
 		// Cache miss: Fetch replies for the specified comment with pagination
 

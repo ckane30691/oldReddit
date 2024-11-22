@@ -15,10 +15,12 @@ exports.handler = async (event) => {
 		// Parse query parameters from Lambda event
 		const queryParams = easyParse(event.queryStringParameters) || {};
 
-		const { subReddit, view, limit, pageToken } = parseFilters(
+		let { subReddit, view, limit, pageToken } = parseFilters(
 			queryParams,
 			'posts'
 		);
+
+		subReddit = subReddit.split(' ').join('_');
 
 		if (!subReddit) {
 			return {

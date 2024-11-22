@@ -21,17 +21,16 @@ const composeComponents = (...components) => {
 	);
 };
 
-// TODO: Style subreddit form
-// TODO: Add Redis back in for comments, Fix initial redirect after logging in
-// TODO: Fix db scan for subreddits
 // TODO: Posts with links
+// TODO: Posts seed data
 // TODO: Update README
 // TODO: DELETE unused components
 // TODO: Update Master Branch
 // TODO: Update resume and start applying
-// TODO: Deploy project to production
+// TODO: Deploy project to production & Fix initial redirect after logging in
 // TODO: Proper Logout functionality + Refresh Tokens
 // TODO: Artillery scalability test
+// TODO: Logging
 // TODO: Thumbnails for links
 // TODO: Client side caching
 // TODO: Caching of pagetokens so you can keep your spot

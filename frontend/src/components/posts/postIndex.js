@@ -8,18 +8,27 @@ import { PostIndexItem } from './postIndexItem';
 import { VoteButton } from '../votes/voteButton';
 import PaginatedList from '../paginatedList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
+import { faAlignLeft, faLink } from '@fortawesome/free-solid-svg-icons';
 require('./postIndex.css');
 
 export const PostIndex = (props) => {
 	const initialFilter = {
 		view: 'Hot',
-		subReddit: props.match.params.id.split('_')[0],
+		subReddit: props.match.params.id.split('#')[0],
 	};
+
+	const renderPostIcon = (post) =>
+		post.redirectLink ? (
+			<FontAwesomeIcon size="2x" icon={faLink} />
+		) : (
+			<FontAwesomeIcon size="2x" icon={faAlignLeft} />
+		);
 
 	return (
 		<>
-			<h1 className="subReddit">r/{initialFilter.subReddit}</h1>
+			<h1 className="subReddit">
+				r/{initialFilter.subReddit.split('_').join(' ')}
+			</h1>
 			<PaginatedList
 				fetchAction={fetchPosts}
 				clearAction={clearPosts}
@@ -30,7 +39,7 @@ export const PostIndex = (props) => {
 					<div className="post-container" key={`post${idx}`}>
 						<span className="rank">{idx + 1}</span>
 						<VoteButton postId={post.postId} netUpvotes={post.netUpvotes} />
-						<FontAwesomeIcon size="2x" icon={faAlignLeft} />
+						{renderPostIcon(post)}
 						<PostIndexItem post={post} />
 					</div>
 				)}
