@@ -141,7 +141,8 @@ functions:
           enabled: true
           type: dynamodb
           arn:
-            Fn::GetAtt: [VoteDynamoDBTable, StreamArn]
+            - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
+              # Fn::GetAtt: [VoteDynamoDBTable, StreamArn]
           batchSize: 1
           startingPosition: LATEST
   updateReplyCount:
@@ -151,7 +152,8 @@ functions:
           enabled: true
           type: dynamodb
           arn:
-            Fn::GetAtt: [CommentDynamoDBTable, StreamArn]
+            - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
+            # Fn::GetAtt: [CommentDynamoDBTable, StreamArn]
           batchSize: 1
           startingPosition: LATEST
 
@@ -164,7 +166,7 @@ custom:
     endpoint: http://0.0.0.0:8000
   serverless-dynamodb:
     stages:
-      - dev
+      - development
     start:
       docker: true
       dockerImage: amazon/dynamodb-local

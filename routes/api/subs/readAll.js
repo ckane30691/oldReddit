@@ -1,6 +1,6 @@
 const redisClient = require('../../../config/redisClient');
 const SubReddit = require('../../../models/SubReddit');
-const { easyParse } = require('../../../utils/pagination');
+const easyParse = require('../../../utils/easyParse');
 
 (async () => {
 	await redisClient.connect().catch(console.error);

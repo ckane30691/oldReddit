@@ -2,7 +2,8 @@ const AWS = require('aws-sdk');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const redisClient = require('../config/redisClient');
-const { padWithZeros, calculateRankingScore } = require('../utils/pagination');
+const padWithZeros = require('../utils/padWithZeros');
+const calculateRankingScore = require('../utils/calculateRankingScore');
 
 const isLocal = process.env.NODE_ENV === 'development';
 

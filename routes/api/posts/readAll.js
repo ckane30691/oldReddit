@@ -1,10 +1,8 @@
 const redisClient = require('../../../config/redisClient');
-const {
-	parseFilters,
-	generateNextPageToken,
-	easyParse,
-	buildPostsQuery,
-} = require('../../../utils/pagination');
+const parseFilters = require('../../../utils/parseFilters');
+const generateNextPageToken = require('../../../utils/generateNextPageToken');
+const easyParse = require('../../../utils/easyParse');
+const buildPostsQuery = require('../../../utils/fetchPost');
 
 (async () => {
 	await redisClient.connect().catch(console.error);

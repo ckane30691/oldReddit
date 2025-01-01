@@ -1,7 +1,8 @@
 const authenticate = require('../../../utils/authenticate');
 const validateCommentInput = require('../../../validation/comment');
 const redisClient = require('../../../config/redisClient');
-const { easyParse, padWithZeros } = require('../../../utils/pagination');
+const easyParse = require('../../../utils/easyParse');
+const padWithZeros = require('../../../utils/padWithZeros');
 const adjustDepth = require('../../../utils/comments/adjustDepth');
 const { v4: uuidv4 } = require('uuid');
 const Comment = require('../../../models/Comment');

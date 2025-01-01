@@ -1,11 +1,11 @@
 const redisClient = require('../../../config/redisClient');
+const parseFilters = require('../../../utils/parseFilters');
 const {
-	parseFilters,
 	fetchTopLevelCommentsAndReplies,
 	nestCommentsByParentId,
-	generateNextPageToken,
-	easyParse,
-} = require('../../../utils/pagination');
+} = require('../../../utils/comments/fetchHelpers');
+const easyParse = require('../../../utils/easyParse');
+const generateNextPageToken = require('../../../utils/generateNextPageToken');
 
 (async () => {
 	await redisClient.connect().catch(console.error);

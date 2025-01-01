@@ -1,5 +1,5 @@
 const authenticate = require('../../utils/authenticate');
-const { easyParse } = require('../../utils/pagination');
+const easyParse = require('../../utils/easyParse');
 const { v4: uuidv4 } = require('uuid');
 
 const Post = require('../../models/Post');

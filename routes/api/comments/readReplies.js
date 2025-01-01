@@ -1,10 +1,10 @@
 const redisClient = require('../../../config/redisClient');
+const easyParse = require('../../../utils/easyParse');
 const {
-	easyParse,
 	fetchRepliesUsingParentPath,
 	nestRepliesByParentId,
-	generateNextPageToken,
-} = require('../../../utils/pagination');
+} = require('../../../utils/comments/fetchHelpers');
+const generateNextPageToken = require('../../../utils/generateNextPageToken');
 const adjustDepth = require('../../../utils/comments/adjustDepth');
 
 (async () => {

@@ -1,7 +1,7 @@
 const authenticate = require('../../../utils/authenticate');
 const validateSubRedditInput = require('../../../validation/subReddit');
 const redisClient = require('../../../config/redisClient');
-const { easyParse } = require('../../../utils/pagination');
+const easyParse = require('../../../utils/easyParse');
 const { v4: uuidv4 } = require('uuid');
 const SubReddit = require('../../../models/SubReddit');
 
