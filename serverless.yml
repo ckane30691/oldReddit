@@ -24,12 +24,15 @@ service: oldReddit
 provider:
   name: aws
   runtime: nodejs20.x
-  profile: null # default
   # you can overwrite defaults here
-  #  stage: dev
+  profile: default
+  stage: development
   region: us-west-1
+  apiGateway:
+    minimumCompressionSize: 1024
   environment:
-    NODE_ENV: 'development'
+    NODE_ENV: ${opt:stage, 'development'}
+    REDIS_PASSWORD: ${env:REDIS_PASSWORD}
 
   # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
@@ -46,17 +49,17 @@ provider:
         - dynamodb:GetRecords
         - dynamodb:GetShardIterator
       Resource:
-        #       - arn:aws:dynamodb:${self:provider.region}:*:table/Users
-        #       - arn:aws:dynamodb:${self:provider.region}:*:table/SubReddits
-        #       - arn:aws:dynamodb:${self:provider.region}:*:table/Posts
-        #       - arn:aws:dynamodb:${self:provider.region}:*:table/Comments
-        # - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
-        - arn:aws:dynamodb:ddblocal:*:table/Comments
-        - arn:aws:dynamodb:ddblocal:*:table/Comments/stream/*
-        #       - arn:aws:dynamodb:${self:provider.region}:*:table/Votes
-        # - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
-        - arn:aws:dynamodb:ddblocal:*:table/Votes
-        - arn:aws:dynamodb:ddblocal:*:table/Votes/stream/*
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Users
+        - arn:aws:dynamodb:${self:provider.region}:*:table/SubReddits
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Posts
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Comments
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
+        # - arn:aws:dynamodb:ddblocal:*:table/Comments
+        # - arn:aws:dynamodb:ddblocal:*:table/Comments/stream/*
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Votes
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
+        # - arn:aws:dynamodb:ddblocal:*:table/Votes
+        # - arn:aws:dynamodb:ddblocal:*:table/Votes/stream/*
 
 functions:
   signup:
@@ -156,7 +159,6 @@ plugins:
   - serverless-dynamodb
   - serverless-offline-dynamodb-streams
   - serverless-offline
-
 custom:
   serverless-offline-dynamodb-streams:
     endpoint: http://0.0.0.0:8000
@@ -178,42 +180,38 @@ custom:
     noPrependStageInUrl: true
 resources:
   Resources:
-    VoteDynamoDBTable:
-      Type: AWS::DynamoDB::Table
+    ApiGatewayUsagePlan:
+      Type: AWS::ApiGateway::UsagePlan
       Properties:
-        TableName: Votes
-        AttributeDefinitions:
-          - AttributeName: voteId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: voteId
-            KeyType: HASH
-        StreamSpecification:
-          StreamViewType: NEW_AND_OLD_IMAGES
-    CommentDynamoDBTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: Comments
-        AttributeDefinitions:
-          - AttributeName: postId
-            AttributeType: S
-          - AttributeName: commentId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: postId
-            KeyType: HASH
-          - AttributeName: commentId
-            KeyType: RANGE
-        StreamSpecification:
-          StreamViewType: NEW_IMAGE
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+        UsagePlanName: MyUsagePlan
+        Throttle:
+          RateLimit: 10
+          BurstLimit: 5
+    # VoteDynamoDBTable:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: Votes
+    #     AttributeDefinitions:
+    #       - AttributeName: voteId
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: voteId
+    #         KeyType: HASH
+    #     StreamSpecification:
+    #       StreamViewType: NEW_AND_OLD_IMAGES
+    # CommentDynamoDBTable:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: Comments
+    #     AttributeDefinitions:
+    #       - AttributeName: postId
+    #         AttributeType: S
+    #       - AttributeName: commentId
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: postId
+    #         KeyType: HASH
+    #       - AttributeName: commentId
+    #         KeyType: RANGE
+    #     StreamSpecification:
+    #       StreamViewType: NEW_IMAGE

@@ -4,10 +4,19 @@ const Comment = require('../models/Comment');
 const redisClient = require('../config/redisClient');
 const { padWithZeros, calculateRankingScore } = require('../utils/pagination');
 
-AWS.config.update({
-	region: 'localhost',
-	endpoint: 'http://localhost:8000', // Connect to local DynamoDB
-});
+const isLocal = process.env.NODE_ENV === 'development';
+
+if (isLocal) {
+	AWS.config.update({
+		region: 'localhost',
+		endpoint: 'http://localhost:8000', // Connect to local DynamoDB
+	});
+} else {
+	AWS.config.update({
+		region: 'us-west-1',
+		// Credentials are automatically picked up if running with AWS CLI credentials
+	});
+}
 
 (async () => {
 	await redisClient.connect().catch(console.error);
