@@ -1,9 +1,9 @@
 {
     "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTU3MzQzYjNlMDVlMTAyYTZmMTU3NiIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTcyOTY0MzU1MSwiZXhwIjoxNzI5NjQ3MTUxfQ.zdPPBw4J9Ep42BuWFJS7BokuRhFLv-gvg2-tU89MIDs"
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZTFkYmIzLTlkOTctNGZiOC05MTMwLThmZDI0MTljMWU2OSIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTczMDM1MTg1NSwiZXhwIjoxNzMwMzU1NDU1fQ.IH0hb1PMJXG270fId6tI9kqR79Ekq4OKwGKZrCIxobE"
     },
     "body": {
         "postId": "67100a7ae0d14165de734cbf",
-        "body": "Lambda Comment Here"
+        "body": "Another DynamoDB Test Comment"
     }
 }

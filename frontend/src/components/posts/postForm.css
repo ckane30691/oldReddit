@@ -1,0 +1,35 @@
+.post-form {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-top: 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+    background-color: rgb(210, 227, 246);
+    width: 525px;
+    padding-bottom: 10px;
+}
+
+.post-text-area {
+    border: 1px solid gray;
+    width: 492px;
+    margin-top: 15px;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.post-body-area {
+    height: 250px;
+    margin-bottom: 15px;
+    padding-left: 10px;
+    padding-top: 15px
+}
+
+.post-form-button {
+    width: 85px;
+}
+
+.title-link {
+    padding-top: 12px;
+    padding-left: 10px;
+}

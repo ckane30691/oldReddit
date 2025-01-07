@@ -1,6 +1,6 @@
 {
     "headers": {
-        "Authorization": null
+        "authorization": null
     },
     "path": "/api/comments/67145cd679626bd271b6f4f5/replies",
     "pathParameters": {

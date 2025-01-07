@@ -1,0 +1,24 @@
+.comment-li {
+    width: 100%;
+}
+.time-since-post {
+    color: gray
+}
+
+.small {
+    font-size: 14px;
+}
+
+.comment-body {
+    width: 50%;
+}
+
+.reply-container {
+    border-left: 1px solid gray;
+    padding-left: 10px;
+}
+
+.reply-button {
+    color: gray;
+    font-weight: bold;
+}

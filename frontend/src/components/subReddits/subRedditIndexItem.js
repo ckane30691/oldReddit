@@ -8,12 +8,16 @@ export const SubRedditIndexItem = ({ subReddit }) => {
 	const handleDelete = async (e) => {
 		// let res;
 		e.preventDefault();
-		/*res =*/ await dispatch(deleteSubReddit(subReddit._id));
+		/*res =*/ await dispatch(deleteSubReddit(subReddit.subRedditId));
 	};
 	return (
 		<li>
 			<h1>
-				<Link to={`/subReddits/${subReddit._id}`}>
+				<Link
+					to={`/subReddits/${subReddit.title.split(' ').join('_')}#${
+						subReddit.subRedditId
+					}`}
+				>
 					{subReddit?.title?.toUpperCase()}
 				</Link>{' '}
 				-

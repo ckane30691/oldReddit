@@ -6,3 +6,11 @@
     align-items: center;
     margin-right: 15px;
 }
+
+.upVoted {
+    color: orange;
+}
+
+.downVoted {
+    color: rgb(137,137,255);
+}

@@ -1,7 +1,7 @@
 import React from 'react';
-import {createRoot} from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import './index.css';
-//Components
+
 import configureStore from './store/store.js';
 import App from './App.js';
 import * as serviceWorker from './serviceWorker';
@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	window.store = store;
 	const rootElement = document.getElementById('root');
 	const root = createRoot(rootElement);
-	
+
 	root.render(
 		<Provider store={store}>
 			<App store={store} />
-		</Provider>,
+		</Provider>
 	);
 	serviceWorker.register();
 });

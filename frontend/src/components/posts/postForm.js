@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createPost } from '../../store/slices/entities/postSlice';
 import { useHistory } from 'react-router-dom';
 import { SubRedditDropDown } from '../subReddits/subRedditDropdown';
+require('./postForm.css');
 
 export const PostForm = (props) => {
 	// TODO: ADD EDIT FUNCTIONALITY TO FORM
@@ -14,7 +15,7 @@ export const PostForm = (props) => {
 	const [title, setTitle] = useState('');
 	const [url, setUrl] = useState('');
 	const [body, setBody] = useState('');
-	const [subRedditId, setSubRedditId] = useState('');
+	const [subReddit, setSubReddit] = useState('');
 	// TODO: Write <SubredditDropdown />
 
 	const update = (field) => {
@@ -52,38 +53,45 @@ export const PostForm = (props) => {
 		let post = {
 			title,
 			body,
-			url,
-			subId: subRedditId,
+			redirectLink: url,
+			subReddit,
 		};
 		res = await dispatch(createPost(post));
 		if (res.type === 'posts/create/fulfilled') {
-			history.push(`/posts/${res.payload._id}`);
+			history.push(`/posts/${res.payload.postId}`);
 		}
 	};
 	return (
-		<form onSubmit={handleSubmit}>
+		<form className="post-form" onSubmit={handleSubmit}>
 			<div className="errors">{renderErrors()}</div>
-			<SubRedditDropDown setSubRedditId={setSubRedditId} />
-			<input
+			<SubRedditDropDown setSubReddit={setSubReddit} />
+			<textarea
+				className="post-text-area title-link"
 				required
 				type="text"
 				value={title}
 				onChange={update('title')}
 				placeholder="Enter Title"
 			/>
-			<input
+			<textarea
+				className="post-text-area title-link"
 				type="text"
 				value={url}
 				onChange={update('url')}
-				placeholder="Enter Url"
+				placeholder="Enter Url (Optional)"
 			/>
-			<input
+			<textarea
+				className="post-text-area post-body-area"
 				type="text"
 				value={body}
 				onChange={update('body')}
 				placeholder="Enter Body"
 			/>
-			<input type="submit" value="Create Post" />
+			<input
+				className="comment-button post-form-button"
+				type="submit"
+				value="Create Post"
+			/>
 		</form>
 	);
 };

@@ -1,15 +1,11 @@
-const mongoose = require('mongoose');
-const keys = require('../../../config/keys');
 const redisClient = require('../../../config/redisClient');
+const easyParse = require('../../../utils/easyParse');
 const {
-	easyParse,
 	fetchRepliesUsingParentPath,
-} = require('../../../utils/pagination');
-
-mongoose.connect(keys.mongoURI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+	nestRepliesByParentId,
+} = require('../../../utils/comments/fetchHelpers');
+const generateNextPageToken = require('../../../utils/generateNextPageToken');
+const adjustDepth = require('../../../utils/comments/adjustDepth');
 
 (async () => {
 	await redisClient.connect().catch(console.error);
@@ -17,8 +13,14 @@ mongoose.connect(keys.mongoURI, {
 
 exports.handler = async (event) => {
 	try {
-		const queryParams = event.queryStringParameters || {};
-		const { limit = 5, pageToken = null, parentPath } = easyParse(queryParams);
+		const queryParams = easyParse(event.queryStringParameters) || {};
+		const {
+			limit = 10,
+			pageToken = null,
+			parentPath,
+			topLevelCommentId,
+			depth,
+		} = easyParse(queryParams);
 		const { commentId } = easyParse(event.pathParameters);
 
 		const cacheKey = `replies:${commentId}:${limit}:${JSON.stringify(
@@ -39,23 +41,40 @@ exports.handler = async (event) => {
 		}
 
 		// Cache miss: Fetch replies for the specified comment with pagination
-		const { replies, nextPageToken } = await fetchRepliesUsingParentPath(
+
+		// Decrement depth but keep the correct string formatting
+		const adjustedDepth = adjustDepth(depth);
+
+		const replies = await fetchRepliesUsingParentPath(
+			topLevelCommentId,
 			commentId,
 			parentPath,
 			limit,
+			adjustedDepth,
 			pageToken
 		);
+
+		// const structuredReplies = nestRepliesByParentId(replies, commentId);
+
+		const nextPageToken = generateNextPageToken(replies);
+
 		// Cache the replies with an expiration time
 		redisClient.set(
 			cacheKey,
-			JSON.stringify({ replies, nextPageToken: nextPageToken }),
+			JSON.stringify({
+				replies,
+				nextPageToken: nextPageToken,
+			}),
 			'EX',
 			60 * 5
 		); // Cache for 5 minutes
 
 		return {
 			statusCode: 200,
-			body: JSON.stringify({ replies, replyNextPageToken: nextPageToken }),
+			body: JSON.stringify({
+				replies,
+				replyNextPageToken: nextPageToken,
+			}),
 		};
 	} catch (error) {
 		console.error(error);

@@ -6,6 +6,12 @@
 	align-items: center;
 }
 
+.subReddit {
+	font-size: 30px;
+	text-align: center;
+	border-bottom: 1px dotted gray;
+}
+
 .rank {
 	color: #c6c6c6;
 	font-size: medium;

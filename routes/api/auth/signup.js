@@ -1,65 +1,65 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const validateRegisterInput = require('../../../validation/signup');
+const { v4: uuidv4 } = require('uuid');
 const keys = require('../../../config/keys');
-
-mongoose.connect(keys.mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const User = require('../../../models/User');
 
 exports.handler = async (event) => {
-  const body = JSON.parse(event.body);
-  const { errors, isValid } = validateRegisterInput(body);
+	const body = JSON.parse(event.body);
+	const { errors, isValid } = validateRegisterInput(body);
 
-  if (!isValid) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify(errors),
-    };
-  }
+	if (!isValid) {
+		return {
+			statusCode: 400,
+			body: JSON.stringify(errors),
+		};
+	}
 
-  let user = await User.findOne({ email: body.email });
-  if (user) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ email: 'A user has already registered with this address' }),
-    };
-  }
+	let user = await User.query('email').eq(body.email).using('GSI_Email').exec();
 
-  try {
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(body.password, salt);
-    const payload = {
-      username: body.username,
-      email: body.email,
-      passwordDigest: hash,
-    };
+	if (user.count > 0) {
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				email: 'A user has already registered with this address',
+			}),
+		};
+	}
 
-    let userInstance = new User(payload);
-    await userInstance.save();
+	try {
+		const salt = await bcrypt.genSalt(10);
+		const hash = await bcrypt.hash(body.password, salt);
+		const payload = {
+			userId: uuidv4(),
+			username: body.username,
+			email: body.email,
+			passwordDigest: hash,
+		};
 
-    // Remove passwordDigest from payload
-    payload.id = userInstance.id;
-    delete payload.passwordDigest;
+		let userInstance = new User(payload);
+		await userInstance.save();
 
-    // Sign JWT token
-    const token = jsonwebtoken.sign(
-      payload,
-      keys.secretOrKey,
-      { expiresIn: 3600 }
-    );
+		// Remove passwordDigest from payload
+		payload.id = userInstance.userId;
+		delete payload.passwordDigest;
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        token: 'Bearer ' + token,
-      }),
-    };
-  } catch (error) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error }),
-    };
-  }
+		// Sign JWT token
+		const token = jsonwebtoken.sign(payload, keys.secretOrKey, {
+			expiresIn: 3600,
+		});
+
+		return {
+			statusCode: 200,
+			body: JSON.stringify({
+				success: true,
+				token: 'Bearer ' + token,
+			}),
+		};
+	} catch (error) {
+		return {
+			statusCode: 400,
+			body: JSON.stringify({ error }),
+		};
+	}
 };

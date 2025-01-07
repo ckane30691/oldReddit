@@ -36,8 +36,24 @@ export const CommentForm = (props) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const { postId, parentCommentId, onNewReply, parentPath } = props;
-		let comment = { postId, body, parentCommentId, parentPath };
+		const {
+			postId,
+			parentCommentId,
+			onNewReply,
+			parentPath,
+			depth,
+			setDisplayReplyForm,
+			topLevelCommentId,
+		} = props;
+
+		const comment = {
+			postId,
+			body,
+			parentCommentId,
+			parentPath,
+			depth,
+			topLevelCommentId,
+		};
 
 		let res = await dispatch(createComment(comment));
 		if ((res.type = 'comments/create/fulfilled')) {
@@ -46,6 +62,10 @@ export const CommentForm = (props) => {
 
 		if (onNewReply) {
 			onNewReply(res.payload);
+		}
+
+		if (setDisplayReplyForm) {
+			setDisplayReplyForm(false);
 		}
 	};
 
@@ -59,7 +79,20 @@ export const CommentForm = (props) => {
 				value={body}
 				onChange={update('body')}
 			/>
-			<input className="comment-submit" type="submit" value="Save" />
+			<input
+				className="comment-submit comment-button"
+				type="submit"
+				value="Save"
+			/>
+
+			{props.setDisplayReplyForm && (
+				<button
+					onClick={() => props.setDisplayReplyForm(false)}
+					className="comment-cancel comment-button"
+				>
+					Cancel
+				</button>
+			)}
 		</form>
 	);
 };
