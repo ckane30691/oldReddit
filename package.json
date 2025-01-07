@@ -8,6 +8,7 @@
     "start": "sls offline start --httpPort 5000",
     "frontend-install": "npm install --prefix frontend",
     "frontend": "npm start --prefix frontend",
+    "frontend-buld": "npm build --prefix frontend",
     "dev": "concurrently \"npm run start\" \"npm run frontend\""
   },
   "keywords": [],
@@ -28,6 +29,7 @@
   "devDependencies": {
     "serverless": "^3",
     "serverless-dynamodb": "^0.2.56",
+    "serverless-esbuild": "^1.54.6",
     "serverless-offline": "^13",
     "serverless-offline-dynamodb-streams": "^7.0.0"
   }
