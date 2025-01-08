@@ -35,10 +35,10 @@ A full-stack web application inspired by Reddit’s functionality, built with Dy
   - **5,500+ TPS** for page views
   - **1,000+ TPS** for upvotes
   - **10+ TPS** for post creation
-  - A MongoDB sharding strategy is employed to distribute data across clusters (Posts/Subreddits, Votes, Comments, Users), ensuring scalability and fault tolerance.
+  - A DynamoDB is employed to distribute data across tables (Posts/Subreddits, Votes, Comments, Users), ensuring scalability and fault tolerance.
 - **Caching with Redis**: Implemented Redis LRU caching strategy for frequently accessed data (e.g., hot posts and comments) to further reduce load times and optimize performance.
 - **Precomputed Comment Fetching**: Server-side logic precomputes the path to child replies avoiding a recursive N+1 query allowing child replies to be fetched via regular expression
-- **Reusability**: Frontend components such as a `PaginatedList` can handle paginated views of different data (posts, comments, replies) for scalability.
+- **Reusability**: Frontend components such as the `PaginatedList` can handle paginated views of different data (posts, comments, replies) for scalability.
 
 ## Usage
 
