@@ -1,12 +1,12 @@
 import React from 'react';
 // import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { deletePost } from '../../store/slices/entities/postSlice';
+// import { deletePost } from '../../store/slices/entities/postSlice';
 import { getTimeSincePost } from '../../util/timeSincePost';
 require('./postIndexItem.css');
 
 export const PostIndexItem = ({ post }) => {
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 	// const handleDelete = async (e) => {
 	// 	// let res;
 	// 	e.preventDefault();
