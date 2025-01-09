@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch } from 'react-router-dom';
 import { SessionForm } from './components/session/sessionForm';
 import { AuthRoute, ProtectedRoute } from './util/routeUtil';
 import { Header } from './components/header/header';
@@ -11,15 +11,15 @@ import { SideBar } from './components/sideBar';
 import { PostForm } from './components/posts/postForm';
 import { PostShow } from './components/posts/postShow';
 
-const composeComponents = (...components) => {
-	return () => (
-		<div>
-			{components.map((Component, index) => (
-				<Component key={`comp-${index}`} />
-			))}
-		</div>
-	);
-};
+// const composeComponents = (...components) => {
+// 	return () => (
+// 		<div>
+// 			{components.map((Component, index) => (
+// 				<Component key={`comp-${index}`} />
+// 			))}
+// 		</div>
+// 	);
+// };
 
 // TODO: Posts with links
 // TODO: Posts seed data

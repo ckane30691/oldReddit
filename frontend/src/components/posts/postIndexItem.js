@@ -7,11 +7,11 @@ require('./postIndexItem.css');
 
 export const PostIndexItem = ({ post }) => {
 	const dispatch = useDispatch();
-	const handleDelete = async (e) => {
-		// let res;
-		e.preventDefault();
-		/*res =*/ await dispatch(deletePost(post.postId));
-	};
+	// const handleDelete = async (e) => {
+	// 	// let res;
+	// 	e.preventDefault();
+	// 	/*res =*/ await dispatch(deletePost(post.postId));
+	// };
 
 	const renderTitleLink = () => {
 		if (post.redirectLink) {
