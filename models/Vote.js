@@ -1,10 +1,12 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const dynamoose = require('../config/dynamoose');
 
-const VoteSchema = new Schema({
+const VoteSchema = new dynamoose.Schema({
+	voteId: {
+		type: String,
+		hashKey: true,
+	},
 	userId: {
-		type: Schema.Types.ObjectId,
-		ref: 'users',
+		type: String,
 		required: true,
 	},
 	value: {
@@ -12,13 +14,29 @@ const VoteSchema = new Schema({
 		required: true,
 	},
 	commentId: {
-		type: Schema.Types.ObjectId,
-		ref: 'comments',
+		type: String,
+		required: false,
+		index: [
+			{
+				global: true,
+				name: 'GSI_Find_By_CommentId',
+				rangeKey: 'userId',
+			},
+		],
 	},
 	postId: {
-		type: Schema.Types.ObjectId,
-		ref: 'posts',
+		type: String,
+		required: false,
+		index: [
+			{
+				global: true,
+				name: 'GSI_Find_By_PostId',
+				rangeKey: 'userId',
+			},
+		],
 	},
 });
 
-module.exports = Vote = mongoose.model('votes', VoteSchema);
+const Vote = dynamoose.model('Votes', VoteSchema, { update: true });
+
+module.exports = Vote;

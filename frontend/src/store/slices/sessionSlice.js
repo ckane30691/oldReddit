@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { setAuthToken } from '../../util/sessionApiUtil';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import { clearCache } from '../../util/LRUCache';
 
 const _nullUser = Object.freeze({
 	id: null,
@@ -60,6 +61,8 @@ export const loginUser = createAsyncThunk(
 			setAuthToken(token);
 			// Decode token to get user data
 			const decoded = jwt_decode(token);
+			// Clear any cached votes
+			clearCache('userVoteCache');
 			return decoded;
 		} catch (err) {
 			return rejectWithValue(err.response.data);
@@ -71,6 +74,7 @@ export const logoutUser = createAsyncThunk('user/logout', async () => {
 	localStorage.removeItem('jwtToken');
 	// Remove auth header for future requests
 	setAuthToken(false);
+	clearCache('userVoteCache');
 	return _nullUser;
 });
 
@@ -80,18 +84,18 @@ const sessionSlice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
-		.addCase(signUpUser.fulfilled, (state, action) => {
-			state = action.payload;
-			return state
-		})
-		.addCase(loginUser.fulfilled, (state, action) => {
-			state = action.payload;
-			return state
-		})
-		.addCase(logoutUser.fulfilled, (state, action) => {
-			state = action.payload;
-			return state
-		})
+			.addCase(signUpUser.fulfilled, (state, action) => {
+				state = action.payload;
+				return state;
+			})
+			.addCase(loginUser.fulfilled, (state, action) => {
+				state = action.payload;
+				return state;
+			})
+			.addCase(logoutUser.fulfilled, (state, action) => {
+				state = action.payload;
+				return state;
+			});
 	},
 });
 

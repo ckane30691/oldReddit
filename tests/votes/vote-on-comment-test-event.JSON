@@ -1,10 +1,9 @@
 {
     "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTU3MzQzYjNlMDVlMTAyYTZmMTU3NiIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTcyOTQ4NDg2OCwiZXhwIjoxNzI5NDg4NDY4fQ.1haCQe0lMMAa0NucS21VA1lZknFp2pWoQE_-2tC-v44"
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZTFkYmIzLTlkOTctNGZiOC05MTMwLThmZDI0MTljMWU2OSIsInVzZXJuYW1lIjoiRGVtbyIsImVtYWlsIjoiZGVtb0BkZW1vLmNvbSIsImlhdCI6MTczMDQzMTYzMSwiZXhwIjoxNzMwNDM1MjMxfQ.scb3QHVjxUA3yuH0RakhlcddJlLAlA0Mgm37vObjBz8"
     },
     "body": {
-        "userId": "67157343b3e05e102a6f1576",
         "value": "1",
-        "commentId": "67108ab16527a125c39cd511"
+        "commentId": "703e1e39-ca88-4874-8ef5-8f12835c9556"
     }
 }

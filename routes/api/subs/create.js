@@ -1,61 +1,71 @@
-const mongoose = require('mongoose');
-const keys = require('../../../config/keys');
 const authenticate = require('../../../utils/authenticate');
-const validateSubRedditInput = require('../../../validation/subReddit')
-const { easyParse } = require('../../../utils/pagination')
-mongoose.connect(keys.mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
-
+const validateSubRedditInput = require('../../../validation/subReddit');
+const redisClient = require('../../../config/redisClient');
+const easyParse = require('../../../utils/easyParse');
+const { v4: uuidv4 } = require('uuid');
 const SubReddit = require('../../../models/SubReddit');
 
+(async () => {
+	await redisClient.connect().catch(console.error);
+})();
+
 exports.handler = async (event) => {
-    const token = easyParse(event).headers.authorization?.split(' ')[1];
+	const token = easyParse(event).headers.authorization?.split(' ')[1];
 
-    if (!token) {
-        return {
-            statusCode: 401,
-            body: JSON.stringify({ message: 'No token provided' }),
-        };
-    }
+	if (!token) {
+		return {
+			statusCode: 401,
+			body: JSON.stringify({ message: 'No token provided' }),
+		};
+	}
 
-    try {
-        const user = await authenticate(token);
+	try {
+		const user = await authenticate(token);
 
-        if (!user) {
-            return {
-                statusCode: 401,
-                body: JSON.stringify({ message: 'Invalid token' }),
-            };
-        }
+		if (!user) {
+			return {
+				statusCode: 401,
+				body: JSON.stringify({ message: 'Invalid token' }),
+			};
+		}
 
-        const body = easyParse(event.body);
+		const body = easyParse(event.body);
 
-        const { errors, isValid } = validateSubRedditInput(body);
-        
-        if (!isValid) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: errors })
-            }
-        }
+		const { errors, isValid } = validateSubRedditInput(body);
 
-        const newSubReddit = new SubReddit({
-            moderatorId: user._id,
-            title: body.title,
-            desc: body.desc,
-        });
+		if (!isValid) {
+			return {
+				statusCode: 400,
+				body: JSON.stringify({ message: errors }),
+			};
+		}
 
-        await newSubReddit.save();
+		const newSubReddit = new SubReddit({
+			subRedditId: uuidv4(),
+			moderatorId: user.userId,
+			title: body.title,
+			desc: body.desc,
+			category: 'default', //will eventually revist this
+		});
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify(newSubReddit)
-        }
+		await newSubReddit.save();
 
-    } catch (error) {
-        console.log(error)
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: error })
-        }
-    }
-}
+		const cacheKey = `subReddits:`; // Invalidate all related subreddit caches
+		const keys = await redisClient.keys(cacheKey);
+		for (let i = 0; i < keys.length; i++) {
+			let key = keys[i];
+			await redisClient.del(key);
+		}
+
+		return {
+			statusCode: 200,
+			body: JSON.stringify(newSubReddit),
+		};
+	} catch (error) {
+		console.log(error);
+		return {
+			statusCode: 400,
+			body: JSON.stringify({ message: error }),
+		};
+	}
+};

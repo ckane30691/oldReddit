@@ -1,38 +1,56 @@
 import React, { useState } from 'react';
 import { CommentForm } from './commentForm';
 import { VoteButton } from '../votes/voteButton';
+import { getTimeSincePost } from '../../util/timeSincePost';
 import axios from 'axios';
+require('./commentIndexItem.css');
 
-export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
+export const CommentIndexItem = ({ comment, parentPath = '/', isReply }) => {
 	// State to track loaded replies and nextPageToken for replies
 	const [loadedReplies, setLoadedReplies] = useState(comment.replies || []);
 	const [replyNextPageToken, setReplyNextPageToken] = useState(
 		comment.replyNextPageToken || null
 	);
+	const [displayReplyForm, setDisplayReplyForm] = useState(false);
 	const [loadingReplies, setLoadingReplies] = useState(false);
 
+	const remainingReplies = comment.replyCount - loadedReplies.length;
 	// Function to load more replies
 	const loadMoreReplies = async () => {
-		if (!replyNextPageToken || loadingReplies) return;
+		if (loadingReplies) return;
 
-		setLoadingReplies(true);
+		if (remainingReplies || replyNextPageToken) {
+			setLoadingReplies(true);
 
-		try {
-			const res = await axios.get(`/api/comments/${comment._id}/replies`, {
-				params: {
-					pageToken: replyNextPageToken,
-					parentPath,
-				},
-			});
+			const topLevelCommentId = comment.topLevelCommentId
+				? comment.topLevelCommentId
+				: comment.commentId;
 
-			// Update state with newly loaded replies
-			setLoadedReplies((prevReplies) => [...prevReplies, ...res.data?.replies]);
+			try {
+				const res = await axios.get(
+					`/api/comments/${comment.commentId}/replies`,
+					{
+						params: {
+							pageToken: replyNextPageToken,
+							parentPath,
+							topLevelCommentId,
+							depth: comment.depth,
+						},
+					}
+				);
 
-			setReplyNextPageToken(res.data.replyNextPageToken);
-		} catch (error) {
-			console.error('Error loading more replies:', error);
-		} finally {
-			setLoadingReplies(false);
+				// Update state with newly loaded replies
+				setLoadedReplies((prevReplies) => [
+					...prevReplies,
+					...res.data?.replies,
+				]);
+
+				setReplyNextPageToken(res.data.replyNextPageToken);
+			} catch (error) {
+				console.error('Error loading more replies:', error);
+			} finally {
+				setLoadingReplies(false);
+			}
 		}
 	};
 
@@ -40,8 +58,14 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 	const renderChildComments = () => (
 		<ul>
 			{loadedReplies.map((reply, idx) => (
-				<div className="comment-container" key={`comment${idx}`}>
-					<VoteButton commentId={reply._id} netUpvotes={reply.netUpvotes} />
+				<div
+					className="comment-container reply-container"
+					key={`comment${idx}`}
+				>
+					<VoteButton
+						commentId={reply.commentId}
+						netUpvotes={reply.netUpvotes}
+					/>
 					<CommentIndexItem
 						key={`com${idx}`}
 						comment={reply}
@@ -56,22 +80,40 @@ export const CommentIndexItem = ({ comment, parentPath = '/' }) => {
 		setLoadedReplies((prevReplies) => [...prevReplies, newReply]);
 	};
 
-	return (
-		<li>
-			<div className="comment-body">{comment.body}</div>
+	const displayForm = () => {
+		setDisplayReplyForm(true);
+	};
 
-			<CommentForm
-				postId={comment.postId}
-				parentCommentId={comment._id}
-				parentPath={comment.parentPath}
-				onNewReply={handleNewReply}
-			/>
+	return (
+		<li className="comment-li">
+			<h1 className="author small">
+				{comment.author}{' '}
+				<span className="time-since-post">{getTimeSincePost(comment)}</span>
+			</h1>
+			<div className="comment-body">{comment.body}</div>
+			<button className="reply-button small" onClick={displayForm}>
+				reply
+			</button>
+
+			{displayReplyForm && (
+				<CommentForm
+					setDisplayReplyForm={setDisplayReplyForm}
+					postId={comment.postId}
+					parentCommentId={comment.commentId}
+					parentPath={comment.parentPath}
+					depth={comment.depth}
+					topLevelCommentId={comment.topLevelCommentId}
+					onNewReply={handleNewReply}
+				/>
+			)}
 
 			{renderChildComments()}
 
-			{replyNextPageToken && (
+			{(replyNextPageToken || remainingReplies > 0) && (
 				<button onClick={loadMoreReplies} disabled={loadingReplies}>
-					{loadingReplies ? 'Loading...' : 'Load more replies'}
+					{loadingReplies
+						? 'Loading...'
+						: `Load more comments (${remainingReplies} remaining)`}
 				</button>
 			)}
 		</li>

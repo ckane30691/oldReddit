@@ -1,6 +1,6 @@
 {
     "headers": {
-        "Authorization": null
+        "authorization": null
     },
     "body": "{\"email\": \"demo@demo.com\", \"password\": \"password\"}"
 }

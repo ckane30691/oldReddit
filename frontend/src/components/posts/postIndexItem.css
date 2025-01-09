@@ -5,3 +5,21 @@
 .link-container {
     margin-left: 10px;
 }
+
+.author {
+    color: #369;
+    font-weight: bold;
+}
+
+.post-submitted-info {
+    color: gray;
+}
+
+.post-comment-count {
+    color: gray;
+    font-weight: bold;
+}
+
+.fa-link {
+    font-size: 23px;
+}

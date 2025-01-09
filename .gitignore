@@ -4,6 +4,7 @@ jspm_packages
 
 # Serverless directories
 .serverless
+dynamodb
 
 # Config
 config/keysDev.js

@@ -62,25 +62,26 @@ const commentSlice = createSlice({
 			.addCase(fetchComments.fulfilled, (state, action) => {
 				console.log(action);
 				action?.payload?.comments?.forEach((comment) => {
-					state[comment._id] = comment;
+					state[comment.commentId] = comment;
 				});
 				return state;
 			})
 			.addCase(createComment.fulfilled, (state, action) => {
 				if (!action.payload.parentCommentId) {
-					state[action.payload._id] = action.payload;
+					state[action.payload.commentId] = action.payload;
 				} else {
+					//TODO FIX THIS SINCE COMMENTS ARE STRUCTURED ON BACKEND
 					const _recursiveInsert = (arr) => {
 						for (let i = 0; i < arr.length; i++) {
 							let obj = arr[i];
-							if (obj._id === action.payload.parentCommentId) {
+							if (obj.commentId === action.payload.parentCommentId) {
 								(obj.replies = obj.replies || []).push(action.payload);
 								return;
 							}
 							if (!obj.replies) continue;
 							for (let j = 0; j < obj.replies.length; j++) {
 								let child = obj.replies[j];
-								if (child._id === action.payload.parentCommentId) {
+								if (child.commentId === action.payload.parentCommentId) {
 									return (child.replies = child.replies || []).push(
 										action.payload
 									);
@@ -94,7 +95,7 @@ const commentSlice = createSlice({
 				}
 			})
 			.addCase(deleteComment.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
+				state[action.payload.commentId] = action.payload;
 			});
 	},
 });

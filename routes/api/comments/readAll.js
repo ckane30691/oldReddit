@@ -1,17 +1,11 @@
-const mongoose = require('mongoose');
-const keys = require('../../../config/keys');
 const redisClient = require('../../../config/redisClient');
+const parseFilters = require('../../../utils/parseFilters');
 const {
-	parseFilters,
-	buildCommentQueryAndSort,
-	structureCommentsByParentPath,
-	generateNextPageToken,
-	easyParse,
-} = require('../../../utils/pagination');
-mongoose.connect(keys.mongoURI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+	fetchTopLevelCommentsAndReplies,
+	nestCommentsByParentId,
+} = require('../../../utils/comments/fetchHelpers');
+const easyParse = require('../../../utils/easyParse');
+const generateNextPageToken = require('../../../utils/generateNextPageToken');
 
 (async () => {
 	await redisClient.connect().catch(console.error);
@@ -19,7 +13,7 @@ mongoose.connect(keys.mongoURI, {
 
 exports.handler = async (event) => {
 	try {
-		const queryParams = event.queryStringParameters || {};
+		const queryParams = easyParse(event.queryStringParameters) || {};
 		const { postId, view, limit, pageToken } = parseFilters(
 			queryParams,
 			'comments'
@@ -49,28 +43,21 @@ exports.handler = async (event) => {
 			};
 		}
 
-		// Cache miss: Fetch from MongoDB
-		const aggregatedComments = await buildCommentQueryAndSort(
+		// Cache miss: Fetch from DynamoDB
+		const topLevelCommentsAndReplies = await fetchTopLevelCommentsAndReplies(
 			postId,
 			view,
 			pageToken,
 			limit
 		);
-		const { topLevelComments, replies } = aggregatedComments[0];
 
-		const replyLimit = 5;
+		console.log(topLevelCommentsAndReplies);
 
-		const structuredComments = structureCommentsByParentPath(
-			topLevelComments,
-			replies,
-			replyLimit
+		const structuredComments = nestCommentsByParentId(
+			topLevelCommentsAndReplies
 		);
 
-		const nextPageToken = generateNextPageToken(
-			structuredComments,
-			limit,
-			view
-		);
+		const nextPageToken = generateNextPageToken(topLevelCommentsAndReplies);
 
 		// Cache the results with an expiration time
 		redisClient.set(

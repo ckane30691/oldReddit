@@ -63,7 +63,7 @@ export const SessionForm = (props) => {
 	};
 
 	const handleSubmit = async (e) => {
-		let res;
+		// let res;
 		e.preventDefault();
 		if (formType === 'login') {
 			let user = {
@@ -71,7 +71,7 @@ export const SessionForm = (props) => {
 				password,
 			};
 
-			res = await dispatch(loginUser(user));
+			await dispatch(loginUser(user));
 		} else {
 			let user = {
 				username,
@@ -80,7 +80,7 @@ export const SessionForm = (props) => {
 				password2,
 			};
 
-			res = await dispatch(signUpUser(user));
+			await dispatch(signUpUser(user));
 		}
 	};
 

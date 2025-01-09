@@ -1,25 +1,73 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const dynamoose = require('../config/dynamoose');
 
-const CommentSchema = new Schema(
+const CommentSchema = new dynamoose.Schema(
 	{
+		postId: {
+			type: String,
+			hashKey: true, // Partition key
+			index: [
+				{
+					global: true,
+					name: 'GSI_Hot',
+					rangeKey: 'parentPath_rankingScore_createdAt',
+				},
+				{
+					global: true,
+					name: 'GSI_Top',
+					rangeKey: 'parentPath_netUpvotes_createdAt',
+				},
+				{
+					global: true,
+					name: 'GSI_New',
+					rangeKey: 'parentPath_createdAt',
+				},
+			],
+		},
+		commentId: {
+			type: String,
+			rangeKey: true, // Sort key (for queries by post)
+			required: true,
+			index: [
+				{
+					global: true,
+					name: 'GSI_Find_By_CommentId',
+				},
+			],
+		},
 		userId: {
-			type: Schema.Types.ObjectId,
-			ref: 'users',
+			type: String,
 			required: true,
 		},
-		postId: {
-			type: Schema.Types.ObjectId,
-			ref: 'posts',
+		author: {
+			type: String,
 			required: true,
+		},
+		topLevelCommentId: {
+			type: String,
+			required: false,
 		},
 		parentCommentId: {
-			type: Schema.Types.ObjectId,
-			ref: 'comments',
+			type: String,
+			required: false, // Null for top-level comments
+			index: [
+				{
+					global: true,
+					name: 'GSI_Hot_Replies',
+					rangeKey: 'parentPath_rankingScore_createdAt',
+				},
+			],
 		},
 		body: {
 			type: String,
-			required: [true, 'A body is required'],
+			required: true,
+		},
+		depth: {
+			type: String,
+			default: '99',
+		},
+		replyCount: {
+			type: Number,
+			default: 0,
 		},
 		rankingScore: {
 			type: Number,
@@ -31,23 +79,27 @@ const CommentSchema = new Schema(
 		},
 		parentPath: {
 			type: String,
-			default: '/'
-		}
+			default: '/',
+		},
+		// Composite Attributes for GSIs
+		parentPath_rankingScore_createdAt: {
+			type: String,
+			required: true,
+		},
+		parentPath_netUpvotes_createdAt: {
+			type: String,
+			required: true,
+		},
+		parentPath_createdAt: {
+			type: String,
+			required: true,
+		},
 	},
-	{timestamps: true}
+	{
+		timestamps: true,
+	}
 );
 
-CommentSchema.methods.calculateRankingScore = function() {
-    const G = 1.8; // The decay factor (adjust as needed)
+const Comment = dynamoose.model('Comments', CommentSchema, { update: true });
 
-    // Get the number of hours since the post was created
-    const now = new Date();
-    const postAgeInMilliseconds = now - this.createdAt;
-    const postAgeInHours = postAgeInMilliseconds / (1000 * 60 * 60); // Convert ms to hours
-    // Calculate the rankingScore using the netUpvotes
-    const rankingScore = this.netUpvotes / Math.pow((postAgeInHours + 2), G);
-
-    this.rankingScore = rankingScore;
-};
-
-module.exports = Comment = mongoose.model('comments', CommentSchema);
+module.exports = Comment;

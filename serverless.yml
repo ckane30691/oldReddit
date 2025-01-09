@@ -1,3 +1,5 @@
+app: oldreddit
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
 # Welcome to Serverless!
 #
 # This file is the main config file for your service.
@@ -18,43 +20,50 @@ service: oldReddit
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
-# frameworkVersion: "=X.X.X"
 
 provider:
   name: aws
   runtime: nodejs20.x
+  # you can overwrite defaults here
+  profile: default
+  stage: development
+  region: us-west-1
+  apiGateway:
+    minimumCompressionSize: 1024
+  environment:
+    NODE_ENV: ${opt:stage, 'development'}
+    REDIS_PASSWORD: ${env:REDIS_PASSWORD}
 
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+  # you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:ListStreams
+        - dynamodb:DescribeStream
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+      Resource:
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Users
+        - arn:aws:dynamodb:${self:provider.region}:*:table/SubReddits
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Posts
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Comments
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Votes
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
+        # - arn:aws:dynamodb:ddblocal:*:table/Comments
+        # - arn:aws:dynamodb:ddblocal:*:table/Comments/stream/*
+        # - arn:aws:dynamodb:ddblocal:*:table/Votes
+        # - arn:aws:dynamodb:ddblocal:*:table/Votes/stream/*
 
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-# environment:
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
+package:
+  individually: true
+  exclude: frontend/**
 
 functions:
   signup:
@@ -117,66 +126,103 @@ functions:
       - http:
           path: api/comments
           method: post
-  readAllComments:
+  getAllComments:
     handler: routes/api/comments/readAll.handler
     events:
       - http:
           path: api/comments
           method: get
-  readReplies:
+  getReplies:
     handler: routes/api/comments/readReplies.handler
     events:
       - http:
           path: api/comments/{commentId}/replies
           method: get
-    #      - websocket: $connect
-    #      - s3: ${env:BUCKET}
-    #      - schedule: rate(10 minutes)
-    #      - sns: greeter-topic
-    #      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-    #      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
-    #      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
-    #      - iot:
-    #          sql: "SELECT * FROM 'some_topic'"
-    #      - cloudwatchEvent:
-    #          event:
-    #            source:
-    #              - "aws.ec2"
-    #            detail-type:
-    #              - "EC2 Instance State-change Notification"
-    #            detail:
-    #              state:
-    #                - pending
-    #      - cloudwatchLog: '/aws/lambda/hello'
-    #      - cognitoUserPool:
-    #          pool: MyUserPool
-    #          trigger: PreSignUp
-    #      - alb:
-    #          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
-    #          priority: 1
-    #          conditions:
-    #            host: example.com
-    #            path: /hello
+  updateNetUpvotes:
+    handler: taskrunners/updateNetUpvotes.handler
+    events:
+      - stream:
+          enabled: true
+          type: dynamodb
+          arn:
+            - arn:aws:dynamodb:us-west-1:034362062339:table/Votes/stream/2024-11-09T21:19:31.071
+              # Fn::GetAtt: [VoteDynamoDBTable, StreamArn]
+          batchSize: 1
+          startingPosition: LATEST
+  updateReplyCount:
+    handler: taskrunners/updateReplyCount.handler
+    events:
+      - stream:
+          enabled: true
+          type: dynamodb
+          arn:
+            - arn:aws:dynamodb:us-west-1:034362062339:table/Comments/stream/2024-11-11T05:08:56.344
+            # Fn::GetAtt: [CommentDynamoDBTable, StreamArn]
+          batchSize: 1
+          startingPosition: LATEST
 
-    #    Define function environment variables here
-    environment:
-      NODE_ENV: 'development'
-#      variable2: value2
 plugins:
+  - serverless-esbuild
+  - serverless-dynamodb
+  - serverless-offline-dynamodb-streams
   - serverless-offline
-
 custom:
+  esbuild:
+    bundle: true
+    minify: false
+    target: node20
+  serverless-offline-dynamodb-streams:
+    endpoint: http://0.0.0.0:8000
+  serverless-dynamodb:
+    stages:
+      - development
+    start:
+      docker: true
+      dockerImage: amazon/dynamodb-local
+      port: 8000
+      sharedDb: true
+      inMemory: false # Set to false if you want persistent storage
+      noStart: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true # Automatically create tables on start         s
   serverless-offline:
     port: 5000
     noPrependStageInUrl: true
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:
+  Resources:
+    ApiGatewayUsagePlan:
+      Type: AWS::ApiGateway::UsagePlan
+      Properties:
+        UsagePlanName: MyUsagePlan
+        Throttle:
+          RateLimit: 10
+          BurstLimit: 5
+    # VoteDynamoDBTable:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: Votes
+    #     AttributeDefinitions:
+    #       - AttributeName: voteId
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: voteId
+    #         KeyType: HASH
+    #     StreamSpecification:
+    #       StreamViewType: NEW_AND_OLD_IMAGES
+    # CommentDynamoDBTable:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: Comments
+    #     AttributeDefinitions:
+    #       - AttributeName: postId
+    #         AttributeType: S
+    #       - AttributeName: commentId
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: postId
+    #         KeyType: HASH
+    #       - AttributeName: commentId
+    #         KeyType: RANGE
+    #     StreamSpecification:
+    #       StreamViewType: NEW_IMAGE

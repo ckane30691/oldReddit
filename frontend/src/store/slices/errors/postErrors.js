@@ -1,4 +1,4 @@
-import { buildCreateSlice, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import {
 	fetchPost,
 	fetchPosts,

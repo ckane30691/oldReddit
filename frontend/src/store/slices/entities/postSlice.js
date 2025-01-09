@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { createVote } from './votes';
+// import { createVote } from './votes';
 import { createSelector } from 'reselect';
 import axios from 'axios';
 
@@ -63,7 +63,7 @@ export const updatePost = createAsyncThunk(
 	'posts/update',
 	async (post, { rejectWithValue }) => {
 		try {
-			let res = await axios.post(`/api/posts${post._id}`, post);
+			let res = await axios.post(`/api/posts${post.postId}`, post);
 			return res.data;
 		} catch (err) {
 			return rejectWithValue(err.response.data);
@@ -84,30 +84,30 @@ const postSlice = createSlice({
 		builder
 			.addCase(fetchPosts.fulfilled, (state, action) => {
 				action?.payload?.posts?.forEach((post) => {
-					state[post._id] = post;
+					state[post.postId] = post;
 				});
 				return state;
 			})
 			.addCase(fetchPost.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
+				state[action.payload.postId] = action.payload;
 				return state;
 			})
 			.addCase(createPost.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
+				state[action.payload.postId] = action.payload;
 				return state;
 			})
 			.addCase(updatePost.fulfilled, (state, action) => {
-				delete state[action.payload._id];
+				delete state[action.payload.postId];
 				return state;
 			})
 			.addCase(deletePost.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
-				return state;
-			})
-			.addCase(createVote.fulfilled, (state, action) => {
-				state[action.payload._id] = action.payload;
+				state[action.payload.postId] = action.payload;
 				return state;
 			});
+		// .addCase(createVoteOnPost.fulfilled, (state, action) => {
+		// 	state[action.payload.postId] = action.payload;
+		// 	return state;
+		// });
 	},
 });
 
