@@ -5,10 +5,7 @@ import { CommentIndex } from '../comments/commentIndex';
 import { CommentForm } from '../comments/commentForm';
 import { VoteButton } from '../votes/voteButton';
 import { useSelector } from 'react-redux';
-import {
-	clearComments,
-	fetchComments,
-} from '../../store/slices/entities/commentSlice';
+import { clearComments } from '../../store/slices/entities/commentSlice';
 import { getTimeSincePost } from '../../util/timeSincePost';
 
 export const PostShow = (props) => {
@@ -32,7 +29,7 @@ export const PostShow = (props) => {
 		setHooksReady(false);
 		dispatch(clearComments());
 		fetchOnePost();
-	}, [dispatch, props.match.params.id]);
+	}, [dispatch, props.match.params.id, postId]);
 
 	if (!hooksReady) return <div>Loading...</div>;
 

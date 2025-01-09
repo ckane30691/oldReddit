@@ -23,7 +23,7 @@ export const VoteButton = (props) => {
 		if (cachedVote) {
 			setHasVoted(cachedVote.value);
 		}
-	}, [props.postId, props.commentId]);
+	}, [props.postId, props.commentId, props]);
 
 	const handleVote = async (e) => {
 		e.preventDefault();
