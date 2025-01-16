@@ -32,13 +32,14 @@ A full-stack web application inspired by Reddit’s functionality, built with Dy
 ## Highlights
 
 - **Serverless Microservice Architecture**: Built on AWS Lambda, each endpoint is an independently scalable function. Lambda’s pay-as-you-go model reduces costs, and each function scales automatically based on load, ensuring a reliable and cost-efficient solution.
-- **Efficient Data Fetching**: Uses `Promise.all` to handle multiple asynchronous queries for posts and comments, reducing overall load time.
+- **Efficient Data Fetching**: Uses database triggers via dynamoDB streams to handle multiple table updates for posts and comments, reducing overall load time.
 - **Precomputed Post & Comment Ranking**: Implements precomputed ranking scores (`rankingScore`, `netUpvotes`) to sort content efficiently based on "Hot," "New," and "Top" filters.
 - **Database Throughput**: The application is designed to handle heavy read/write loads and supports the following throughput:
   - **8,000+ Transactions per Second (TPS)** for reads (screen views)
   - **5,500+ TPS** for page views
   - **1,000+ TPS** for upvotes
   - **10+ TPS** for post creation
+  - **100k+ TPS** for comment reads and writes
   - A DynamoDB is employed to distribute data across tables (Posts/Subreddits, Votes, Comments, Users), ensuring scalability and fault tolerance.
 - **Caching with Redis**: Implemented Redis LRU caching strategy for frequently accessed data (e.g., hot posts and comments) to further reduce load times and optimize performance.
 - **Precomputed Comment Fetching**: Server-side logic precomputes the path to child replies avoiding a recursive N+1 query allowing child replies to be fetched via regular expression
@@ -67,7 +68,7 @@ The application supports Reddit-like functionality, including:
 
 ### Current Setup
 
-The application currently uses a single MongoDB cluster managed by MongoDB Atlas with the following collections:
+The application currently uses DynamoDB with the following collections:
 
 - **Users**
 - **Posts**
@@ -80,9 +81,9 @@ The application currently uses a single MongoDB cluster managed by MongoDB Atlas
 To prepare for scalability, I’m utilizing DynamoDB which is built to handle millions of TPS and is great for high read volume because it uses B-trees. For the traffic and workload outlined, sharding is effective for distributing high read/write loads while minimizing operational complexity. Here’s the planned approach:
 
 - **Posts & Subreddits**: Data will be sharded based on `subredditId` to balance the high volume of post reads and writes across nodes. To manage “hot” subreddits, a compound shard key such as `subredditId + createdAt` can help distribute load further.
-- **Votes**: Vote data will be sharded by `postId`, providing efficient scaling and balancing, with 1,000+ TPS anticipated for votes. Sharding by `postId` helps manage high-throughput, read-heavy voting activity effectively.
+- **Votes**: Vote data will be sharded by `voteId`, providing efficient scaling and balancing, wit a global secondary index on `userId` for efficient querying of votes by user to display vote history.
 
-- **Comments**: Sharded by `postId`, which ties comments to their respective posts and allows MongoDB to distribute load and support recursive growth in comment threads efficiently.
+- **Comments**: Sharded by `postId`, which ties comments to their respective posts and allows DynamoDB to distribute load and support recursive growth in comment threads efficiently.
 
 - **Users**: User data will be stored and sharded by `userId`, ensuring that user-related activities and queries remain fast and distributed across the cluster.
 
