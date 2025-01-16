@@ -81,7 +81,7 @@ The application currently uses DynamoDB with the following collections:
 To prepare for scalability, I’m utilizing DynamoDB which is built to handle millions of TPS and is great for high read volume because it uses B-trees. For the traffic and workload outlined, sharding is effective for distributing high read/write loads while minimizing operational complexity. Here’s the planned approach:
 
 - **Posts & Subreddits**: Data will be sharded based on `subredditId` to balance the high volume of post reads and writes across nodes. To manage “hot” subreddits, a compound shard key such as `subredditId + createdAt` can help distribute load further.
-- **Votes**: Vote data will be sharded by `voteId`, providing efficient scaling and balancing, wit a global secondary index on `userId` for efficient querying of votes by user to display vote history.
+- **Votes**: Vote data will be sharded by `voteId`, providing efficient scaling and balancing, with a global secondary index on `userId` for efficient querying of votes by user to display vote history.
 
 - **Comments**: Sharded by `postId`, which ties comments to their respective posts and allows DynamoDB to distribute load and support recursive growth in comment threads efficiently.
 
