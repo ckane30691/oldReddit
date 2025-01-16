@@ -2,6 +2,10 @@
 
 A full-stack web application inspired by Reddit’s functionality, built with DynamoDB, Lambda, React, and Node (DLRN) to support efficient data fetching, scalability, and high performance in a serverless architecture.
 
+## Architecture
+
+![](./docs/Reddit.svg)
+
 ## Table of Contents
 
 - [Features](#features)
