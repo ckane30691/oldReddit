@@ -65,6 +65,42 @@ package:
   individually: true
   exclude: frontend/**
 
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    target: node20
+  serverless-offline-dynamodb-streams:
+    endpoint: http://0.0.0.0:8000
+  serverless-dynamodb:
+    stages:
+      - development
+    start:
+      docker: true
+      dockerImage: amazon/dynamodb-local
+      port: 8000
+      sharedDb: true
+      inMemory: false # Set to false if you want persistent storage
+      noStart: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true # Automatically create tables on start         s
+  serverless-offline:
+    port: 5000
+    noPrependStageInUrl: true
+  cors: &cors
+    origin: 'https://wrote-it.netlify.app'
+    headers:
+      - Content-Type
+      - Authorization
+    allowCredentials: true
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+
 functions:
   signup:
     handler: routes/api/auth/signup.handler
@@ -72,72 +108,84 @@ functions:
       - http:
           path: api/users/signup
           method: post
+          cors: *cors
   login:
     handler: routes/api/auth/login.handler
     events:
       - http:
           path: api/users/login
           method: post
+          cors: *cors
   current:
     handler: routes/api/auth/current.handler
     events:
       - http:
           path: api/users/current
           method: get
+          cors: *cors
   createSubReddit:
     handler: routes/api/subs/create.handler
     events:
       - http:
           path: api/subReddits
           method: post
+          cors: *cors
   getAllSubReddits:
     handler: routes/api/subs/readAll.handler
     events:
       - http:
           path: api/subReddits
           method: get
+          cors: *cors
   vote:
     handler: routes/api/vote.handler
     events:
       - http:
           path: api/votes
           method: post
+          cors: *cors
   getAllPosts:
     handler: routes/api/posts/readAll.handler
     events:
       - http:
           path: api/posts
           method: get
+          cors: *cors
   getOnePost:
     handler: routes/api/posts/readOne.handler
     events:
       - http:
           path: api/posts/{id}
           method: get
+          cors: *cors
   createPost:
     handler: routes/api/posts/create.handler
     events:
       - http:
           path: api/posts
           method: post
+          cors: *cors
   createComment:
     handler: routes/api/comments/create.handler
     events:
       - http:
           path: api/comments
           method: post
+          cors: *cors
   getAllComments:
     handler: routes/api/comments/readAll.handler
     events:
       - http:
           path: api/comments
           method: get
+          cors: *cors
   getReplies:
     handler: routes/api/comments/readReplies.handler
     events:
       - http:
           path: api/comments/{commentId}/replies
           method: get
+          cors: *cors
   updateNetUpvotes:
     handler: taskrunners/updateNetUpvotes.handler
     events:
@@ -166,29 +214,6 @@ plugins:
   - serverless-dynamodb
   - serverless-offline-dynamodb-streams
   - serverless-offline
-custom:
-  esbuild:
-    bundle: true
-    minify: false
-    target: node20
-  serverless-offline-dynamodb-streams:
-    endpoint: http://0.0.0.0:8000
-  serverless-dynamodb:
-    stages:
-      - development
-    start:
-      docker: true
-      dockerImage: amazon/dynamodb-local
-      port: 8000
-      sharedDb: true
-      inMemory: false # Set to false if you want persistent storage
-      noStart: true
-      heapInitial: 200m
-      heapMax: 1g
-      migrate: true # Automatically create tables on start         s
-  serverless-offline:
-    port: 5000
-    noPrependStageInUrl: true
 resources:
   Resources:
     ApiGatewayUsagePlan:
