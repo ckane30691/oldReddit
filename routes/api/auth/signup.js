@@ -70,6 +70,7 @@ exports.handler = async (event) => {
 			}),
 		};
 	} catch (error) {
+		console.log(error);
 		return {
 			statusCode: 400,
 			body: JSON.stringify({ error }),

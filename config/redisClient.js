@@ -13,7 +13,7 @@ if (isLocal) {
 	});
 } else {
 	redisClient = redis.createClient({
-		host: 'redis-15917.c60.us-west-1-2.ec2.redns.redis-cloud.com:15917',
+		host: 'redis-16490.c289.us-west-1-2.ec2.redns.redis-cloud.com:16490',
 		port: 6379,
 		password: keys.redisPassword,
 	});

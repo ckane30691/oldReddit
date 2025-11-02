@@ -26,13 +26,14 @@ provider:
   runtime: nodejs20.x
   # you can overwrite defaults here
   profile: default
-  stage: development
+  stage: production
   region: us-west-1
   apiGateway:
     minimumCompressionSize: 1024
   environment:
     NODE_ENV: ${opt:stage, 'development'}
     REDIS_PASSWORD: ${env:REDIS_PASSWORD}
+    SECRET_OR_KEY: ${env:SECRET_OR_KEY}
 
   # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
@@ -48,13 +49,19 @@ provider:
         - dynamodb:DescribeStream
         - dynamodb:GetRecords
         - dynamodb:GetShardIterator
+        - dynamodb:DescribeTable
       Resource:
         - arn:aws:dynamodb:${self:provider.region}:*:table/Users
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Users/index/*
         - arn:aws:dynamodb:${self:provider.region}:*:table/SubReddits
+        - arn:aws:dynamodb:${self:provider.region}:*:table/SubReddits/index/*
         - arn:aws:dynamodb:${self:provider.region}:*:table/Posts
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Posts/index/*
         - arn:aws:dynamodb:${self:provider.region}:*:table/Comments
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/index/*
         - arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
         - arn:aws:dynamodb:${self:provider.region}:*:table/Votes
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/index/*
         - arn:aws:dynamodb:${self:provider.region}:*:table/Votes/stream/*
         # - arn:aws:dynamodb:ddblocal:*:table/Comments
         # - arn:aws:dynamodb:ddblocal:*:table/Comments/stream/*
