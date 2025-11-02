@@ -7,6 +7,19 @@ const easyParse = require('../../../utils/easyParse');
 })();
 
 exports.handler = async (event) => {
+	if (event.httpMethod === 'OPTIONS') {
+		return {
+			statusCode: 200,
+			headers: {
+				'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
+				'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+				'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+				'Access-Control-Allow-Credentials': true,
+			},
+			body: JSON.stringify({}),
+		};
+	}
+
 	try {
 		// const queryParams = event.queryStringParameters;
 		// const userId = queryParams?.filters;
