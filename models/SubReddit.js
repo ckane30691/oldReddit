@@ -28,7 +28,9 @@ const SubRedditSchema = new dynamoose.Schema({
 });
 
 const SubReddit = dynamoose.model('SubReddits', SubRedditSchema, {
-	update: true,
+	update: false,
+	create: false,
+	waitForActive: false,
 });
 
 module.exports = SubReddit;

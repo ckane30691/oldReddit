@@ -100,6 +100,10 @@ const CommentSchema = new dynamoose.Schema(
 	}
 );
 
-const Comment = dynamoose.model('Comments', CommentSchema, { update: true });
+const Comment = dynamoose.model('Comments', CommentSchema, {
+	update: false,
+	create: false,
+	waitForActive: false,
+});
 
 module.exports = Comment;

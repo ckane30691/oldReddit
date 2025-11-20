@@ -50,6 +50,7 @@ provider:
         - dynamodb:GetRecords
         - dynamodb:GetShardIterator
         - dynamodb:DescribeTable
+        - dynamodb:UpdateTable
       Resource:
         - arn:aws:dynamodb:${self:provider.region}:*:table/Users
         - arn:aws:dynamodb:${self:provider.region}:*:table/Users/index/*

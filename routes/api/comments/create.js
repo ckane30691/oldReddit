@@ -2,6 +2,7 @@ const authenticate = require('../../../utils/authenticate');
 const validateCommentInput = require('../../../validation/comment');
 const redisClient = require('../../../config/redisClient');
 const easyParse = require('../../../utils/easyParse');
+const normalizeHeaders = require('../../../utils/normalizeHeaders');
 const padWithZeros = require('../../../utils/padWithZeros');
 const adjustDepth = require('../../../utils/comments/adjustDepth');
 const { v4: uuidv4 } = require('uuid');
@@ -27,7 +28,11 @@ exports.handler = async (event) => {
 		};
 	}
 
-	const token = easyParse(event).headers.authorization?.split(' ')[1];
+	const eventHeaders = easyParse(event).headers;
+
+	const normalized = normalizeHeaders(eventHeaders);
+
+	const token = normalized.authorization?.split(' ')[1];
 
 	if (!token) {
 		return {

@@ -4,20 +4,11 @@ const keys = require('./keys');
 
 const isLocal = process.env.NODE_ENV === 'development';
 
-let redisClient;
-
-if (isLocal) {
-	redisClient = redis.createClient({
-		host: '127.0.0.1',
-		port: 6379,
-	});
-} else {
-	redisClient = redis.createClient({
-		host: 'redis-16490.c289.us-west-1-2.ec2.redns.redis-cloud.com:16490',
-		port: 6379,
-		password: keys.redisPassword,
-	});
-}
+const redisClient = redis.createClient({
+	url: isLocal
+		? 'redis://127.0.0.1:6379'
+		: `redis://:${process.env.REDIS_PASSWORD}@redis-19321.c90.us-east-1-3.ec2.cloud.redislabs.com:19321`,
+});
 
 redisClient.on('connect', () => {
 	console.log('Connected to Redis');

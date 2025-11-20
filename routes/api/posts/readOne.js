@@ -21,7 +21,7 @@ exports.handler = async (event) => {
 	try {
 		let post = await Post.query('postId').eq(postId).limit(1).exec();
 		post = post[0];
-		console.log(post);
+
 		if (post) {
 			return {
 				statusCode: 200,

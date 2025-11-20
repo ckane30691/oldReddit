@@ -1,4 +1,6 @@
 const authenticate = require('../../../utils/authenticate');
+const normalizeHeaders = require('../../../utils/normalizeHeaders');
+const easyParse = require('../../../utils/easyParse');
 
 const headers = {
 	'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
@@ -16,7 +18,11 @@ exports.handler = async (event) => {
 		};
 	}
 
-	const token = event.headers.authorization?.split(' ')[1];
+	const eventHeaders = easyParse(event).headers;
+
+	const normalized = normalizeHeaders(eventHeaders);
+
+	const token = normalized.authorization?.split(' ')[1];
 
 	if (!token) {
 		return {

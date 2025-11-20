@@ -2,6 +2,7 @@ const authenticate = require('../../../utils/authenticate');
 const redisClient = require('../../../config/redisClient');
 const validatePostInput = require('../../../validation/post');
 const easyParse = require('../../../utils/easyParse');
+const normalizeHeaders = require('../../../utils/normalizeHeaders');
 const { v4: uuidv4 } = require('uuid');
 const Post = require('../../../models/Post');
 
@@ -25,7 +26,12 @@ exports.handler = async (event) => {
 		};
 	}
 
-	const token = easyParse(event).headers.authorization?.split(' ')[1];
+	const eventHeaders = easyParse(event).headers;
+
+	const normalized = normalizeHeaders(eventHeaders);
+
+	const token = normalized.authorization?.split(' ')[1];
+
 	if (!token) {
 		return {
 			statusCode: 401,
