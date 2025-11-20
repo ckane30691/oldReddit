@@ -19,7 +19,7 @@ const sessionLinks = (dummyLogin, dispatch) => (
 		Want to Join? <Link to="/login">Log in</Link>
 		{/*space*/} or {/*space*/}
 		<Link to="/signup">sign up</Link> in seconds!
-		<button className="demo-button" onClick={(e = dummyLogin(e, dispatch))}>
+		<button className="demo-button" onClick={(e) => dummyLogin(e, dispatch)}>
 			Demo
 		</button>
 	</nav>
