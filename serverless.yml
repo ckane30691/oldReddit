@@ -31,7 +31,7 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
   environment:
-    NODE_ENV: ${opt:stage, 'development'}
+    NODE_ENV: ${opt:stage, 'production'}
     REDIS_PASSWORD: ${env:REDIS_PASSWORD}
     SECRET_OR_KEY: ${env:SECRET_OR_KEY}
 
