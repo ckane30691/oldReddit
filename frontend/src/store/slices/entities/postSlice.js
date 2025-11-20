@@ -79,6 +79,13 @@ const postSlice = createSlice({
 			state = {}; // Clears the posts array
 			return state;
 		},
+		incrementReplyCount(state, action) {
+			const { postId, amount = 1 } = action.payload;
+			const post = state.entities.posts[postId];
+			if (post) {
+				post.replyCount = (post.replyCount || 0) + amount;
+			}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -111,6 +118,6 @@ const postSlice = createSlice({
 	},
 });
 
-export const { clearPosts } = postSlice.actions;
+export const { clearPosts, incrementReplyCount } = postSlice.actions;
 
 export default postSlice.reducer;

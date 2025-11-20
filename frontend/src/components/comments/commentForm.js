@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createComment } from '../../store/slices/entities/commentSlice';
+import { incrementReplyCount } from '../../store/slices/entities/postSlice';
 require('./commentForm.css');
 
 export const CommentForm = (props) => {
@@ -59,6 +60,8 @@ export const CommentForm = (props) => {
 		if ((res.type = 'comments/create/fulfilled')) {
 			setBody('');
 		}
+
+		dispatch(incrementReplyCount({ postId }));
 
 		if (onNewReply) {
 			onNewReply(res.payload);
