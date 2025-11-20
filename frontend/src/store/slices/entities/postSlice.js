@@ -81,7 +81,7 @@ const postSlice = createSlice({
 		},
 		incrementReplyCount(state, action) {
 			const { postId, amount = 1 } = action.payload;
-			const post = state.entities.posts[postId];
+			const post = state[postId];
 			if (post) {
 				post.replyCount = (post.replyCount || 0) + amount;
 			}
