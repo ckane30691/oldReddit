@@ -5,16 +5,18 @@ const { v4: uuidv4 } = require('uuid');
 const keys = require('../../../config/keys');
 const User = require('../../../models/User');
 
+const headers = {
+	'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
+	'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+	'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+	'Access-Control-Allow-Credentials': true,
+};
+
 exports.handler = async (event) => {
 	if (event.httpMethod === 'OPTIONS') {
 		return {
 			statusCode: 200,
-			headers: {
-				'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
-				'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-				'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-				'Access-Control-Allow-Credentials': true,
-			},
+			headers,
 			body: JSON.stringify({}),
 		};
 	}
@@ -25,6 +27,7 @@ exports.handler = async (event) => {
 	if (!isValid) {
 		return {
 			statusCode: 400,
+			headers,
 			body: JSON.stringify(errors),
 		};
 	}
@@ -34,6 +37,7 @@ exports.handler = async (event) => {
 	if (user.count > 0) {
 		return {
 			statusCode: 400,
+			headers,
 			body: JSON.stringify({
 				email: 'A user has already registered with this address',
 			}),
@@ -64,6 +68,7 @@ exports.handler = async (event) => {
 
 		return {
 			statusCode: 200,
+			headers,
 			body: JSON.stringify({
 				success: true,
 				token: 'Bearer ' + token,
@@ -73,6 +78,7 @@ exports.handler = async (event) => {
 		console.log(error);
 		return {
 			statusCode: 400,
+			headers,
 			body: JSON.stringify({ error }),
 		};
 	}

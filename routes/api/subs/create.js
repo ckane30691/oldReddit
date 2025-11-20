@@ -9,16 +9,18 @@ const SubReddit = require('../../../models/SubReddit');
 	await redisClient.connect().catch(console.error);
 })();
 
+const headers = {
+	'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
+	'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+	'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+	'Access-Control-Allow-Credentials': true,
+};
+
 exports.handler = async (event) => {
 	if (event.httpMethod === 'OPTIONS') {
 		return {
 			statusCode: 200,
-			headers: {
-				'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
-				'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-				'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-				'Access-Control-Allow-Credentials': true,
-			},
+			headers,
 			body: JSON.stringify({}),
 		};
 	}
@@ -28,6 +30,7 @@ exports.handler = async (event) => {
 	if (!token) {
 		return {
 			statusCode: 401,
+			headers,
 			body: JSON.stringify({ message: 'No token provided' }),
 		};
 	}
@@ -38,6 +41,7 @@ exports.handler = async (event) => {
 		if (!user) {
 			return {
 				statusCode: 401,
+				headers,
 				body: JSON.stringify({ message: 'Invalid token' }),
 			};
 		}
@@ -49,6 +53,7 @@ exports.handler = async (event) => {
 		if (!isValid) {
 			return {
 				statusCode: 400,
+				headers,
 				body: JSON.stringify({ message: errors }),
 			};
 		}
@@ -72,12 +77,14 @@ exports.handler = async (event) => {
 
 		return {
 			statusCode: 200,
+			headers,
 			body: JSON.stringify(newSubReddit),
 		};
 	} catch (error) {
 		console.log(error);
 		return {
 			statusCode: 400,
+			headers,
 			body: JSON.stringify({ message: error }),
 		};
 	}

@@ -11,16 +11,18 @@ const adjustDepth = require('../../../utils/comments/adjustDepth');
 	await redisClient.connect().catch(console.error);
 })();
 
+const headers = {
+	'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
+	'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+	'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+	'Access-Control-Allow-Credentials': true,
+};
+
 exports.handler = async (event) => {
 	if (event.httpMethod === 'OPTIONS') {
 		return {
 			statusCode: 200,
-			headers: {
-				'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
-				'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-				'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-				'Access-Control-Allow-Credentials': true,
-			},
+			headers,
 			body: JSON.stringify({}),
 		};
 	}
@@ -49,6 +51,7 @@ exports.handler = async (event) => {
 
 			return {
 				statusCode: 200,
+				headers,
 				body: JSON.stringify({ replies, replyNextPageToken: nextPageToken }),
 			};
 		}
@@ -84,6 +87,7 @@ exports.handler = async (event) => {
 
 		return {
 			statusCode: 200,
+			headers,
 			body: JSON.stringify({
 				replies,
 				replyNextPageToken: nextPageToken,
@@ -93,6 +97,7 @@ exports.handler = async (event) => {
 		console.error(error);
 		return {
 			statusCode: 500,
+			headers,
 			body: JSON.stringify({ error: 'Something went wrong' }),
 		};
 	}

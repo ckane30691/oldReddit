@@ -6,16 +6,18 @@ const Post = require('../../models/Post');
 const Comment = require('../../models/Comment');
 const Vote = require('../../models/Vote');
 
+const headers = {
+	'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
+	'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+	'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+	'Access-Control-Allow-Credentials': true,
+};
+
 exports.handler = async (event) => {
 	if (event.httpMethod === 'OPTIONS') {
 		return {
 			statusCode: 200,
-			headers: {
-				'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
-				'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-				'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-				'Access-Control-Allow-Credentials': true,
-			},
+			headers,
 			body: JSON.stringify({}),
 		};
 	}
@@ -25,6 +27,7 @@ exports.handler = async (event) => {
 	if (!token) {
 		return {
 			statusCode: 403,
+			headers,
 			body: JSON.stringify({ message: 'Authorization token missing' }),
 		};
 	}
@@ -35,6 +38,7 @@ exports.handler = async (event) => {
 		if (!user) {
 			return {
 				statusCode: 401,
+				headers,
 				body: JSON.stringify({ message: 'Invalid token' }),
 			};
 		}
@@ -44,7 +48,7 @@ exports.handler = async (event) => {
 		// Handle vote on a post or a comment
 		// TODO: MOVE TO DB TRIGGER
 		let response;
-		console.log('VOTE BODY: ', body);
+
 		if (body.commentId) {
 			response = await handleVoteOnComment(body, user);
 		} else if (body.postId) {
@@ -52,6 +56,7 @@ exports.handler = async (event) => {
 		} else {
 			return {
 				statusCode: 400,
+				headers,
 				body: JSON.stringify({
 					message: 'postId or commentId must be provided',
 				}),
@@ -60,12 +65,14 @@ exports.handler = async (event) => {
 
 		return {
 			statusCode: 200,
+			headers,
 			body: JSON.stringify(response),
 		};
 	} catch (error) {
 		console.log(error);
 		return {
 			statusCode: 500,
+			headers,
 			body: JSON.stringify({ message: 'Internal server error', error }),
 		};
 	}

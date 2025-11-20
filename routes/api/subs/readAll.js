@@ -6,16 +6,18 @@ const easyParse = require('../../../utils/easyParse');
 	await redisClient.connect().catch(console.error);
 })();
 
+const headers = {
+	'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
+	'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+	'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+	'Access-Control-Allow-Credentials': true,
+};
+
 exports.handler = async (event) => {
 	if (event.httpMethod === 'OPTIONS') {
 		return {
 			statusCode: 200,
-			headers: {
-				'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
-				'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-				'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-				'Access-Control-Allow-Credentials': true,
-			},
+			headers,
 			body: JSON.stringify({}),
 		};
 	}
@@ -39,6 +41,7 @@ exports.handler = async (event) => {
 
 			return {
 				statusCode: 200,
+				headers,
 				body: JSON.stringify(subReddits),
 			};
 		}
@@ -54,12 +57,14 @@ exports.handler = async (event) => {
 		); // Cache for 1 hour
 		return {
 			statusCode: 200,
+			headers,
 			body: JSON.stringify(subReddits),
 		};
 	} catch (err) {
 		console.log(err);
 		return {
 			statusCode: 404,
+			headers,
 			body: JSON.stringify({ noSubRedditsFound: 'No subReddits found' }),
 		};
 	}

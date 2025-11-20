@@ -8,16 +8,18 @@ const buildPostsQuery = require('../../../utils/fetchPost');
 	await redisClient.connect().catch(console.error);
 })();
 
+const headers = {
+	'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
+	'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+	'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+	'Access-Control-Allow-Credentials': true,
+};
+
 exports.handler = async (event) => {
 	if (event.httpMethod === 'OPTIONS') {
 		return {
 			statusCode: 200,
-			headers: {
-				'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
-				'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-				'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-				'Access-Control-Allow-Credentials': true,
-			},
+			headers,
 			body: JSON.stringify({}),
 		};
 	}
@@ -36,6 +38,7 @@ exports.handler = async (event) => {
 		if (!subReddit) {
 			return {
 				statusCode: 400,
+				headers,
 				body: JSON.stringify({ error: 'subReddit is required' }),
 			};
 		}
@@ -50,6 +53,7 @@ exports.handler = async (event) => {
 			let { posts, nextPageToken } = easyParse(cachedPosts);
 			return {
 				statusCode: 200,
+				headers,
 				body: JSON.stringify({ posts, nextPageToken }),
 			};
 		}
@@ -70,12 +74,14 @@ exports.handler = async (event) => {
 
 		return {
 			statusCode: 200,
+			headers,
 			body: JSON.stringify({ posts, nextPageToken }),
 		};
 	} catch (error) {
 		console.error(error);
 		return {
 			statusCode: 400,
+			headers,
 			body: JSON.stringify({ error: 'Something went wrong', details: error }),
 		};
 	}

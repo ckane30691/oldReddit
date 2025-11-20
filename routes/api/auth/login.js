@@ -4,16 +4,18 @@ const validateLoginInput = require('../../../validation/login');
 const keys = require('../../../config/keys');
 const User = require('../../../models/User');
 
+const headers = {
+	'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
+	'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+	'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+	'Access-Control-Allow-Credentials': true,
+};
+
 exports.handler = async (event) => {
 	if (event.httpMethod === 'OPTIONS') {
 		return {
 			statusCode: 200,
-			headers: {
-				'Access-Control-Allow-Origin': 'https://wrote-it.netlify.app',
-				'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-				'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-				'Access-Control-Allow-Credentials': true,
-			},
+			headers,
 			body: JSON.stringify({}),
 		};
 	}
@@ -24,6 +26,7 @@ exports.handler = async (event) => {
 	if (!isValid) {
 		return {
 			statusCode: 400,
+			headers,
 			body: JSON.stringify(errors),
 		};
 	}
@@ -42,6 +45,7 @@ exports.handler = async (event) => {
 		errors.email = 'User not found';
 		return {
 			statusCode: 404,
+			headers,
 			body: JSON.stringify(errors),
 		};
 	}
@@ -62,6 +66,7 @@ exports.handler = async (event) => {
 			statusCode: 200,
 			body: JSON.stringify({
 				success: true,
+				headers,
 				token: 'Bearer ' + token,
 			}),
 		};
@@ -69,6 +74,7 @@ exports.handler = async (event) => {
 		errors.password = 'Incorrect password';
 		return {
 			statusCode: 400,
+			headers,
 			body: JSON.stringify(errors),
 		};
 	}
