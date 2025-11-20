@@ -1,23 +1,9 @@
-const AWS = require('aws-sdk');
+const { unmarshall } = require('@aws-sdk/util-dynamodb');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const redisClient = require('../config/redisClient');
 const padWithZeros = require('../utils/padWithZeros');
 const calculateRankingScore = require('../utils/calculateRankingScore');
-
-const isLocal = process.env.NODE_ENV === 'development';
-
-if (isLocal) {
-	AWS.config.update({
-		region: 'localhost',
-		endpoint: 'http://localhost:8000', // Connect to local DynamoDB
-	});
-} else {
-	AWS.config.update({
-		region: 'us-west-1',
-		// Credentials are automatically picked up if running with AWS CLI credentials
-	});
-}
 
 (async () => {
 	await redisClient.connect().catch(console.error);
@@ -26,9 +12,7 @@ if (isLocal) {
 exports.handler = async (event) => {
 	for (const record of event.Records) {
 		if (record.eventName === 'INSERT') {
-			const comment = AWS.DynamoDB.Converter.unmarshall(
-				record.dynamodb.NewImage
-			);
+			const comment = unmarshall(record.dynamodb.NewImage);
 			// If reply update reply count on parent and on post
 			if (comment.parentCommentId) {
 				let [parentComment, post] = await Promise.all([

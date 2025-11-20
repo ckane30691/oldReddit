@@ -1,23 +1,9 @@
-const AWS = require('aws-sdk');
+const { unmarshall } = require('@aws-sdk/util-dynamodb');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const redisClient = require('../config/redisClient');
 const padWithZeros = require('../utils/padWithZeros');
 const calculateRankingScore = require('../utils/calculateRankingScore');
-
-const isLocal = process.env.NODE_ENV === 'development';
-
-if (isLocal) {
-	AWS.config.update({
-		region: 'localhost',
-		endpoint: 'http://localhost:8000', // Connect to local DynamoDB
-	});
-} else {
-	AWS.config.update({
-		region: 'us-west-1',
-		// Credentials are automatically picked up if running with AWS CLI credentials
-	});
-}
 
 (async () => {
 	await redisClient.connect().catch(console.error);
@@ -27,11 +13,9 @@ exports.handler = async (event) => {
 	console.log('Inside DB Triggered Taskrunner:');
 	for (const record of event.Records) {
 		if (record.eventName === 'INSERT' || record.eventName === 'MODIFY') {
-			const newVote = AWS.DynamoDB.Converter.unmarshall(
-				record.dynamodb.NewImage
-			);
+			const newVote = unmarshall(record.dynamodb.NewImage);
 			const oldVote = record.dynamodb.OldImage
-				? AWS.DynamoDB.Converter.unmarshall(record.dynamodb.OldImage)
+				? unmarshall(record.dynamodb.OldImage)
 				: null;
 
 			// Determine vote change (e.g., -1 to +1, +1 to 0)

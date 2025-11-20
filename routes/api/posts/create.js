@@ -36,7 +36,7 @@ exports.handler = async (event) => {
 		return {
 			statusCode: 401,
 			headers,
-			body: JSON.stringify({ message: 'No token provided' }),
+			body: JSON.stringify({ message: 'No token provided', normalized }),
 		};
 	}
 	try {
