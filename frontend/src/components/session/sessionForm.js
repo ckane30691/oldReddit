@@ -5,7 +5,7 @@ import { signUpUser, loginUser } from '../../store/slices/sessionSlice';
 require('./sessionForm.css');
 
 export const SessionForm = (props) => {
-	// TODO: SETUP USE EFFECT (componentDidMount) TO CLEAR ERRORS WHEN USER SWITCHES BETWEEN SIGNUP AND LOGIN
+	// TODO: SETUP USE EFFECT TO CLEAR ERRORS WHEN USER SWITCHES BETWEEN SIGNUP AND LOGIN
 
 	const sessionErrors = useSelector((state) => state.errors.sessionErrors);
 	const session = useSelector((state) => state.session);

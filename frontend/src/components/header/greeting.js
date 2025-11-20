@@ -1,15 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser } from '../../store/slices/sessionSlice';
+import { loginUser, logoutUser } from '../../store/slices/sessionSlice';
 require('./greeting.css');
+
+const dummyLogin = async (e, dispatch) => {
+	e.preventDefault();
+
+	const dummy = {
+		email: 'dummy@login.com',
+		password: 'password',
+	};
+	await dispatch(loginUser(dummy));
+};
 
 const sessionLinks = (dummyLogin, dispatch) => (
 	<nav className="header-group">
 		Want to Join? <Link to="/login">Log in</Link>
 		{/*space*/} or {/*space*/}
 		<Link to="/signup">sign up</Link> in seconds!
-		<button className="demo-button" /* onClick={dummyLogin}*/>Demo</button>
+		<button className="demo-button" onClick={(e = dummyLogin(e, dispatch))}>
+			Demo
+		</button>
 	</nav>
 );
 
@@ -29,7 +41,7 @@ const Greeting = () => {
 	let dispatch = useDispatch();
 	return currentUser.id
 		? personalGreeting(currentUser, dispatch)
-		: sessionLinks(null, dispatch);
+		: sessionLinks(dummyLogin, dispatch);
 };
 
 export default Greeting;
